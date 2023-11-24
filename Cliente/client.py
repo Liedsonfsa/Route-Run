@@ -228,3 +228,4 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return saida_lst
         return None
+    #teste de commit
