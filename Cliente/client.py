@@ -1,5 +1,6 @@
 import socket
 from mysql.connector.utils import print_buffer
+#dokadas
 
 
 class plataforma_cliente():

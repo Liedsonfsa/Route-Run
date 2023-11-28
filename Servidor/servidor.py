@@ -301,3 +301,4 @@ class Servidor():
             newthread.join()
             #print('codigo recebido: {}'.format(codigo))
         #serv_socket.close()
+        #dokadas
