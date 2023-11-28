@@ -1,6 +1,7 @@
 import abc
 import mysql.connector
 
+
 class Carro(abc.ABC):
 
     __slots__ = ['_placa', '_tipo', '_modelo', '_cpf']
@@ -46,11 +47,9 @@ class Carro(abc.ABC):
 
 class CadCarro:
 
-    #__slots__ = ['_lista_carros']
     __slots__ = ['_conexao', '_cursor', '_mysql']
 
     def __init__(self):
-        #self._lista_carros = []
         self._conexao = mysql.connector.connect(host = 'localhost', db ='route_run', user='root', passwd = '@Marcos2004*')
         self._cursor = self._conexao.cursor()
         self._mysql = """CREATE TABLE IF NOT EXISTS carros(placa VARCHAR(11) PRIMARY KEY, tipo text NOT NULL, modelo text NOT NULL, cpf VARCHAR(11), foreign key(cpf) references motoristas(cpf));"""
@@ -66,8 +65,6 @@ class CadCarro:
         else:
             return False
 
-        #self._lista_carros.append(carro)
-
     def busca_carro(self, placa):
         self._cursor.execute('SELECT * from carros WHERE placa = %s',(placa,))
         verificar = self._cursor.fetchone()
@@ -76,13 +73,3 @@ class CadCarro:
         else:
             carro = Carro(verificar[0], verificar[1], verificar[2], verificar[3])
             return carro
-        # for pl in self._lista_carros:
-        #     if pl.placa == placa:
-        #         return pl
-        # return None
-    
-    # def busca_placa(self, placa):
-    #     for p in self._lista_carros:
-    #         if p.placa == placa:
-    #             return p
-    #     return None

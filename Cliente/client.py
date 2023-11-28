@@ -22,10 +22,6 @@ class plataforma_cliente():
         return saida
 
     def cadastro_user(self, nome, endereco, cpf, nascimento, usuario, senha, email):
-
-        # str(nascimento)
-        # print(nascimento)
-        #print(nascimento.toString("yyyy-MM-dd"))
         codigo = '0/'+nome+'/'+endereco+'/'+cpf+'/'+nascimento.toString("yyyy-MM-dd")+'/'+usuario+'/'+senha+'/'+email
         try:
             saida = self.conecxao_servidor(codigo)

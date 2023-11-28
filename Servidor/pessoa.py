@@ -75,7 +75,6 @@ class Motorista(Pessoa):
     def __init__(self, nome, endereco, cpf, nascimento, usuario, senha, email, cnh):
         super().__init__(nome, endereco, cpf, nascimento, usuario, senha, email)
         self._cnh = cnh
-        #self._placa = placa
 
     @property
     def cnh(self):
@@ -85,10 +84,3 @@ class Motorista(Pessoa):
     def cnh(self, cnh):
         self._cnh = cnh
 
-    '''@property
-    def placa(self):
-        return self._placa
-
-    @placa.setter
-    def placa(self, placa):
-        self._placa = placa'''

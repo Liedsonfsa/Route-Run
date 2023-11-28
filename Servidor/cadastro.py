@@ -2,10 +2,8 @@ import mysql.connector
 from pessoa import Pessoa, Motorista
 
 
-
 class Cadastro:
 
-    # __slots__ = ['_lista_pessoas_usuario', '_lista_pessoas_motorista', '_lista_pessoas', '_lista_contas']
     __slots__ = ['_conexao', '_cursor', '_mysql', '_lista_contas']
 
     def __init__(self):
@@ -19,12 +17,6 @@ class Cadastro:
         self._cursor.execute(self._mysql)
         self._conexao.commit()
 
-    # def __init__(self):
-    #     self._lista_pessoas_usuario = []
-    #     self._lista_pessoas_motorista = []
-    #     self._lista_pessoas = []
-    #     self._lista_contas = []
-
     def cadastrar_usuario(self, pessoa):
         existe = self.busca_cpf_cliente(pessoa.cpf)
         
@@ -35,25 +27,6 @@ class Cadastro:
         else:
             return False
 
-    # def cadastrar_usuario(self, pessoa):
-    #     existe = self.busca_cpf_cliente(pessoa.cpf)
-    #     if (existe == None):
-    #         self._lista_pessoas_usuario.append(pessoa)
-    #         self._lista_pessoas.append(pessoa)
-    #         return True
-    #     else:
-    #         return False
-
-    # def guardar_num(self, conta):
-    #     self._lista_contas.clear()
-    #     self._lista_contas.append(conta)
-
-    # def buscar_cod(self, cod):
-    #     for lp in self._lista_contas:
-    #         if lp.cod == cod:
-    #             return lp
-    #     return None
-
     def cadastrar_motorista(self, pessoa):
         existe = self.busca_cpf_motorista(pessoa.cpf)
         if (existe == None):
@@ -62,15 +35,6 @@ class Cadastro:
             return True
         else:
             return False
-
-    # def cadastrar_motorista(self, pessoa):
-    #     existe = self.busca_cpf_motorista(pessoa.cpf)
-    #     if (existe == None):
-    #         self._lista_pessoas_motorista.append(pessoa)
-    #         self._lista_pessoas.append(pessoa)
-    #         return True
-    #     else:
-    #         return False
 
     def busca_cpf_motorista(self, cpf):
         self._cursor.execute('SELECT * from motoristas WHERE cpf = %s',(cpf,))
@@ -81,12 +45,6 @@ class Cadastro:
             motorista = Motorista(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7])
             return motorista
 
-    # def busca_cpf_motorista(self, cpf):
-    #     for lp in self._lista_pessoas_motorista:
-    #         if lp.cpf == cpf:
-    #             return lp
-    #     return None
-
     def busca_cpf_cliente(self, cpf):
         self._cursor.execute('SELECT * from clientes WHERE cpf = %s',(cpf,))
         verificar = self._cursor.fetchone()
@@ -96,12 +54,6 @@ class Cadastro:
             pessoa = Pessoa(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6])
             return pessoa
 
-    # def busca_cpf_cliente(self, cpf):
-    #     for lp in self._lista_pessoas_usuario:
-    #         if lp.cpf == cpf:
-    #             return lp
-    #     return None
-
     def busca_cnh(self, cnh):
         self._cursor.execute('SELECT * from motoristas WHERE cnh = %s',(cnh,))
         verificar = self._cursor.fetchone()
@@ -110,12 +62,6 @@ class Cadastro:
         else:
             motorista = Motorista(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7])
             return motorista
-
-    # def busca_cnh(self, cnh):
-    #     for lp in self._lista_pessoas_motorista:
-    #         if lp.cnh == cnh:
-    #             return lp
-    #     return None
 
     def redefinir(self, email, senha):
         conta_user = self.buscar_email_user(email)
@@ -130,11 +76,6 @@ class Cadastro:
             return True
         else:
             return None
-    #     for lp in self._lista_pessoas:
-    #         if lp.email == email:
-    #             lp.senha = senha
-    #             return lp
-    #     return None
 
     def buscar_email_mot(self, email):
         self._cursor.execute('SELECT * from motoristas WHERE email = %s',(email,))
@@ -145,11 +86,6 @@ class Cadastro:
             motorista = Motorista(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7])
             return motorista
 
-    # def buscar_email_mot(self, email):
-    #     for lp in self._lista_pessoas_motorista:
-    #         if lp.email == email:
-    #             return lp
-    #     return None
 
     def buscar_email_user(self, email):
         self._cursor.execute('SELECT * from clientes WHERE email = %s',(email,))
@@ -160,14 +96,3 @@ class Cadastro:
             pessoa = Pessoa(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6])
             return pessoa
 
-    # def buscar_email_user(self, email):
-    #     for lp in self._lista_pessoas_usuario:
-    #         if lp.email == email:
-    #             return lp
-    #     return None
-
-    # def buscar_email(self, email):
-    #     for lp in self._lista_pessoas:
-    #         if lp.email == email:
-    #             return lp
-    #     return None
