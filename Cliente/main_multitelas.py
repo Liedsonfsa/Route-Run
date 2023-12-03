@@ -9,18 +9,13 @@ from telas.Tela_inicial import TelaInicial
 from telas.Tela_cadastro import TelaCadastro
 from telas.Tela_principal import TelaPrincipal
 from telas.Tela_motorista import TelaMotorista
-#from cadastro import Cadastro
-#from verificacao import Verifica
-#from pessoa import Pessoa, Motorista
 from telas.Tela_redefinir import Redefinir
 from telas.Tela_principal_motorista import TelaPrincipalMotorista
 from telas.Tela_cad_rota import TelaCadRota
-#from cadastro_rota import Rota, CadRota, Cidade
 from telas.Tela_autentificacao import TelaAutentificacao
 from telas.Tela_autentificacao2 import TelaAutentificacao2
 from telas.Tela_cadastro_carro import TelaCadastroCarro
 from telas.Tela_perfil_cliente import PerfilCliente
-#from cadastro_carro import Carro, CadCarro
 from telas.Tela_perfil import Perfil
 from telas.Tela_cpf import TelaCpf
 from telas.Tela_confirmacao_senha import CSenha
@@ -119,7 +114,6 @@ class Main(QMainWindow, Ui_Main):
         super(Main, self).__init__(None)
         self.setupUi(self)
 
-        #self.create_messagebox()
         self.cad = plataforma_cliente()
         self.rot = plataforma_cliente()
         self.carro = plataforma_cliente()
@@ -131,7 +125,6 @@ class Main(QMainWindow, Ui_Main):
         self.telaCadastro.btn_cadastrar.clicked.connect(self.cadastrar)
         self.telaCadastro.btn_voltar.clicked.connect(self.voltar)
 
-        #self.telaBusca.Buscar.clicked.connect(self.buscar)
         self.telaPrincipal.b_voltar.clicked.connect(self.voltar)
         self.telaPrincipal.b_perfil.clicked.connect(self.abrir_perfil_cliente)
         self.telaPrincipal.b_procura.clicked.connect(self.procurarRota)
@@ -307,13 +300,10 @@ class Main(QMainWindow, Ui_Main):
                 """
 
                 mail.Send()
-                #conta = Verifica(email, cod)
                 self.cad.guardar_num(cod)
                 self.telaAut2.lineEdit.setText('')
-                #self.telaAut2.comboBoxUsuarios.setCurrentText('')
                 self.QtStack.setCurrentIndex(7)
             elif (self.cad.buscar_email_mot(email) != None and (self.cad.buscar_email_cliente(email)) == None):
-                #if (self.cad.buscar_email_mot(email)):
                 cod = random.randint(100000, 999999)
                 outlook = win32.Dispatch('outlook.application')
 
@@ -329,15 +319,10 @@ class Main(QMainWindow, Ui_Main):
                 """
 
                 mail.Send()
-                #conta = Verifica(email, cod)
                 self.cad.guardar_num(cod)
                 self.telaAut2.lineEdit.setText('')
-                #self.telaAut2.comboBoxUsuarios.setCurrentText('')
                 self.QtStack.setCurrentIndex(7)
-                #else:
-                    #QMessageBox.information(None, 'Cadastro', 'Conta não cadastrada')
             elif (self.cad.buscar_email_mot(email) == None and (self.cad.buscar_email_cliente(email)) != None):
-                #if (self.cad.buscar_email_user(email)):
                 cod = random.randint(100000, 999999)
                 outlook = win32.Dispatch('outlook.application')
 
@@ -353,13 +338,9 @@ class Main(QMainWindow, Ui_Main):
                 """
 
                 mail.Send()
-                #conta = Verifica(email, cod)
                 self.cad.guardar_num(cod)
                 self.telaAut2.lineEdit.setText('')
-                #self.telaAut2.comboBoxUsuarios.setCurrentText('')
                 self.QtStack.setCurrentIndex(7)
-                #else:
-                   # QMessageBox.information(None, 'Cadastro', 'Conta não cadastrada')
 
     def autentificacao(self):
         num = int(self.telaAut.lineEdit.text())
@@ -372,29 +353,24 @@ class Main(QMainWindow, Ui_Main):
                 self.QtStack.setCurrentIndex(4)
             else:
                 QMessageBox.information(None, 'Login', 'O codigo inserido não corresponde ao enviado no email')
-    #ok?
+
     def abrirMain(self):
-        #usuario = self.telaInicial.comboBoxUsuarios.currentText()
+
         email = self.telaInicial.lineEditMail.text()
-        #cpf = self.telaInicial.lineEditCPF.text()
         senha = self.telaInicial.lineEditSenha.text()
-        #if email == '' or senha == '' or cpf == '' or usuario == '':
+
         if email == '' or senha == '':
             QMessageBox.information(None, 'Login', 'Todos os espaços devem ser preenchidos!')
-        else:
-            # if usuario == '':
-            #     QMessageBox.information(None, 'Busca', 'Informe um usuário!')
-            # elif usuario == 'Usuário Motorista':               
+        else:               
             if (self.cad.buscar_email_mot(email) and (self.cad.buscar_email_cliente(email))):
                 senha = senha.encode("utf8")
                 senha = md5(senha).hexdigest()
-                #print(senha)
-                #print(self.cad.buscar_email_mot(email).senha)
+
                 if (self.cad.buscar_email_mot(email)[6] == senha):
                     msg = QMessageBox()
                     msg.setWindowTitle("Login")
                     msg.setText("Conta cadastrada como cliente e motorista\nDeseja Logar como cliente ou motorista?")
-                    #msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+
                     cliente_button = msg.addButton("Cliente", QMessageBox.YesRole)
                     motorista_button = msg.addButton("Motorista", QMessageBox.NoRole)
                     
@@ -408,8 +384,6 @@ class Main(QMainWindow, Ui_Main):
                 senha = md5(senha).hexdigest()
                 if self.cad.buscar_email_cliente(email)[6] == senha:
                     self.QtStack.setCurrentIndex(2)
-                    # self.telaInicial.lineEditMail.setText('')
-                    # self.telaInicial.lineEditSenha.setText('')
                 else:
                     QMessageBox.information(None, 'Busca', 'Senha errada')
             elif (self.cad.buscar_email_mot(email) != None and (self.cad.buscar_email_cliente(email)) == None):
@@ -417,8 +391,6 @@ class Main(QMainWindow, Ui_Main):
                 senha = md5(senha).hexdigest()
                 if self.cad.buscar_email_mot(email)[6] == senha:
                     self.QtStack.setCurrentIndex(5)
-                    # self.telaInicial.lineEditMail.setText('')
-                    # self.telaInicial.lineEditSenha.setText('')
                 else:
                     QMessageBox.information(None, 'Busca', 'Senha errada')
             else:
@@ -433,9 +405,9 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'cidade', 'Todos os espaços devem ser preenchidos!')
         else:
             id = self.rot.contar()
-            #city = Cidade(id, cidade, uf)
+
             if self.rot.add_city(id, cidade, uf):
-                #self.QtStack.setCurrentIndex(5)
+
                 self.telacitys.lineEditcity.setText('')
                 self.telacitys.lineEdit.setText('')
                 QMessageBox.information(None, 'Cidade', 'Cidade cadastrada com sucesso')
@@ -452,26 +424,24 @@ class Main(QMainWindow, Ui_Main):
         horario = self.telaRota.horario.time()
         valor = self.telaRota.line_valor.text()
         horario_volta = self.telaRota.horario_volta.time()
-        #data = self.telaRota.data.date()
+
         placa = self.telaRota.line_placa.text()
         if uf_origem == '' or uf_destino == '' or cidade_origem == '' or cidade_destino == '' or valor == '' or placa == '':
             QMessageBox.information(None, 'rota', 'Todos os espaços devem ser preenchidos!')
         else:
-            id = self.rot.contar()
-            
+            id = self.rot.contar()  
             if (id == None):
                 id = 0
             id = id + 1
-            #r = Rota(id, uf_origem, cidade_origem, uf_destino, cidade_destino, horario, valor, placa, horario_volta)
+
             if (self.carro.busca_carro(placa) != None):
                 if not (self.telaRota.checkBox.isChecked()):
-                    #if not(self.rot.busca_rota_origem(uf_origem) and self.rot.busca_rota_destino(uf_destino)):
+
                     self.rot.cadastro_rota(id, uf_origem, cidade_origem, uf_destino, cidade_destino, horario, valor, placa, horario_volta)
-                    #city1 = Cidade(id, cidade_origem, uf_origem)
-                    #city2 = Cidade(id, cidade_destino, uf_destino)
+
                     self.rot.add_city(id, cidade_origem, uf_origem)
                     self.rot.add_city(id, cidade_destino, uf_destino)
-                    #self.telaRota.checkBox.setChecked(False)
+
                     self.telaRota.line_UF_origem.setText('')
                     self.telaRota.line_UF_destino.setText('')
                     self.telaRota.line_cidade_origem.setText('')
@@ -480,16 +450,10 @@ class Main(QMainWindow, Ui_Main):
                     self.telaRota.horario.setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)))
                     self.telaRota.horario_volta.setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)))
                     self.telaRota.line_valor.setText('')
-                    #self.telaRota.data.setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)))
-                    #QMessageBox.information(None, 'Rota', 'Cadastro realizado com sucesso.')
+
                     self.QtStack.setCurrentIndex(5)
-                    #else:
-                     #   QMessageBox.information(None, 'Rota', 'A rota já existe.')
                 else:
-                    #aqui
                     self.rot.cadastro_rota(id, uf_origem, cidade_origem, uf_destino, cidade_destino, horario, valor, placa, horario_volta)
-                    #city1 = Cidade(id, cidade_origem, uf_origem)
-                    #city2 = Cidade(id, cidade_destino, uf_destino)
                     self.rot.add_city(id, cidade_origem, uf_origem)
                     self.rot.add_city(id, cidade_destino, uf_destino)
                     self.telaRota.line_UF_origem.setText('')
@@ -500,7 +464,6 @@ class Main(QMainWindow, Ui_Main):
                     self.telaRota.horario.setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)))
                     self.telaRota.horario_volta.setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)))
                     self.telaRota.line_valor.setText('')
-                    #self.telaRota.data.setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)))
                     self.QtStack.setCurrentIndex(14)
             else:
                 QMessageBox.information(None, 'Rota', 'Placa de carro n cadastrada')
@@ -510,45 +473,24 @@ class Main(QMainWindow, Ui_Main):
         self.telaPrincipal.rota_2.setText('')
         self.telaPrincipal.Rota_3.setText('')
         self.telaPrincipal.rota_4.setText('')
-        # self.telaPrincipal.procurar.setText('')
-        # self.telaPrincipal.lineEdit.setText('')
         rota_origem = self.telaPrincipal.procurar.text()
         rota_destino = self.telaPrincipal.lineEdit.text()
         if rota_origem == '' or rota_destino == '':
             QMessageBox.information(None, 'Rota', 'Todos os campos devem ser preenchidos')
         else:
-            # print('1')
-            # print(self.rot.verificar_cidade(rota_origem))
-            # print('2')
-            # print(self.rot.verificar_cidade(rota_destino))
             origem = self.rot.get_busca(rota_origem)
-            #origem = origem1.split('/')
-            #if (self.rot.verificar_cidade(rota_origem) != None and self.rot.verificar_cidade(rota_destino) != None):
-                
-            #rota_encontrada = self.rot.get_busca(rota_origem)
-                #for rota in rota_encontrada:
             if origem is None:
                 origem = 0
                 tam = 0
             else:
                 tam = (len(origem))
-            
-            # a = 0 
-            # b = 0
-            # c = 0
+
             if origem != None and self.rot.get_busca(rota_destino):
                 ctt = 0
                 print(tam)
                 a = tam
                 b = tam
                 c = tam
-                
-                # print("1")
-                # print(origem)
-                # print("2")
-                # print(origem[0].split('/')[2])
-                # print("3")
-                # print(origem[3])
                 for i in range(tam):
                     if len(origem) >= 1 and self.rot.verificar_cidade_id(rota_destino, origem[i].split('/')[0], origem[i].split('/')[2]):
                         rota_encontrada = self.rot.verificar_cidade(origem[i].split('/')[0])
@@ -584,14 +526,10 @@ class Main(QMainWindow, Ui_Main):
                     QMessageBox.information(None, 'Busca', 'A rota não existe ou não foi encontrada!.')
             else:
                 QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
-            #else:
-                #QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
-    #feito
+
     def perfil(self):
         cpf = self.telaInicial.lineEditMail.text()
-        #print(cpf)
         m = self.cad.buscar_email_mot(cpf)
-        #print(m.cpf)
         if (m != None):
             self.telaperfil.line_nome.setText(m[1])
             self.telaperfil.line_cpf.setText(m[3])
@@ -614,7 +552,6 @@ class Main(QMainWindow, Ui_Main):
         if placa == '' or modelo == '' or tipo == '' or cpf == '':
             QMessageBox.information(None, 'Carro', 'Todos os espaços devem ser preenchidos!')
         else:
-            #c = Carro(placa, tipo, modelo, cpf)
             if not (self.carro.busca_carro(placa)):
                 self.carro.cadastrar_carro(placa, tipo, modelo, cpf)
                 self.telacadastrocarro.placa_line.setText('')
@@ -631,7 +568,6 @@ class Main(QMainWindow, Ui_Main):
     def perfil_cliente(self):
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_cliente(email)
-        #print(c.cpf)
         if (c != None):
             self.telaperfilcliente.line_nome.setText(c[1])
             self.telaperfilcliente.line_cpf.setText(c[3])
@@ -639,8 +575,7 @@ class Main(QMainWindow, Ui_Main):
             self.telaperfilcliente.email.setText(c[7])
             data_str = c[4]
             data_lista = data_str.split('-')
-        
-            # Convertendo para QDate
+
             qdate = QDate(int(data_lista[0]), int(data_lista[1]), int(data_lista[2]))
             self.telaperfilcliente.nascimento.setDate(qdate)
         else: 
@@ -657,19 +592,17 @@ class Main(QMainWindow, Ui_Main):
         senha = self.telaCadastro.lineEditSenha.text()
         email = self.telaCadastro.lineEditMail.text()
         cnh = self.telaMotorista.lineEditCNH.text()
-        #placa = self.telaMotorista.lineEditVeiculo.text()
+
         if cnh == '':
             QMessageBox.information(None, 'motorista', 'Todos os espaços devem ser preenchidos!')
         elif self.cad.busca_cnh(cnh) != None:
             QMessageBox.information(None, 'motorista', 'CNH já cadastrada no bando de dados!')
         else:
-            #p = Motorista(nome, endereco, cpf, nascimento, usuario, senha, email, cnh)
             if (self.cad.busca_cpf_mot(cpf) == None):
                 if (self.cad.buscar_email_mot(email) == None):
                     if (self.cad.cadastro_mot(nome, endereco, cpf, nascimento, usuario, senha, email, cnh)):
                         self.telaCadastro.lineEditNome.setText('')
                         self.telaCadastro.lineEditEndereco.setText('')
-                        #self.telaCadastro.lineEdit.setText('')
                         self.telaCadastro.lineEditSenha.setText('')
                         self.telaCadastro.lineEditCSenha.setText('')
                         self.telaCadastro.lineEditMail.setText('')
@@ -680,7 +613,6 @@ class Main(QMainWindow, Ui_Main):
                         self.telacpf.comboBoxUsuario.setCurrentIndex(0)
                         self.telaCadastro.dateEditNascimento.setDateTime(QDateTime(QDate(2000, 1, 1), QTime(0, 0)))
                         self.telaMotorista.lineEditCNH.setText('')
-                        #self.telaMotorista.lineEditVeiculo.setText('')
                         QMessageBox.information(None, 'Cadastro', 'Cadastro realizado com sucesso.')
                         self.QtStack.setCurrentIndex(0)
                     else:
@@ -696,14 +628,11 @@ class Main(QMainWindow, Ui_Main):
         if not (cpf == '' or usuario == ''):
             if usuario == 'Usuário Motorista':
                 if (self.cad.busca_cpf_mot(cpf) == None):
-                    #motorista não cadastrado
                     if (self.cad.busca_cpf_cliente(cpf) == None):
-                        # não cadastrado como cliente
                         self.QtStack.setCurrentIndex(1)
                     else:
                         msg = QMessageBox()
                         msg.setWindowTitle("Cadastro")
-                        #msg.setIcon(QMessageBox.information)
                         msg.setText("Cpf Já cadastrado no banco de dados como cliente, deseja cadastrar como motorista (Seus dados serão o mesmo da conta cliente) ?")
                         msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
 
@@ -728,7 +657,6 @@ class Main(QMainWindow, Ui_Main):
                             self.QtStack.setCurrentIndex(13)
                         else:
                             self.voltar()
-                        #QMessageBox.information(None, 'Cadastro', f'Cpf já cadastrado no banco de dados de como motorista ')
                 else:
                     QMessageBox.information(None, 'Cadastro', f'Cpf já cadastrado no banco de dados de cliente')
         else:
@@ -794,13 +722,11 @@ class Main(QMainWindow, Ui_Main):
                 if usuario == 'Usuário Motorista':
                     self.QtStack.setCurrentIndex(3)
                 else:
-                    #p = Pessoa(nome, endereco, cpf, nascimento, usuario, senha, email)
                     if (self.cad.busca_cpf_cliente(cpf) == None):
                         if (self.cad.buscar_email_cliente(email) == None):
                             if (self.cad.cadastro_user(nome, endereco, cpf, nascimento, usuario, senha, email)):
                                 self.telaCadastro.lineEditNome.setText('')
                                 self.telaCadastro.lineEditEndereco.setText('')
-                                #self.telaCadastro.lineEdit.setText('')
                                 self.telaCadastro.lineEditSenha.setText('')
                                 self.telaCadastro.lineEditCSenha.setText('')
                                 self.telaCadastro.lineEditMail.setText('')

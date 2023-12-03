@@ -1,6 +1,5 @@
 import socket
 from mysql.connector.utils import print_buffer
-#dokadas
 
 
 class plataforma_cliente():
@@ -189,7 +188,7 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return saida_lst[1].split('~')
         return None
-    
+
     def verificar_cidade_id(self, cidade, id, uf_cidade):
         codigo = '13/'+cidade+'/'+str(id)+'/'+uf_cidade
         try:
@@ -225,4 +224,3 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return saida_lst
         return None
-    #teste de commit
