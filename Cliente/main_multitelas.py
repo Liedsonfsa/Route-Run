@@ -3,7 +3,7 @@ import random
 import win32com.client as win32
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QDate, QTime, QDateTime
-from PyQt5.QtWidgets import QMessageBox, QMainWindow, QApplication, QDateTimeEdit, QWidget, QHBoxLayout, QPushButton
+from PyQt5.QtWidgets import QMessageBox, QMainWindow, QApplication, QDateTimeEdit, QWidget, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QLineEdit
 from hashlib import md5
 from telas.Tela_inicial import TelaInicial
 from telas.Tela_cadastro import TelaCadastro
@@ -214,6 +214,10 @@ class Main(QMainWindow, Ui_Main):
         self.telaPrincipal.procurar.setText('')
         self.telaPrincipal.lineEdit.setText('')
         self.QtStack.setCurrentIndex(2)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_2)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_3)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_4)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_5)
 
     def abrir_perfil_cliente(self):
         self.QtStack.setCurrentIndex(11)
@@ -230,6 +234,11 @@ class Main(QMainWindow, Ui_Main):
 
     def abrirTelaCliente(self):
         self.QtStack.setCurrentIndex(2)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_2)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_3)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_4)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_5)
+        
 
     def abrirTelaMotorista(self):
         self.QtStack.setCurrentIndex(5)
@@ -475,6 +484,10 @@ class Main(QMainWindow, Ui_Main):
         self.telaPrincipal.rota_4.setText('')
         rota_origem = self.telaPrincipal.procurar.text()
         rota_destino = self.telaPrincipal.lineEdit.text()
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_2)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_3)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_4)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_5)
         if rota_origem == '' or rota_destino == '':
             QMessageBox.information(None, 'Rota', 'Todos os campos devem ser preenchidos')
         else:
@@ -495,6 +508,7 @@ class Main(QMainWindow, Ui_Main):
                     if len(origem) >= 1 and self.rot.verificar_cidade_id(rota_destino, origem[i].split('/')[0], origem[i].split('/')[2]):
                         rota_encontrada = self.rot.verificar_cidade(origem[i].split('/')[0])
                         self.telaPrincipal.rota_1.setText(F"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor da passagem: {rota_encontrada[7]}")
+                        self.chat_reserva(self.telaPrincipal.horizontalLayout_2)
                         ctt = 1
                         a = i + 1
                         b = i + 1
@@ -504,6 +518,7 @@ class Main(QMainWindow, Ui_Main):
                     if len(origem) >= 2 and self.rot.verificar_cidade_id(rota_destino, origem[i].split('/')[0], origem[i].split('/')[2]):
                         rota_encontrada = self.rot.verificar_cidade(origem[i].split('/')[0])
                         self.telaPrincipal.rota_2.setText(F"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor da passagem: {rota_encontrada[7]}")
+                        self.chat_reserva(self.telaPrincipal.horizontalLayout_3)
                         ctt = 1
                         b = i + 1
                         c = i + 1
@@ -513,6 +528,7 @@ class Main(QMainWindow, Ui_Main):
                     if len(origem) >= 3 and self.rot.verificar_cidade_id(rota_destino, origem[i].split('/')[0], origem[i].split('/')[2]):
                         rota_encontrada = self.rot.verificar_cidade(origem[i].split('/')[0])
                         self.telaPrincipal.Rota_3.setText(F"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor da passagem: {rota_encontrada[7]}")
+                        self.chat_reserva(self.telaPrincipal.horizontalLayout_4)
                         ctt = 1
                         c = i + 1
                         break
@@ -520,12 +536,49 @@ class Main(QMainWindow, Ui_Main):
                     if len(origem) >= 4 and self.rot.verificar_cidade_id(rota_destino, origem[i].split('/')[0], origem[i].split('/')[2]):
                         rota_encontrada = self.rot.verificar_cidade(origem[i].split('/')[0])
                         self.telaPrincipal.rota_4.setText(F"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor da passagem: {rota_encontrada[7]}")
+                        self.chat_reserva(self.telaPrincipal.horizontalLayout_5)
                         ctt = 1
                         break
                 if ctt == 0:
                     QMessageBox.information(None, 'Busca', 'A rota não existe ou não foi encontrada!.')
             else:
                 QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
+
+    def chat_reserva(self, layout):
+        botao_chat = QPushButton('chat', self)
+        botao_reserva = QPushButton('reserva', self)
+        
+        # Conectar os botões a métodos específicos
+        
+        botao_chat.clicked.connect(self.chat)
+        botao_reserva.clicked.connect(self.reserva)
+
+        # Adicionar os botões ao layout
+        layout.addWidget(botao_chat)
+        layout.addWidget(botao_reserva)
+
+    def chat(self):
+        # Lógica para aceitar a rota
+        QMessageBox.information(None, 'Ação', 'Chat')
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_2)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_3)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_4)
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_5)
+        
+
+    def reserva(self):
+        # Lógica para negar a rota
+        QMessageBox.information(None, 'Ação', 'Reserva')
+        self.limpar_layout(self.telaPrincipal.horizontalLayout_2)
+        # self.limpar_layout(self.telaPrincipal.horizontalLayout_3)
+        # self.limpar_layout(self.telaPrincipal.horizontalLayout_4)
+        # self.limpar_layout(self.telaPrincipal.horizontalLayout_5)
+
+    def limpar_layout(self, layout):
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
 
     def perfil(self):
         cpf = self.telaInicial.lineEditMail.text()
