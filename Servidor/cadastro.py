@@ -76,6 +76,20 @@ class Cadastro:
             return True
         else:
             return None
+        
+    def editar_perfil_cliente(self, nome, cpf, endereco, email, nascimento):
+        conta_user = self.busca_cpf_cliente(cpf)
+        conta_mot = self.busca_cpf_motorista(cpf)
+
+        if conta_user is not None:
+            self._cursor.execute('UPDATE clientes SET nome = %s, endereco = %s, email = %s, nascimento = %s WHERE cpf = %s', (nome, endereco, email, nascimento.toString("yyyy-MM-dd"), cpf))
+        if conta_mot is not None:
+            self._cursor.execute('UPDATE motoristas SET nome = %s, endereco = %s, email = %s, nascimento = %s WHERE cpf = %s', (nome, endereco, email, nascimento.toString("yyyy-MM-dd"), cpf))
+        self._conexao.commit()
+        if conta_user is not None or conta_mot is not None:
+            return True
+        else:
+            return None
 
     def buscar_email_mot(self, email):
         self._cursor.execute('SELECT * from motoristas WHERE email = %s',(email,))

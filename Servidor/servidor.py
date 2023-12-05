@@ -66,6 +66,8 @@ class ClientThread(threading.Thread):
             saida = self._servidor.verificarCidade(codigo)
         elif (codigo[0] == 'buscaCNH'):
             saida = self._servidor.buscaCNH(codigo)
+        elif (codigo[0] == 'editarPerfilCliente'):
+            saida = self._servidor.EditarPerfilCliente(codigo)
 
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
@@ -128,6 +130,8 @@ class Servidor():
             codigo_lista[0] = 'verificarCidade'
         elif (codigo_lista[0] == '15'):
             codigo_lista[0] = 'buscaCNH'
+        elif (codigo_lista[0] == '16'):
+            codigo_lista[0] = 'editarPerfilCliente'
 
         return codigo_lista
 
@@ -279,6 +283,17 @@ class Servidor():
         if (cnh):
             return f'1/{cnh.nome}/{cnh.endereco}/{cnh.cpf}/{cnh.nascimento}/{cnh.usuario}/{cnh.senha}/{cnh.email}/{cnh.cnh}'
         return '0'
+    
+    def EditarPerfilCliente(self, codigo):
+        data_str = codigo[5]
+        data_lista = data_str.split('-')
+    
+        # Convertendo para QDate
+        qdate = QDate(int(data_lista[0]), int(data_lista[1]), int(data_lista[2]))
+        if self._cadastro.editar_perfil_cliente(codigo[1], codigo[2], codigo[3], codigo[4], qdate):
+            return '1'
+        return '0'
+
 
     def ligar_servidor(self):
         host = ''

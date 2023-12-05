@@ -130,6 +130,7 @@ class Main(QMainWindow, Ui_Main):
         self.telaPrincipal.b_procura.clicked.connect(self.procurarRota)
 
         self.telaperfilcliente.b_voltar.clicked.connect(self.voltar_principal_perfil_cliente)
+        self.telaperfilcliente.b_editar.clicked.connect(self.editar_perfil_cliente)#
 
         self.telaMotorista.Btn_voltar.clicked.connect(self.voltar)
         self.telaMotorista.btn_finalizar.clicked.connect(self.cad_motorista)
@@ -238,7 +239,6 @@ class Main(QMainWindow, Ui_Main):
         self.limpar_layout(self.telaPrincipal.horizontalLayout_3)
         self.limpar_layout(self.telaPrincipal.horizontalLayout_4)
         self.limpar_layout(self.telaPrincipal.horizontalLayout_5)
-        
 
     def abrirTelaMotorista(self):
         self.QtStack.setCurrentIndex(5)
@@ -264,7 +264,7 @@ class Main(QMainWindow, Ui_Main):
     def abrirperfil(self):
         self.QtStack.setCurrentIndex(9)
         self.perfil()
-    #ok?
+
     def redefinir(self):
         nsenha = self.telaRedefinir.lineEditnsenha.text()
         cnsenha = self.telaRedefinir.lineEditcnsenha.text()
@@ -634,6 +634,39 @@ class Main(QMainWindow, Ui_Main):
         else: 
             QMessageBox.information(None, 'Perfil', 'CPF não existe.')
 
+    def editar_perfil_cliente(self):
+        self.telaperfilcliente.line_nome.setReadOnly(False)
+        #self.telaperfilcliente.line_cpf.setReadOnly(False)
+        self.telaperfilcliente.line_enderco.setReadOnly(False)
+        self.telaperfilcliente.email.setReadOnly(False)
+        self.telaperfilcliente.nascimento.setReadOnly(False)
+
+        botao_salvar = QPushButton('Salvar', self)
+        botao_salvar.clicked.connect(self.salvar)
+        self.limpar_layout(self.telaperfilcliente.horizontalLayout_5)
+        self.telaperfilcliente.horizontalLayout_5.addWidget(botao_salvar)
+
+    def salvar(self):
+        nome = self.telaperfilcliente.line_nome.text()
+        cpf = self.telaperfilcliente.line_cpf.text()
+        endereco = self.telaperfilcliente.line_enderco.text()
+        email = self.telaperfilcliente.email.text()
+        nascimento = self.telaperfilcliente.nascimento.date()
+
+        if not (nome == '' or cpf == '' or endereco == '' or email == ''):
+            if (self.cad.editar_perfil_cliente(nome, cpf, endereco, email, nascimento)):
+                self.telaInicial.lineEditMail.setText(email)
+                self.QtStack.setCurrentIndex(2)
+                #self.telaperfilcliente = PerfilCliente()
+                #conectar botões de voltar e editar
+                self.telaperfilcliente.setupUi(self.stack11)
+                self.telaperfilcliente.b_voltar.clicked.connect(self.voltar_principal_perfil_cliente)
+                self.telaperfilcliente.b_editar.clicked.connect(self.editar_perfil_cliente)
+        else:
+            QMessageBox.information(None, 'Cadastro', 'Todos os dados devem estar preenchidos!')
+
+        
+
     #######################################################################
     #feito
     def cad_motorista(self):
@@ -731,7 +764,6 @@ class Main(QMainWindow, Ui_Main):
                     self.telaCadastro.lineEditMail.setText(c[7])
                     data_str = c[4]
                     data_lista = data_str.split('-')
-                
                     # Convertendo para QDate
                     qdate = QDate(int(data_lista[0]), int(data_lista[1]), int(data_lista[2]))
                     self.telaCadastro.dateEditNascimento.setDate(qdate)
