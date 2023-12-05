@@ -236,3 +236,15 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return True
         return None
+
+    def editar_perfil_motorista(self, nome, cpf, endereco, email, nascimento):
+        codigo = '17/'+nome+'/'+cpf+'/'+endereco+'/'+email+'/'+nascimento.toString("yyyy-MM-dd")
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
+        return None

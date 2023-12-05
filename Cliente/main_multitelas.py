@@ -147,6 +147,7 @@ class Main(QMainWindow, Ui_Main):
         self.telaRota.b_cadastro.clicked.connect(self.cad_rota)
 
         self.telaperfil.b_voltar.clicked.connect(self.voltar_principal)
+        self.telaperfil.b_editar.clicked.connect(self.editar_perfil_motorista)#
 
         self.telacadastrocarro.b_cadastro.clicked.connect(self.cadCarro)
         self.telacadastrocarro.b_voltar.clicked.connect(self.voltar_principal_cadCarro)
@@ -642,11 +643,11 @@ class Main(QMainWindow, Ui_Main):
         self.telaperfilcliente.nascimento.setReadOnly(False)
 
         botao_salvar = QPushButton('Salvar', self)
-        botao_salvar.clicked.connect(self.salvar)
+        botao_salvar.clicked.connect(self.salvar_perfil_cliente)
         self.limpar_layout(self.telaperfilcliente.horizontalLayout_5)
         self.telaperfilcliente.horizontalLayout_5.addWidget(botao_salvar)
 
-    def salvar(self):
+    def salvar_perfil_cliente(self):
         nome = self.telaperfilcliente.line_nome.text()
         cpf = self.telaperfilcliente.line_cpf.text()
         endereco = self.telaperfilcliente.line_enderco.text()
@@ -654,18 +655,55 @@ class Main(QMainWindow, Ui_Main):
         nascimento = self.telaperfilcliente.nascimento.date()
 
         if not (nome == '' or cpf == '' or endereco == '' or email == ''):
-            if (self.cad.editar_perfil_cliente(nome, cpf, endereco, email, nascimento)):
-                self.telaInicial.lineEditMail.setText(email)
-                self.QtStack.setCurrentIndex(2)
-                #self.telaperfilcliente = PerfilCliente()
-                #conectar botões de voltar e editar
-                self.telaperfilcliente.setupUi(self.stack11)
-                self.telaperfilcliente.b_voltar.clicked.connect(self.voltar_principal_perfil_cliente)
-                self.telaperfilcliente.b_editar.clicked.connect(self.editar_perfil_cliente)
+            if (self.cad.buscar_email_cliente(email) == None):
+                if (self.cad.editar_perfil_cliente(nome, cpf, endereco, email, nascimento)):
+                    self.telaInicial.lineEditMail.setText(email)
+                    self.QtStack.setCurrentIndex(2)
+                    #self.telaperfilcliente = PerfilCliente()
+                    #conectar botões de voltar e editar
+                    self.telaperfilcliente.setupUi(self.stack11)
+                    self.telaperfilcliente.b_voltar.clicked.connect(self.voltar_principal_perfil_cliente)
+                    self.telaperfilcliente.b_editar.clicked.connect(self.editar_perfil_cliente)
+                else:
+                    QMessageBox.information(None, 'Cadastro', 'Erro desconhecido')
+            else:
+                QMessageBox.information(None, 'Cadastro', f'email já cadastrado no banco de dados')
         else:
             QMessageBox.information(None, 'Cadastro', 'Todos os dados devem estar preenchidos!')
 
-        
+    def editar_perfil_motorista(self):
+        self.telaperfil.line_nome.setReadOnly(False)
+        #self.telaperfilcliente.line_cpf.setReadOnly(False)
+        self.telaperfil.line_enderco.setReadOnly(False)
+        self.telaperfil.email.setReadOnly(False)
+        self.telaperfil.nascimento.setReadOnly(False)
+
+        botao_salvarM = QPushButton('Salvar', self)
+        botao_salvarM.clicked.connect(self.salvar_perfil_motorista)
+        self.limpar_layout(self.telaperfil.horizontalLayout_7)
+        self.telaperfil.horizontalLayout_7.addWidget(botao_salvarM)
+
+    def salvar_perfil_motorista(self):
+        nome = self.telaperfil.line_nome.text()
+        cpf = self.telaperfil.line_cpf.text()
+        endereco = self.telaperfil.line_enderco.text()
+        email = self.telaperfil.email.text()
+        nascimento = self.telaperfil.nascimento.date()
+
+        if not (nome == '' or cpf == '' or endereco == '' or email == ''):
+            if (self.cad.buscar_email_mot(email) == None):
+                if (self.cad.editar_perfil_motorista(nome, cpf, endereco, email, nascimento)):
+                    self.telaInicial.lineEditMail.setText(email)
+                    self.QtStack.setCurrentIndex(5)
+                    self.telaperfil.setupUi(self.stack9)
+                    self.telaperfil.b_voltar.clicked.connect(self.voltar_principal)
+                    self.telaperfil.b_editar.clicked.connect(self.editar_perfil_motorista)#
+                else:
+                    QMessageBox.information(None, 'Cadastro', 'Erro desconhecido')
+            else:
+                QMessageBox.information(None, 'Cadastro', f'email já cadastrado no banco de dados')
+        else:
+            QMessageBox.information(None, 'Cadastro', 'Todos os dados devem estar preenchidos!')
 
     #######################################################################
     #feito

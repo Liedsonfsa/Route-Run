@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'perfil.ui'
+# Form implementation generated from reading ui file 'ui\perfil.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -85,14 +85,25 @@ class Perfil(object):
         self.line_enderco.setObjectName("line_enderco")
         self.horizontalLayout_6.addWidget(self.line_enderco)
         self.verticalLayout.addLayout(self.horizontalLayout_6)
+        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
         self.b_voltar = QtWidgets.QPushButton(self.frame)
         self.b_voltar.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../RouteRun (cópia)/Icons/feather/arrow-left-circle.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("../Icons/feather/arrow-left-circle.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.b_voltar.setIcon(icon)
         self.b_voltar.setFlat(False)
         self.b_voltar.setObjectName("b_voltar")
-        self.verticalLayout.addWidget(self.b_voltar)
+        self.horizontalLayout_7.addWidget(self.b_voltar)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_7.addItem(spacerItem)
+        self.b_editar = QtWidgets.QPushButton(self.frame)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("../Icons/feather/pen-tool.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.b_editar.setIcon(icon1)
+        self.b_editar.setObjectName("b_editar")
+        self.horizontalLayout_7.addWidget(self.b_editar)
+        self.verticalLayout.addLayout(self.horizontalLayout_7)
         self.verticalLayout_2.addWidget(self.frame)
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -109,6 +120,7 @@ class Perfil(object):
         self.label_5.setText(_translate("MainWindow", "CNH:"))
         self.label_6.setText(_translate("MainWindow", "Endereço:"))
         self.b_voltar.setText(_translate("MainWindow", "Voltar"))
+        self.b_editar.setText(_translate("MainWindow", "Editar perfil"))
 
 
 if __name__ == "__main__":

@@ -133,21 +133,49 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="b_voltar">
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string>Voltar</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>../RouteRun (cópia)/Icons/feather/arrow-left-circle.svg</normaloff>../RouteRun (cópia)/Icons/feather/arrow-left-circle.svg</iconset>
-         </property>
-         <property name="flat">
-          <bool>false</bool>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QPushButton" name="b_voltar">
+           <property name="cursor">
+            <cursorShape>PointingHandCursor</cursorShape>
+           </property>
+           <property name="text">
+            <string>Voltar</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>../RouteRun (cópia)/Icons/feather/arrow-left-circle.svg</normaloff>../RouteRun (cópia)/Icons/feather/arrow-left-circle.svg</iconset>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="b_editar">
+           <property name="text">
+            <string>Editar perfil</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>../../Icons/feather/pen-tool.svg</normaloff>../../Icons/feather/pen-tool.svg</iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
