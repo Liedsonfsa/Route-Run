@@ -186,7 +186,7 @@ class plataforma_cliente():
         print(codigo)
         saida_lst = saida.split('-')
         if (saida_lst[0] == '1'):
-            return saida_lst[1].split('~')
+            return saida_lst[1].split(',')
         return None
 
     def verificar_cidade_id(self, cidade, id, uf_cidade):
