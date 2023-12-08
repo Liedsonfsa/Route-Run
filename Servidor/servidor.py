@@ -250,23 +250,11 @@ class Servidor():
     def GetBusca(self, codigo):
         busca = self._rot.get_busca(codigo[1])
         if (busca):
-            if len(busca) >= 1:
-                buscaA = f'{busca[0].id}/{busca[0].cidade}/{busca[0].uf_cidade}'
-            else:
-                buscaA = f'{None}/{None}/{None}/{None}'
-            if len(busca) >= 2:
-                buscaB = f'{busca[1].id}/{busca[1].cidade}/{busca[1].uf_cidade}'
-            else:
-                buscaB = f'{None}/{None}/{None}/{None}'
-            if len(busca) >= 3:
-                buscaC = f'{busca[2].id}/{busca[2].cidade}/{busca[2].uf_cidade}'
-            else:
-                buscaC = f'{None}/{None}/{None}/{None}'
-            if len(busca) >= 4:
-                buscaD = f'{busca[3].id}/{busca[3].cidade}/{busca[3].uf_cidade}'
-            else:
-                buscaD = f'{None}/{None}/{None}/{None}'
-            Retorno = f'{buscaA}~{buscaB}~{buscaC}~{buscaD}'
+            tam = len(busca)
+            Retorno = []
+            for i in range(tam):
+                Buscar = f'{busca[i].id}/{busca[i].cidade}/{busca[i].uf_cidade}'
+                Retorno.append(Buscar)
             return f'1-{Retorno}'
         return '0'
     
