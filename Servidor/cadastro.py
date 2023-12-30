@@ -16,6 +16,15 @@ class Cadastro:
         self._mysql = """CREATE TABLE IF NOT EXISTS motoristas(nome text NOT NULL, endereco text NOT NULL, cpf VARCHAR(11) PRIMARY KEY, nascimento date NOT NULL, usuario text NOT NULL, senha text NOT NULL, email text NOT NULL, cnh text NOT NULL);"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
+        # self._mysql = """CREATE TABLE IF NOT EXISTS clientes_conectados(ip text NOT NULL, porta integer, cpf VARCHAR(11));"""
+        # self._cursor.execute(self._mysql)
+        # self._conexao.commit()
+        self._mysql = """CREATE TABLE IF NOT EXISTS conversas(id VARCHAR(255) PRIMARY KEY);"""
+        self._cursor.execute(self._mysql)
+        self._conexao.commit()
+        self._mysql = """CREATE TABLE IF NOT EXISTS mensagens(id VARCHAR(255), msg text NOT NULL, cpf_remetente VARCHAR(11), cpf_destinatario VARCHAR(11), sinal integer, foreign key(id) references conversas(id));"""
+        self._cursor.execute(self._mysql)
+        self._conexao.commit()
 
     def cadastrar_usuario(self, pessoa):
         existe = self.busca_cpf_cliente(pessoa.cpf)
@@ -114,7 +123,6 @@ class Cadastro:
             motorista = Motorista(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7])
             return motorista
 
-
     def buscar_email_user(self, email):
         self._cursor.execute('SELECT * from clientes WHERE email = %s',(email,))
         verificar = self._cursor.fetchone()
@@ -124,3 +132,84 @@ class Cadastro:
             pessoa = Pessoa(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6])
             return pessoa
 
+    # def conectados(self, ip, porta, cpf):
+    #     existe = self.busca_conexao(cpf)
+        
+    #     if (existe == None):
+    #         self._cursor.execute('INSERT INTO clientes_conectados(ip, porta, cpf) VALUES(%s,%s,%s)', (ip, porta, cpf))
+    #         self._conexao.commit()
+    #         return True
+    #     else:
+    #         self._cursor.execute('UPDATE clientes_conectados SET ip = %s, porta = %s, cpf = %s', (ip, porta, cpf))
+    #         self._conexao.commit()
+    #         return True
+        
+    # def busca_conexao(self, cpf):
+    #     self._cursor.execute('SELECT * from clientes_conectados WHERE cpf = %s',(cpf,))
+    #     verificar = self._cursor.fetchone()
+    #     if (verificar == None):
+    #         return None
+    #     else:
+    #         #motorista = Motorista(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7])
+    #         return verificar
+        
+    def obter_conversa_id(self, cpf_remetente, cpf_destinatario):
+    # Concatena os CPFs e ordena para garantir consistência
+        #c1, c2 = sorted([cpf_remetente, cpf_destinatario])
+        conversa_id = f"{cpf_remetente}_{cpf_destinatario}"
+
+        # Verifica se o ID da conversa já existe no banco de dados
+        self._cursor.execute('SELECT id FROM conversas WHERE id = %s', (conversa_id,))
+        resultado = self._cursor.fetchone()
+
+        # Se o ID não existir, insere um novo registro na tabela de conversas
+        if resultado is None:
+            self._cursor.execute('INSERT INTO conversas(id) VALUES(%s)', (conversa_id,))
+            self._conexao.commit()
+
+        return conversa_id
+
+    def GuardarMSG(self, msg, cpf_remetente, cpf_destinatario, sinal):
+        conversa_id = self.obter_conversa_id(cpf_remetente, cpf_destinatario)
+
+        # Insere a mensagem na tabela de mensagens usando o ID da conversa
+        self._cursor.execute('INSERT INTO mensagens(id, msg, cpf_remetente, cpf_destinatario, sinal) VALUES(%s,%s,%s,%s,%s)', (conversa_id, msg, cpf_remetente, cpf_destinatario, sinal))
+        self._conexao.commit()
+
+    def retirar_msg(self, cpf_remetente, cpf_destinatario):
+        #c1, c2 = sorted([cpf_remetente, cpf_destinatario])
+        conversa_id = f"{cpf_remetente}_{cpf_destinatario}"
+
+        self._cursor.execute('SELECT * from mensagens WHERE id = %s AND sinal = 0',(conversa_id,))
+        verificar = self._cursor.fetchall()
+
+        if (verificar == []):
+            return None
+        else:
+            mensagens = []
+            print(verificar)
+            for msg in verificar:
+                #cidade_origem = Cidade(resultado[0], resultado[1], resultado[2])
+                if msg[4] == 0:
+                    mensagens.append(msg[1])
+                    print(conversa_id)
+                    self._cursor.execute('UPDATE mensagens SET sinal = 1 WHERE id = %s AND sinal = 0', (conversa_id, ))
+                    self._conexao.commit()
+            return mensagens
+
+    def zerar_mensagens(self, cpf):
+        # Identificar as mensagens que correspondem ao padrão do CPF
+        print(cpf)
+        self._cursor.execute('SELECT * FROM mensagens WHERE id LIKE %s', (f'{cpf}%',))
+        mensagens_a_zerar = self._cursor.fetchall()
+
+        print("Mensagens a zerar:", mensagens_a_zerar)
+
+        if mensagens_a_zerar:
+            # Zerar as mensagens, definindo o campo 'sinal' como 0
+            print("Mensagens a zerar:", mensagens_a_zerar)
+            self._cursor.execute('UPDATE mensagens SET sinal = 0 WHERE id LIKE %s', (f'{cpf}%',))
+            self._conexao.commit()
+            return True
+        else:
+            return False

@@ -14,6 +14,7 @@ class ClientThread(threading.Thread):
         self.con = con
         self.sinc = sinc
         self._servidor = Servidor()
+        self._cadastro = Cadastro()
         print("Nova conexao: ", clientAddress)
 
     def run(self):
@@ -32,6 +33,11 @@ class ClientThread(threading.Thread):
 
         #pre-processamento do codigo
         codigo = self._servidor.pre_processamento(recebe.decode())
+        #print(self._lista_contas[0])
+        #ip_local = socket.gethostbyname(socket.gethostname())
+        #print(f'IP Local: {ip_local}')
+        #self._cadastro.conectados(self.con, ip_local)
+        #self._lista_contas.clear()
         print(codigo)
     
         if (codigo[0] == 'cadastraU'):
@@ -40,6 +46,10 @@ class ClientThread(threading.Thread):
             saida = self._servidor.buscarCPFcliente(codigo)
         elif (codigo[0] == 'buscarEMAILcliente'):
             saida = self._servidor.buscarEMAILcliente(codigo)
+            # ip_local = socket.gethostbyname(socket.gethostname())
+            # #print(f'IP Local: {ip_local}')
+            # saida_lst = saida.split('/')
+            # self._cadastro.conectados(ip_local, 8000, saida_lst[3])
         elif (codigo[0] == 'cadastraM'):
             saida = self._servidor.cadastrarM(codigo)
         elif (codigo[0] == 'buscarCPFmot'):
@@ -70,6 +80,12 @@ class ClientThread(threading.Thread):
             saida = self._servidor.EditarPerfilCliente(codigo)
         elif (codigo[0] == 'editarPerfilMotorista'):
             saida = self._servidor.EditarPerfilMotorista(codigo)
+        elif (codigo[0] == 'guardarmensagem'):
+            saida = self._servidor.Guardar_msg(codigo)
+        elif (codigo[0] == 'retirarMsg'):
+            saida = self._servidor.RetirarMSG(codigo)
+        elif (codigo[0] == 'zerar_mensagens'):
+            saida = self._servidor.zerar_mensagens(codigo)
 
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
@@ -97,7 +113,9 @@ class Servidor():
             :parametro codigo: string enviada pelo cliente e obtido apos a conecção com o cliente.
             :retorna o codigo_lista, que é o codigo pre processado em formato de lista.
         '''
-
+        # print(self._lista_contas[0])
+        # self._cadastro.conectados(self._lista_contas[0], codigo[3])
+        # self._lista_contas.clear()
         codigo_lista = codigo.split('/')
 
         if (codigo_lista[0] == '0'):
@@ -136,6 +154,12 @@ class Servidor():
             codigo_lista[0] = 'editarPerfilCliente'
         elif (codigo_lista[0] == '17'):
             codigo_lista[0] = 'editarPerfilMotorista'
+        elif (codigo_lista[0] == '18'):
+            codigo_lista[0] = 'guardarmensagem'
+        elif (codigo_lista[0] == '19'):
+            codigo_lista[0] = 'retirarMsg'
+        elif (codigo_lista[0] == '20'):
+            codigo_lista[0] = 'zerar_mensagens'
 
         return codigo_lista
 
@@ -295,7 +319,26 @@ class Servidor():
         if self._cadastro.editar_perfil_motorista(codigo[1], codigo[2], codigo[3], codigo[4], qdate):
             return '1'
         return '0'
-
+    
+    def Guardar_msg(self, codigo):
+        carro = self._CadCarro.busca_carro(codigo[3])
+        if self._cadastro.GuardarMSG(codigo[1], codigo[2], carro.cpf, int(codigo[4])):
+            return '1'
+        return '0'
+    
+    def RetirarMSG(self, codigo):
+        carro = self._CadCarro.busca_carro(codigo[2])
+        mensagens = self._cadastro.retirar_msg(codigo[1], carro.cpf)
+        print('-------------------------------------')
+        print(mensagens)
+        if mensagens != None and carro != None:
+            return f'1-{mensagens}'
+        return '0'
+    
+    def zerar_mensagens(self, codigo):
+        if self._cadastro.zerar_mensagens(codigo[1]):
+            return '1'
+        return '0'
 
     def ligar_servidor(self):
         host = ''
@@ -312,7 +355,6 @@ class Servidor():
             print('-aguardando conexao...')
             con, clientAddress = serv_socket.accept() #servidor aguardando conexão
             print('-coneccao realizada')
-
             newthread = ClientThread(clientAddress, con, sinc)
             newthread.start()
             newthread.join()
