@@ -1,4 +1,5 @@
 import socket
+import threading
 from mysql.connector.utils import print_buffer
 
 
@@ -248,3 +249,63 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return True
         return None
+    def guardar_msg(self, msg, remetente, destinatario, sinal):
+        codigo = '18/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
+        
+    def retirar_msg(self, remetente, destinatario):
+        codigo = '19/'+remetente+'/'+destinatario
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('-')
+        if (saida_lst[0] == '1'):
+            print(saida_lst[1].split(','))
+            return saida_lst[1].split(',')
+        return None
+    
+    def zerar_mensagens(self, cpf):
+        codigo = '20/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
+    # def enviar_receber(self, msg, placa, cpf_cliente):
+    #     codigo = '18/'+msg+'/'+placa+'/'+cpf_cliente
+    #     # try:
+    #     #     saida = self.conecxao_servidor(codigo)
+    #     # except:
+    #     #     return False
+    #     # print(codigo)
+    #     # saida_lst = saida.split('/')
+    #     # if (saida_lst[0] == '1'):
+    #     #     return True
+    #     # return None
+    #     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #     try:
+    #         ip_local = socket.gethostbyname(socket.gethostname())
+    #         print(f'IP Local: {ip_local}')
+    #         client.connect((ip_local, 8000))
+    #     except:
+    #         return print('\nNão foi possívvel se conectar ao servidor!\n')
+
+    #     thread1 = threading.Thread(target=self.receiveMessages, args=[client])
+    #     thread2 = threading.Thread(target=self.sendMessages, args=[client, codigo])
+
+    #     thread1.start()
+    #     thread2.start()
