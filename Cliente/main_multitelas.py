@@ -540,7 +540,7 @@ class Main(QMainWindow, Ui_Main):
         self.telachat.label.setText(mot[1])
         self.QtStack.setCurrentIndex(15)
         #QMessageBox.information(None, 'Ação', 'Chat')
-        #self.limpar_layout(lay)
+        #self.limpar_layout(lay)dokadsss
 
     def reserva(self):
         # Lógica para negar a rota
