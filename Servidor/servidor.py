@@ -86,6 +86,8 @@ class ClientThread(threading.Thread):
             saida = self._servidor.RetirarMSG(codigo)
         elif (codigo[0] == 'zerar_mensagens'):
             saida = self._servidor.zerar_mensagens(codigo)
+        elif (codigo[0] == 'exibir_chats'):
+            saida = self._servidor.exibir_chats(codigo)
 
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
@@ -160,6 +162,8 @@ class Servidor():
             codigo_lista[0] = 'retirarMsg'
         elif (codigo_lista[0] == '20'):
             codigo_lista[0] = 'zerar_mensagens'
+        elif (codigo_lista[0] == '21'):
+            codigo_lista[0] = 'exibir_chats'
 
         return codigo_lista
 
@@ -321,17 +325,17 @@ class Servidor():
         return '0'
     
     def Guardar_msg(self, codigo):
-        carro = self._CadCarro.busca_carro(codigo[3])
-        if self._cadastro.GuardarMSG(codigo[1], codigo[2], carro.cpf, int(codigo[4])):
+        #carro = self._CadCarro.busca_carro(codigo[3])
+        if self._cadastro.GuardarMSG(codigo[1], codigo[2], codigo[3], int(codigo[4])):
             return '1'
         return '0'
     
     def RetirarMSG(self, codigo):
-        carro = self._CadCarro.busca_carro(codigo[2])
-        mensagens = self._cadastro.retirar_msg(codigo[1], carro.cpf)
+        #carro = self._CadCarro.busca_carro(codigo[2])
+        mensagens = self._cadastro.retirar_msg(codigo[1], codigo[2])
         print('-------------------------------------')
         print(mensagens)
-        if mensagens != None and carro != None:
+        if mensagens != None:
             return f'1-{mensagens}'
         return '0'
     
@@ -339,7 +343,14 @@ class Servidor():
         if self._cadastro.zerar_mensagens(codigo[1]):
             return '1'
         return '0'
-
+    
+    def exibir_chats(self, codigo):
+        conversas = self._cadastro.exibir_chats(codigo[1])
+        if conversas:
+            return f'1/{conversas}'
+        return '0'
+    
+    
     def ligar_servidor(self):
         host = ''
         port = 8000

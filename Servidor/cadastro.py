@@ -213,3 +213,13 @@ class Cadastro:
             return True
         else:
             return False
+        
+    def exibir_chats(self, cpf):
+        self._cursor.execute('SELECT * FROM conversas WHERE id LIKE %s', (f'{cpf}%',))
+        verificar = self._cursor.fetchall()
+        if (verificar == []):
+            return None
+        else:
+            conversas = [x[0] for x in verificar]
+            print(conversas)
+            return conversas
