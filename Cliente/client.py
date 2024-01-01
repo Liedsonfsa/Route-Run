@@ -285,6 +285,18 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return True
         return None
+    
+    def exibir_chats(self, cpf):
+        codigo = '21/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        return None
     # def enviar_receber(self, msg, placa, cpf_cliente):
     #     codigo = '18/'+msg+'/'+placa+'/'+cpf_cliente
     #     # try:
