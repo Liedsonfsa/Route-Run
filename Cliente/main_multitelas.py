@@ -25,6 +25,7 @@ from telas.Tela_cidades import TelaCidades
 from telas.Tela_chat import TelaChat
 from telas.Tela_Guardar_chats import GuardarChats
 from telas.Tela_Guardar_chats_mot import GuardarChatsMot
+from telas.Tela_chat_mot import TelaChatMot
 from client import plataforma_cliente
 
 
@@ -53,6 +54,7 @@ class Ui_Main(QtWidgets.QWidget):
         self.stack15 = QtWidgets.QMainWindow()
         self.stack16 = QtWidgets.QMainWindow()
         self.stack17 = QtWidgets.QMainWindow()
+        self.stack18 = QtWidgets.QMainWindow()
 
         self.telaInicial = TelaInicial()
         self.telaInicial.setupUi(self.stack0)
@@ -108,6 +110,9 @@ class Ui_Main(QtWidgets.QWidget):
         self.telaguardarchatsmot = GuardarChatsMot()
         self.telaguardarchatsmot.setupUi(self.stack17)
 
+        self.telachatmot= TelaChatMot()
+        self.telachatmot.setupUi(self.stack18)
+
         self.QtStack.addWidget(self.stack0)
         self.QtStack.addWidget(self.stack1)
         self.QtStack.addWidget(self.stack2)
@@ -126,6 +131,7 @@ class Ui_Main(QtWidgets.QWidget):
         self.QtStack.addWidget(self.stack15)
         self.QtStack.addWidget(self.stack16)
         self.QtStack.addWidget(self.stack17)
+        self.QtStack.addWidget(self.stack18)
 
 
 class Main(QMainWindow, Ui_Main):
@@ -171,7 +177,7 @@ class Main(QMainWindow, Ui_Main):
         self.telaPrincipalMotorista.b_perfil.clicked.connect(self.abrirperfil)
         self.telaPrincipalMotorista.b_cad_carro.clicked.connect(self.abrirCadastroCarro)
         #
-        self.telaPrincipalMotorista.b_chat.clicked.connect()
+        self.telaPrincipalMotorista.b_chat.clicked.connect(self.abrir_chats_mot)
 
         self.telaRota.b_voltar.clicked.connect(self.voltar_principal)
         self.telaRota.b_cadastro.clicked.connect(self.cad_rota)
@@ -201,6 +207,9 @@ class Main(QMainWindow, Ui_Main):
         self.telachat.voltar.clicked.connect(self.voltar_principal_perfil_cliente)
         #self.telachat.enviar.clicked.connect(self.enviar_mensagem)
         self.telachat.layC = QVBoxLayout()
+
+        self.telachatmot.voltar.clicked.connect(self.voltar_principal)
+        self.telachatmot.layM = QVBoxLayout()
 
     def fecharPrograma(self):
         sys.exit(app.exec_())
@@ -235,6 +244,12 @@ class Main(QMainWindow, Ui_Main):
         self.telacitys.lineEdit.setText('')
         self.telaRota.checkBox.setChecked(False)
         self.QtStack.setCurrentIndex(5)
+        self.limpar_layout(self.telachatmot.layM)
+        self.limpar_layout(self.telaguardarchatsmot.laychatmot)
+        email = self.telaInicial.lineEditMail.text()
+        c = self.cad.buscar_email_mot(email)
+        self.cad.zerar_mensagens_mot(c[3])
+        self.telachatmot.enviar.clicked.disconnect()
 
     def voltar_principal_cadCarro(self):
         self.telacadastrocarro.placa_line.setText('')
@@ -293,9 +308,22 @@ class Main(QMainWindow, Ui_Main):
 
     def montar_chats_mot(self):
         email = self.telaInicial.lineEditMail.text()
-        c = self.cad.busca_cpf_mot(email)
-        lista = self.cad.exibir_chats(c[3])
+        c = self.cad.buscar_email_mot(email)
+        lista = self.cad.exibir_chats_mot(c[3])
         
+        tam = len(lista)
+        #print(tam)
+        for i in range(tam):
+            #self.telaguardarchats.botao = QPushButton('chat', self)
+            id = lista[i].split("'")[1].split("'")[0]
+            #print(id.split('_')[1])
+            n = self.cad.busca_cpf_cliente(id.split('_')[0])
+            botao = QPushButton(f'{n[1]}', self)
+            botao.clicked.connect(lambda _, n=n[3]: self.chat_mot(n))
+            self.telaguardarchatsmot.laychatmot.addWidget(botao)
+            self.telaguardarchatsmot.laychatmot.setAlignment(Qt.AlignTop)
+            self.telaguardarchatsmot.scrollAreaWidgetContents_2.setLayout(self.telaguardarchatsmot.laychatmot)
+
     def abrirTelaMotorista(self):
         self.QtStack.setCurrentIndex(5)
 
@@ -595,14 +623,19 @@ class Main(QMainWindow, Ui_Main):
         print('chat')
         self.telachat.label.setText(mot[1])
         self.QtStack.setCurrentIndex(15)
-        #QMessageBox.information(None, 'Ação', 'Chat')
-        #self.limpar_layout(lay)dokadsss
-        #self.telachat.enviar.clicked.disconnect()
-        # if self.telachat.enviar.clicked.isConnected():
-        #     self.telachat.enviar.clicked.disconnect()
-        # Conectar o botão de enviar à função enviar_mensagem com o CPF do motorista
+
         self.telachat.enviar.clicked.connect(lambda _, cpf_mot=cpf_mot: self.enviar_mensagem(cpf_mot))
-        #self.telachat.enviar.clicked.connect(lambda: self.enviar_mensagem(cpf_mot))
+
+    def chat_mot(self, cpf_cliente):
+        cpfM = self.cad.buscar_email_mot(self.telaInicial.lineEditMail.text())[3]
+        self.cad.zerar_mensagens_mot(cpfM)
+        self.alimentar_chat_mot(cpf_cliente, cpfM)
+        cliente = self.cad.busca_cpf_cliente(cpf_cliente)
+        self.telachatmot.label.setText(cliente[1])
+        self.QtStack.setCurrentIndex(18)
+
+        self.telachatmot.enviar.clicked.connect(lambda _, cpf_cliente=cpf_cliente: self.enviar_mensagem_mot(cpf_cliente))
+        
     
     def reserva(self):
         # Lógica para negar a rota
@@ -613,6 +646,16 @@ class Main(QMainWindow, Ui_Main):
             child = layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
+
+    def enviar_mensagem_mot(self, cpf_cliente):
+        msg = self.telachatmot.lineEdit.text()
+
+        if msg != '':
+            cpf = self.cad.buscar_email_mot(self.telaInicial.lineEditMail.text())[3]
+            if cpf_cliente is not None:
+                self.cad.guardar_msg_mot(msg, cpf_cliente, cpf, 0)
+                self.telachatmot.lineEdit.setText("")
+                self.alimentar_chat_mot(cpf_cliente, cpf)
 
     def enviar_mensagem(self, cpf_mot):
         msg = self.telachat.lineEdit.text()
@@ -632,6 +675,34 @@ class Main(QMainWindow, Ui_Main):
             else:
                 QMessageBox.information(None, 'Erro', 'Número da placa não disponível.')
         
+    def alimentar_chat_mot(self, cpf, cpf_mot):
+        mensagem = self.cad.retirar_msg(cpf, cpf_mot)
+        print('----------------')
+        print(cpf)
+        print(cpf_mot)
+        print('----------------')
+        # print("passou")
+        if mensagem:
+            tam = len(mensagem)
+        # print(tam)
+        # print(mensagem)
+            for i in range(tam):
+                label = QLabel()
+                formatted_msg = (mensagem[i].split("'")[1].split("'")[0]).split('/')[0]
+                max_chars_per_line = 30
+                mensagem_formatada = ""
+                for j in range(0, len(formatted_msg), max_chars_per_line):
+                    mensagem_formatada += formatted_msg[j:j + max_chars_per_line] + '\n'
+                label.setText(f"{mensagem_formatada}")
+                self.telachatmot.layM.addWidget(label)
+                label.setAlignment(Qt.AlignBottom)
+                if (mensagem[i].split("'")[1].split("'")[0]).split('/')[1] == cpf_mot:
+                    label.setAlignment(Qt.AlignRight)
+                else:
+                    label.setAlignment(Qt.AlignLeft)
+                self.telachatmot.layM.setAlignment(Qt.AlignBottom)
+                self.telachatmot.scrollAreaWidgetContents.setLayout(self.telachatmot.layM)
+
     def alimentar_chat(self, cpf, cpf_mot):
         print('alimentar chat')
         mensagem = self.cad.retirar_msg(cpf, cpf_mot)
@@ -646,70 +717,20 @@ class Main(QMainWindow, Ui_Main):
         # print(mensagem)
             for i in range(tam):
                 label = QLabel()
-                formatted_msg = mensagem[i].split("'")[1].split("'")[0]
+                formatted_msg = (mensagem[i].split("'")[1].split("'")[0]).split('/')[0]
                 max_chars_per_line = 30
-                #print(len(formatted_msg))
                 mensagem_formatada = ""
                 for j in range(0, len(formatted_msg), max_chars_per_line):
                     mensagem_formatada += formatted_msg[j:j + max_chars_per_line] + '\n'
                 label.setText(f"{mensagem_formatada}")
                 self.telachat.layC.addWidget(label)
                 label.setAlignment(Qt.AlignBottom)
-                label.setAlignment(Qt.AlignRight)
+                if (mensagem[i].split("'")[1].split("'")[0]).split('/')[1] == cpf:
+                    label.setAlignment(Qt.AlignRight)
+                else:
+                    label.setAlignment(Qt.AlignLeft)
                 self.telachat.layC.setAlignment(Qt.AlignBottom)
                 self.telachat.scrollAreaWidgetContents.setLayout(self.telachat.layC)
-
-    #     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #     try:
-    #         ip_local = socket.gethostbyname(socket.gethostname())
-    #         print(f'IP Local: {ip_local}')
-    #         client.connect((ip_local, 8000))
-    #     except:
-    #         return print('\nNão foi possível se conectar ao servidor!\n')
-
-    #     self.sendMessages(client)
-    #     self.receiveMessages(client)
-
-    # def receiveMessages(self, client):
-    #     print("recebre")
-    #     while True:
-    #         try:
-    #             msg = client.recv(2048).decode()
-    #             print("-------------------------------------")
-    #             print(msg+'\n')
-    #             #return msg
-    #         except:
-    #             print('\nNão foi possível permanecer conectado no servidor!\n')
-    #             print('Pressione <Enter> Para continuar...')
-    #             client.close()
-    #             break
-
-    # def sendMessages(self, client):
-    #     print("Enviar")
-    #     while True:
-    #         try:
-    #             #msg = input('\n')
-    #             msg = self.telachat.lineEdit.text()
-    #             #self.telachat.label.setText("Dokasd")
-    #             max_chars_per_line = 100
-
-    #             formatted_msg = ""
-    #             for i in range(0, len(msg), max_chars_per_line):
-    #                 formatted_msg += msg[i:i + max_chars_per_line] + "\n"
-    #             label = QLabel()
-    #             label.setText(f"{formatted_msg}")
-    #             self.telachat.layC.addWidget(label)
-    #             label.setAlignment(Qt.AlignBottom)
-    #             label.setAlignment(Qt.AlignRight)
-    #             self.telachat.layC.setAlignment(Qt.AlignBottom)
-    #             self.telachat.scrollAreaWidgetContents.setLayout(self.telachat.layC)
-    #             self.telachat.lineEdit.setText("")
-    #             placa = '1234abc'
-    #             cpf_cliente = self.telaperfilcliente.line_nome.text()
-    #             codigo = '18/'+formatted_msg+'/'+placa+'/'+cpf_cliente
-    #             client.send(codigo.encode())
-    #         except:
-    #             print("erro")
 
     def perfil(self):
         cpf = self.telaInicial.lineEditMail.text()

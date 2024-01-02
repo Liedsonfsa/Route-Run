@@ -297,27 +297,39 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return saida_lst[1].split(',')
         return None
-    # def enviar_receber(self, msg, placa, cpf_cliente):
-    #     codigo = '18/'+msg+'/'+placa+'/'+cpf_cliente
-    #     # try:
-    #     #     saida = self.conecxao_servidor(codigo)
-    #     # except:
-    #     #     return False
-    #     # print(codigo)
-    #     # saida_lst = saida.split('/')
-    #     # if (saida_lst[0] == '1'):
-    #     #     return True
-    #     # return None
-    #     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #     try:
-    #         ip_local = socket.gethostbyname(socket.gethostname())
-    #         print(f'IP Local: {ip_local}')
-    #         client.connect((ip_local, 8000))
-    #     except:
-    #         return print('\nNão foi possívvel se conectar ao servidor!\n')
+    
+    def exibir_chats_mot(self, cpf):
+        codigo = '22/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        return None
 
-    #     thread1 = threading.Thread(target=self.receiveMessages, args=[client])
-    #     thread2 = threading.Thread(target=self.sendMessages, args=[client, codigo])
-
-    #     thread1.start()
-    #     thread2.start()
+    def zerar_mensagens_mot(self, cpf):
+        codigo = '23/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
+    
+    def guardar_msg_mot(self, msg, remetente, destinatario, sinal):
+        codigo = '24/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
