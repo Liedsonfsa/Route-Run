@@ -23,7 +23,7 @@ class Cadastro:
         self._mysql = """CREATE TABLE IF NOT EXISTS conversas(id VARCHAR(255) PRIMARY KEY);"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
-        self._mysql = """CREATE TABLE IF NOT EXISTS mensagens(id VARCHAR(255), msg text NOT NULL, cpf_remetente VARCHAR(11), cpf_destinatario VARCHAR(11), sinal integer, foreign key(id) references conversas(id));"""
+        self._mysql = """CREATE TABLE IF NOT EXISTS mensagens(id VARCHAR(255), msg text NOT NULL, cpf_remetente VARCHAR(11), cpf_destinatario VARCHAR(11), sinal integer, sinal_mot integer, foreign key(id) references conversas(id));"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
 
@@ -149,18 +149,18 @@ class Cadastro:
 
         return conversa_id
 
-    def GuardarMSGMot(self, msg, cpf_remetente, cpf_destinatario, sinal):
+    def GuardarMSGMot(self, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot):
         conversa_id = self.obter_conversa_id(cpf_remetente, cpf_destinatario)
 
         # Insere a mensagem na tabela de mensagens usando o ID da conversa
-        self._cursor.execute('INSERT INTO mensagens(id, msg, cpf_remetente, cpf_destinatario, sinal) VALUES(%s,%s,%s,%s,%s)', (conversa_id, msg, cpf_destinatario, cpf_remetente, sinal))
+        self._cursor.execute('INSERT INTO mensagens(id, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot) VALUES(%s,%s,%s,%s,%s,%s)', (conversa_id, msg, cpf_destinatario, cpf_remetente, sinal, sinal_mot))
         self._conexao.commit()
 
-    def GuardarMSG(self, msg, cpf_remetente, cpf_destinatario, sinal):
+    def GuardarMSG(self, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot):
         conversa_id = self.obter_conversa_id(cpf_remetente, cpf_destinatario)
 
         # Insere a mensagem na tabela de mensagens usando o ID da conversa
-        self._cursor.execute('INSERT INTO mensagens(id, msg, cpf_remetente, cpf_destinatario, sinal) VALUES(%s,%s,%s,%s,%s)', (conversa_id, msg, cpf_remetente, cpf_destinatario, sinal))
+        self._cursor.execute('INSERT INTO mensagens(id, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot) VALUES(%s,%s,%s,%s,%s,%s)', (conversa_id, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot))
         self._conexao.commit()
 
     def retirar_msg(self, cpf_remetente, cpf_destinatario):
@@ -212,7 +212,7 @@ class Cadastro:
         if mensagens_a_zerar:
             # Zerar as mensagens, definindo o campo 'sinal' como 0
             print("Mensagens a zerar:", mensagens_a_zerar)
-            self._cursor.execute('UPDATE mensagens SET sinal = 0 WHERE id LIKE %s', (f'%{cpf}',))
+            self._cursor.execute('UPDATE mensagens SET sinal_mot = 0 WHERE id LIKE %s', (f'%{cpf}',))
             self._conexao.commit()
             return True
         else:
@@ -237,3 +237,26 @@ class Cadastro:
             conversas = [x[0] for x in verificar]
             #print(conversas)
             return conversas
+    
+    def retirar_msg_mot(self, cpf_remetente, cpf_destinatario):
+        #c1, c2 = sorted([cpf_remetente, cpf_destinatario])
+        conversa_id = f"{cpf_remetente}_{cpf_destinatario}"
+
+        self._cursor.execute('SELECT * from mensagens WHERE id = %s AND sinal_mot = 0', (conversa_id,))
+        verificar = self._cursor.fetchall()
+
+        if (verificar == []):
+            return None
+        else:
+            mensagens = []
+            #print(verificar)
+            for msg in verificar:
+
+                #cidade_origem = Cidade(resultado[0], resultado[1], resultado[2])
+                if msg[5] == 0:
+                    conversa = Conversa(msg[1], msg[2])
+                    mensagens.append(conversa)
+                    #print(conversa_id)
+                    self._cursor.execute('UPDATE mensagens SET sinal_mot = 1 WHERE id = %s AND sinal_mot = 0', (conversa_id, ))
+                    self._conexao.commit()
+            return mensagens

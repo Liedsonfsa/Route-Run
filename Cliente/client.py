@@ -249,8 +249,8 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return True
         return None
-    def guardar_msg(self, msg, remetente, destinatario, sinal):
-        codigo = '18/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)
+    def guardar_msg(self, msg, remetente, destinatario, sinal, sinal_mot):
+        codigo = '18/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)+'/'+str(sinal_mot)
         try:
             saida = self.conecxao_servidor(codigo)
         except:
@@ -322,8 +322,8 @@ class plataforma_cliente():
             return True
         return None
     
-    def guardar_msg_mot(self, msg, remetente, destinatario, sinal):
-        codigo = '24/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)
+    def guardar_msg_mot(self, msg, remetente, destinatario, sinal, sinal_mot):
+        codigo = '24/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)+'/'+str(sinal_mot)
         try:
             saida = self.conecxao_servidor(codigo)
         except:
@@ -332,4 +332,17 @@ class plataforma_cliente():
         saida_lst = saida.split('/')
         if (saida_lst[0] == '1'):
             return True
+        return None
+    
+    def retirar_msg_mot(self, remetente, destinatario):
+        codigo = '25/'+remetente+'/'+destinatario
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('-')
+        if (saida_lst[0] == '1'):
+            print(saida_lst[1].split(','))
+            return saida_lst[1].split(',')
         return None

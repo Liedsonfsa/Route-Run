@@ -110,7 +110,7 @@ class Ui_Main(QtWidgets.QWidget):
         self.telaguardarchatsmot = GuardarChatsMot()
         self.telaguardarchatsmot.setupUi(self.stack17)
 
-        self.telachatmot= TelaChatMot()
+        self.telachatmot = TelaChatMot()
         self.telachatmot.setupUi(self.stack18)
 
         self.QtStack.addWidget(self.stack0)
@@ -653,7 +653,7 @@ class Main(QMainWindow, Ui_Main):
         if msg != '':
             cpf = self.cad.buscar_email_mot(self.telaInicial.lineEditMail.text())[3]
             if cpf_cliente is not None:
-                self.cad.guardar_msg_mot(msg, cpf_cliente, cpf, 0)
+                self.cad.guardar_msg_mot(msg, cpf_cliente, cpf, 0, 0)
                 self.telachatmot.lineEdit.setText("")
                 self.alimentar_chat_mot(cpf_cliente, cpf)
 
@@ -669,14 +669,14 @@ class Main(QMainWindow, Ui_Main):
 
             cpf = self.cad.buscar_email_cliente(self.telaInicial.lineEditMail.text())[3]
             if cpf_mot is not None:
-                self.cad.guardar_msg(msg, cpf, cpf_mot, 0)
+                self.cad.guardar_msg(msg, cpf, cpf_mot, 0, 0)
                 self.telachat.lineEdit.setText("")
                 self.alimentar_chat(cpf, cpf_mot)
             else:
                 QMessageBox.information(None, 'Erro', 'Número da placa não disponível.')
         
     def alimentar_chat_mot(self, cpf, cpf_mot):
-        mensagem = self.cad.retirar_msg(cpf, cpf_mot)
+        mensagem = self.cad.retirar_msg_mot(cpf, cpf_mot)
         print('----------------')
         print(cpf)
         print(cpf_mot)
@@ -725,6 +725,7 @@ class Main(QMainWindow, Ui_Main):
                 label.setText(f"{mensagem_formatada}")
                 self.telachat.layC.addWidget(label)
                 label.setAlignment(Qt.AlignBottom)
+                #print(mensagem)
                 if (mensagem[i].split("'")[1].split("'")[0]).split('/')[1] == cpf:
                     label.setAlignment(Qt.AlignRight)
                 else:
