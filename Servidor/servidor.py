@@ -86,6 +86,16 @@ class ClientThread(threading.Thread):
             saida = self._servidor.RetirarMSG(codigo)
         elif (codigo[0] == 'zerar_mensagens'):
             saida = self._servidor.zerar_mensagens(codigo)
+        elif (codigo[0] == 'exibir_chats'):
+            saida = self._servidor.exibir_chats(codigo)
+        elif (codigo[0] == 'exibir_chats_mot'):
+            saida = self._servidor.exibir_chats_mot(codigo)
+        elif (codigo[0] == 'zerar_mensagens_mot'):
+            saida = self._servidor.zerar_mensagens_mot(codigo)
+        elif (codigo[0] == 'guardarmensagem_mot'):
+            saida = self._servidor.Guardar_msg_mot(codigo)
+        elif (codigo[0] == 'retirarMsgMot'):
+            saida = self._servidor.RetirarMSGMot(codigo)
 
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
@@ -160,6 +170,16 @@ class Servidor():
             codigo_lista[0] = 'retirarMsg'
         elif (codigo_lista[0] == '20'):
             codigo_lista[0] = 'zerar_mensagens'
+        elif (codigo_lista[0] == '21'):
+            codigo_lista[0] = 'exibir_chats'
+        elif (codigo_lista[0] == '22'):
+            codigo_lista[0] = 'exibir_chats_mot'
+        elif (codigo_lista[0] == '23'):
+            codigo_lista[0] = 'zerar_mensagens_mot'
+        elif (codigo_lista[0] == '24'):
+            codigo_lista[0] = 'guardarmensagem_mot'
+        elif (codigo_lista[0] == '25'):
+            codigo_lista[0] = 'retirarMsgMot'
 
         return codigo_lista
 
@@ -321,25 +341,65 @@ class Servidor():
         return '0'
     
     def Guardar_msg(self, codigo):
-        carro = self._CadCarro.busca_carro(codigo[3])
-        if self._cadastro.GuardarMSG(codigo[1], codigo[2], carro.cpf, int(codigo[4])):
+        #carro = self._CadCarro.busca_carro(codigo[3])
+        if self._cadastro.GuardarMSG(codigo[1], codigo[2], codigo[3], int(codigo[4]), int(codigo[5])):
             return '1'
         return '0'
     
     def RetirarMSG(self, codigo):
-        carro = self._CadCarro.busca_carro(codigo[2])
-        mensagens = self._cadastro.retirar_msg(codigo[1], carro.cpf)
+        #carro = self._CadCarro.busca_carro(codigo[2])
+        mensagens = self._cadastro.retirar_msg(codigo[1], codigo[2])
         print('-------------------------------------')
         print(mensagens)
-        if mensagens != None and carro != None:
-            return f'1-{mensagens}'
+        if mensagens:
+            tam = len(mensagens)
+            Retorno = []
+            for i in range(tam):
+                Buscar = f'{mensagens[i].msg}/{mensagens[i].remetente}'
+                Retorno.append(Buscar)
+            return f'1-{Retorno}'
         return '0'
     
     def zerar_mensagens(self, codigo):
         if self._cadastro.zerar_mensagens(codigo[1]):
             return '1'
         return '0'
-
+    
+    def exibir_chats(self, codigo):
+        conversas = self._cadastro.exibir_chats(codigo[1])
+        if conversas:
+            return f'1/{conversas}'
+        return '0'
+    
+    def exibir_chats_mot(self, codigo):
+        conversas = self._cadastro.exibir_chats_mot(codigo[1])
+        if conversas:
+            return f'1/{conversas}'
+        return '0'
+    
+    def zerar_mensagens_mot(self, codigo):
+        if self._cadastro.zerar_mensagens_mot(codigo[1]):
+            return '1'
+        return '0'
+    
+    def Guardar_msg_mot(self, codigo):
+        if self._cadastro.GuardarMSGMot(codigo[1], codigo[2], codigo[3], int(codigo[4]), int(codigo[5])):
+            return '1'
+        return '0'
+    
+    def RetirarMSGMot(self, codigo):
+        mensagens = self._cadastro.retirar_msg_mot(codigo[1], codigo[2])
+        print('-------------------------------------')
+        print(mensagens)
+        if mensagens:
+            tam = len(mensagens)
+            Retorno = []
+            for i in range(tam):
+                Buscar = f'{mensagens[i].msg}/{mensagens[i].remetente}'
+                Retorno.append(Buscar)
+            return f'1-{Retorno}'
+        return '0'
+    
     def ligar_servidor(self):
         host = ''
         port = 8000

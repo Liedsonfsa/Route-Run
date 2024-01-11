@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui\chat.ui'
+# Form implementation generated from reading ui file 'ui\chat_mot.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -11,16 +11,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class TelaChat(object):
+class TelaChatMot(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(821, 611)
+        MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.centralwidget)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem)
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName("gridLayout")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -32,7 +30,7 @@ class TelaChat(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 337, 474))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 337, 463))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout.addWidget(self.scrollArea)
@@ -48,12 +46,14 @@ class TelaChat(object):
         self.enviar.setObjectName("enviar")
         self.horizontalLayout.addWidget(self.enviar)
         self.verticalLayout.addLayout(self.horizontalLayout)
-        self.horizontalLayout_2.addLayout(self.verticalLayout)
+        self.gridLayout.addLayout(self.verticalLayout, 0, 1, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem, 0, 0, 1, 1)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem1)
+        self.gridLayout.addItem(spacerItem1, 0, 2, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 821, 26))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = TelaChat()
+    ui = TelaChatMot()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
