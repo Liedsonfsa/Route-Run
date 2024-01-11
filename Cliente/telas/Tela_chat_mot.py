@@ -23,6 +23,7 @@ class TelaChatMot(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setText("")
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)

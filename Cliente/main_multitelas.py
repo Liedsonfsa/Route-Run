@@ -4,7 +4,7 @@ import threading
 import random
 import win32com.client as win32
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import QDate, QTime, QDateTime, Qt
+from PyQt5.QtCore import QDate, QTime, QDateTime, Qt, QThread, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QApplication, QDateTimeEdit, QWidget, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QLineEdit, QLabel
 from hashlib import md5
 from telas.Tela_inicial import TelaInicial
@@ -27,6 +27,70 @@ from telas.Tela_Guardar_chats import GuardarChats
 from telas.Tela_Guardar_chats_mot import GuardarChatsMot
 from telas.Tela_chat_mot import TelaChatMot
 from client import plataforma_cliente
+
+
+class ChatUpdater:
+    def __init__(self, chat_thread, update_interval=500):  # Atualização a cada 5 segundos
+        self.chat_thread = chat_thread
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_chat)
+        self.timer.start(update_interval)
+
+    def update_chat(self):
+        self.chat_thread.start()
+
+    def stop_update(self):
+        self.timer.stop()
+
+
+class MotoristaChatUpdater:
+    def __init__(self, motorista_chat_thread, update_interval=500):  # Atualização a cada 5 segundos
+        self.motorista_chat_thread = motorista_chat_thread
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_motorista_chat)
+        self.timer.start(update_interval)
+
+    def update_motorista_chat(self):
+        self.motorista_chat_thread.start()
+
+    def stop_update(self):
+        self.timer.stop()
+
+
+class ChatThread(QThread):
+    message_received = pyqtSignal(str, str, str)
+
+    def __init__(self, cpf, cpf_mot):
+        super().__init__()
+        self.cad = plataforma_cliente()
+        self.cpf = cpf
+        self.cpf_mot = cpf_mot
+
+    def run(self):
+        mensagem = self.cad.retirar_msg(self.cpf, self.cpf_mot)
+        if mensagem:
+            for msg in mensagem:
+                formatted_msg = (msg.split("'")[1].split("'")[0]).split('/')[0]
+                remetente = (msg.split("'")[1].split("'")[0]).split('/')[1]
+                self.message_received.emit(formatted_msg, self.cpf_mot, remetente)
+
+
+class MotoristaChatThread(QThread):
+    message_received = pyqtSignal(str, str, str)
+
+    def __init__(self, cpf_cliente, cpf_motorista):
+        super().__init__()
+        self.cad = plataforma_cliente()
+        self.cpf_cliente = cpf_cliente
+        self.cpf_motorista = cpf_motorista
+
+    def run(self):
+        mensagem = self.cad.retirar_msg_mot(self.cpf_cliente, self.cpf_motorista)
+        if mensagem:
+            for msg in mensagem:
+                formatted_msg = (msg.split("'")[1].split("'")[0]).split('/')[0]
+                remetente = (msg.split("'")[1].split("'")[0]).split('/')[1]
+                self.message_received.emit(formatted_msg, self.cpf_cliente, remetente)
 
 
 class Ui_Main(QtWidgets.QWidget):
@@ -143,6 +207,15 @@ class Main(QMainWindow, Ui_Main):
         self.rot = plataforma_cliente()
         self.carro = plataforma_cliente()
         self.numero_cpf_atual_mot = None
+        self.chat_thread = None
+        self.chat_thread_mot = None
+
+        self.telachat.layC = QVBoxLayout(self.telachat.scrollAreaWidgetContents)
+        self.telachat.scrollArea.verticalScrollBar().rangeChanged.connect(self.rolar_para_fim)
+
+        self.telachatmot.layM = QVBoxLayout(self.telachatmot.scrollAreaWidgetContents)
+        self.telachatmot.scrollArea.verticalScrollBar().rangeChanged.connect(self.rolar_para_fim_mot)
+
         self.telaInicial.pushButtonCadastrar.clicked.connect(self.abrirCadastroCpf)
         self.telaInicial.pushButtonEntrar.clicked.connect(self.abrirMain)
         self.telaInicial.pushButtonSair.clicked.connect(self.fecharPrograma)
@@ -206,10 +279,16 @@ class Main(QMainWindow, Ui_Main):
 
         self.telachat.voltar.clicked.connect(self.voltar_principal_perfil_cliente)
         #self.telachat.enviar.clicked.connect(self.enviar_mensagem)
-        self.telachat.layC = QVBoxLayout()
+        #self.telachat.layC = QVBoxLayout()
 
         self.telachatmot.voltar.clicked.connect(self.voltar_principal)
-        self.telachatmot.layM = QVBoxLayout()
+        #self.telachatmot.layM = QVBoxLayout()
+
+    def rolar_para_fim(self):
+        QTimer.singleShot(0, lambda: self.telachat.scrollArea.verticalScrollBar().setValue(self.telachat.scrollArea.verticalScrollBar().maximum()))
+    
+    def rolar_para_fim_mot(self):
+        QTimer.singleShot(0, lambda: self.telachatmot.scrollArea.verticalScrollBar().setValue(self.telachatmot.scrollArea.verticalScrollBar().maximum()))
 
     def fecharPrograma(self):
         sys.exit(app.exec_())
@@ -248,7 +327,9 @@ class Main(QMainWindow, Ui_Main):
         self.limpar_layout(self.telaguardarchatsmot.laychatmot)
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_mot(email)
-        self.cad.zerar_mensagens_mot(c[3])
+        self.cad.zerar_mensagens_mot(c[3])##
+        self.motorista_chat_updater = ChatUpdater(self.chat_thread_mot)
+        self.motorista_chat_updater.stop_update()
         self.telachatmot.enviar.clicked.disconnect()
 
     def voltar_principal_cadCarro(self):
@@ -267,6 +348,8 @@ class Main(QMainWindow, Ui_Main):
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_cliente(email)
         self.cad.zerar_mensagens(c[3])
+        self.chat_updater = ChatUpdater(self.chat_thread)
+        self.chat_updater.stop_update()
         self.telachat.enviar.clicked.disconnect()
 
     def abrir_perfil_cliente(self):
@@ -292,37 +375,41 @@ class Main(QMainWindow, Ui_Main):
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_cliente(email)
         lista = self.cad.exibir_chats(c[3])
-
-        tam = len(lista)
-        #print(tam)
-        for i in range(tam):
-            #self.telaguardarchats.botao = QPushButton('chat', self)
-            id = lista[i].split("'")[1].split("'")[0]
-            #print(id.split('_')[1])
-            n = self.cad.busca_cpf_mot(id.split('_')[1])
-            botao = QPushButton(f'{n[1]}', self)
-            botao.clicked.connect(lambda _, n=n[3]: self.chat(n))
-            self.telaguardarchats.layChat.addWidget(botao)
-            self.telaguardarchats.layChat.setAlignment(Qt.AlignTop)
-            self.telaguardarchats.scrollAreaWidgetContents.setLayout(self.telaguardarchats.layChat)
+        if lista:
+            tam = len(lista)
+            #print(tam)
+            for i in range(tam):
+                #self.telaguardarchats.botao = QPushButton('chat', self)
+                id = lista[i].split("'")[1].split("'")[0]
+                #print(id.split('_')[1])
+                n = self.cad.busca_cpf_mot(id.split('_')[1])
+                botao = QPushButton(f'{n[1]}', self)
+                botao.clicked.connect(lambda _, n=n[3]: self.chat(n))
+                self.telaguardarchats.layChat.addWidget(botao)
+                self.telaguardarchats.layChat.setAlignment(Qt.AlignTop)
+                self.telaguardarchats.scrollAreaWidgetContents.setLayout(self.telaguardarchats.layChat)
+        else:
+            QMessageBox.information(None, 'chats', 'Sem chats')
 
     def montar_chats_mot(self):
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_mot(email)
         lista = self.cad.exibir_chats_mot(c[3])
-        
-        tam = len(lista)
-        #print(tam)
-        for i in range(tam):
-            #self.telaguardarchats.botao = QPushButton('chat', self)
-            id = lista[i].split("'")[1].split("'")[0]
-            #print(id.split('_')[1])
-            n = self.cad.busca_cpf_cliente(id.split('_')[0])
-            botao = QPushButton(f'{n[1]}', self)
-            botao.clicked.connect(lambda _, n=n[3]: self.chat_mot(n))
-            self.telaguardarchatsmot.laychatmot.addWidget(botao)
-            self.telaguardarchatsmot.laychatmot.setAlignment(Qt.AlignTop)
-            self.telaguardarchatsmot.scrollAreaWidgetContents_2.setLayout(self.telaguardarchatsmot.laychatmot)
+        if lista:
+            tam = len(lista)
+            #print(tam)
+            for i in range(tam):
+                #self.telaguardarchats.botao = QPushButton('chat', self)
+                id = lista[i].split("'")[1].split("'")[0]
+                #print(id.split('_')[1])
+                n = self.cad.busca_cpf_cliente(id.split('_')[0])
+                botao = QPushButton(f'{n[1]}', self)
+                botao.clicked.connect(lambda _, n=n[3]: self.chat_mot(n))
+                self.telaguardarchatsmot.laychatmot.addWidget(botao)
+                self.telaguardarchatsmot.laychatmot.setAlignment(Qt.AlignTop)
+                self.telaguardarchatsmot.scrollAreaWidgetContents_2.setLayout(self.telaguardarchatsmot.laychatmot)
+        else:
+            QMessageBox.information(None, 'chats', 'Sem chats')
 
     def abrirTelaMotorista(self):
         self.QtStack.setCurrentIndex(5)
@@ -636,7 +723,6 @@ class Main(QMainWindow, Ui_Main):
 
         self.telachatmot.enviar.clicked.connect(lambda _, cpf_cliente=cpf_cliente: self.enviar_mensagem_mot(cpf_cliente))
         
-    
     def reserva(self):
         # Lógica para negar a rota
         QMessageBox.information(None, 'Ação', 'Reserva')
@@ -655,7 +741,9 @@ class Main(QMainWindow, Ui_Main):
             if cpf_cliente is not None:
                 self.cad.guardar_msg_mot(msg, cpf_cliente, cpf, 0, 0)
                 self.telachatmot.lineEdit.setText("")
+                self.cad.zerar_mensagens_mot(cpf)
                 self.alimentar_chat_mot(cpf_cliente, cpf)
+                #self.alimentar_chat(cpf_cliente, cpf)
 
     def enviar_mensagem(self, cpf_mot):
         msg = self.telachat.lineEdit.text()
@@ -671,67 +759,65 @@ class Main(QMainWindow, Ui_Main):
             if cpf_mot is not None:
                 self.cad.guardar_msg(msg, cpf, cpf_mot, 0, 0)
                 self.telachat.lineEdit.setText("")
+                ####
+                self.cad.zerar_mensagens(cpf)
                 self.alimentar_chat(cpf, cpf_mot)
+                #self.alimentar_chat_mot(cpf, cpf_mot)
             else:
                 QMessageBox.information(None, 'Erro', 'Número da placa não disponível.')
         
-    def alimentar_chat_mot(self, cpf, cpf_mot):
-        mensagem = self.cad.retirar_msg_mot(cpf, cpf_mot)
-        print('----------------')
-        print(cpf)
-        print(cpf_mot)
-        print('----------------')
-        # print("passou")
-        if mensagem:
-            tam = len(mensagem)
-        # print(tam)
-        # print(mensagem)
-            for i in range(tam):
-                label = QLabel()
-                formatted_msg = (mensagem[i].split("'")[1].split("'")[0]).split('/')[0]
-                max_chars_per_line = 30
-                mensagem_formatada = ""
-                for j in range(0, len(formatted_msg), max_chars_per_line):
-                    mensagem_formatada += formatted_msg[j:j + max_chars_per_line] + '\n'
-                label.setText(f"{mensagem_formatada}")
-                self.telachatmot.layM.addWidget(label)
-                label.setAlignment(Qt.AlignBottom)
-                if (mensagem[i].split("'")[1].split("'")[0]).split('/')[1] == cpf_mot:
-                    label.setAlignment(Qt.AlignRight)
-                else:
-                    label.setAlignment(Qt.AlignLeft)
-                self.telachatmot.layM.setAlignment(Qt.AlignBottom)
-                self.telachatmot.scrollAreaWidgetContents.setLayout(self.telachatmot.layM)
-
     def alimentar_chat(self, cpf, cpf_mot):
         print('alimentar chat')
-        mensagem = self.cad.retirar_msg(cpf, cpf_mot)
-        print('----------------')
-        print(cpf)
-        print(cpf_mot)
-        print('----------------')
-        # print("passou")
-        if mensagem:
-            tam = len(mensagem)
-        # print(tam)
-        # print(mensagem)
-            for i in range(tam):
-                label = QLabel()
-                formatted_msg = (mensagem[i].split("'")[1].split("'")[0]).split('/')[0]
-                max_chars_per_line = 30
-                mensagem_formatada = ""
-                for j in range(0, len(formatted_msg), max_chars_per_line):
-                    mensagem_formatada += formatted_msg[j:j + max_chars_per_line] + '\n'
-                label.setText(f"{mensagem_formatada}")
-                self.telachat.layC.addWidget(label)
-                label.setAlignment(Qt.AlignBottom)
-                #print(mensagem)
-                if (mensagem[i].split("'")[1].split("'")[0]).split('/')[1] == cpf:
-                    label.setAlignment(Qt.AlignRight)
-                else:
-                    label.setAlignment(Qt.AlignLeft)
-                self.telachat.layC.setAlignment(Qt.AlignBottom)
-                self.telachat.scrollAreaWidgetContents.setLayout(self.telachat.layC)
+        # Limpe o layout antes de adicionar novas mensagens
+        ###
+        self.limpar_layout(self.telachat.layC)
+
+        self.chat_thread = ChatThread(cpf, cpf_mot)
+        self.chat_updater = ChatUpdater(self.chat_thread)
+        self.chat_thread.message_received.connect(self.adicionar_mensagem_na_interface)
+        self.chat_thread.start()
+
+    def adicionar_mensagem_na_interface(self, mensagem, cpf_mot, cpf):
+        label = QLabel()
+        max_chars_per_line = 30
+        mensagem_formatada = ""
+        for j in range(0, len(mensagem), max_chars_per_line):
+            mensagem_formatada += mensagem[j:j + max_chars_per_line] + '\n'
+        label.setText(f"{mensagem_formatada}")
+        self.telachat.layC.addWidget(label)
+        label.setAlignment(Qt.AlignBottom)
+        if cpf_mot == cpf:
+            label.setAlignment(Qt.AlignLeft)
+        else:
+            label.setAlignment(Qt.AlignRight)
+        #self.telachat.layC.setAlignment(Qt.AlignBottom)
+        #self.telachat.scrollAreaWidgetContents.setLayout(self.telachat.layC)
+
+    def alimentar_chat_mot(self, cpf_cliente, cpf_motorista):
+        print('alimentar chat mot')
+        # Limpe o layout antes de adicionar novas mensagens
+        self.limpar_layout(self.telachatmot.layM)
+
+        self.chat_thread_mot = MotoristaChatThread(cpf_cliente, cpf_motorista)
+        self.motorista_chat_updater = MotoristaChatUpdater(self.chat_thread_mot)
+        self.chat_thread_mot.message_received.connect(self.adicionar_mensagem_na_interface_mot)
+        self.chat_thread_mot.start()
+
+    def adicionar_mensagem_na_interface_mot(self, mensagem, cpf_cliente, cpf):
+        label = QLabel()
+        max_chars_per_line = 30
+        mensagem_formatada = ""
+        for j in range(0, len(mensagem), max_chars_per_line):
+            mensagem_formatada += mensagem[j:j + max_chars_per_line] + '\n'
+        label.setText(f"{mensagem_formatada}")
+        self.telachatmot.layM.addWidget(label)
+        label.setAlignment(Qt.AlignBottom)
+        if cpf_cliente == cpf:
+            label.setAlignment(Qt.AlignLeft)
+        else:
+            label.setAlignment(Qt.AlignRight)
+        self.telachatmot.layM.setAlignment(Qt.AlignBottom)
+        #self.telachatmot.scrollAreaWidgetContents.setLayout(self.telachatmot.layM)
 
     def perfil(self):
         cpf = self.telaInicial.lineEditMail.text()
