@@ -28,6 +28,7 @@ from telas.Tela_Guardar_chats_mot import GuardarChatsMot
 from telas.Tela_chat_mot import TelaChatMot
 from client import plataforma_cliente
 from telas.Tela_reserva import TelaReserva
+from telas.Tela_ver_reserva_mot import TelaVerReservas
 
 
 class ChatUpdater:
@@ -121,6 +122,7 @@ class Ui_Main(QtWidgets.QWidget):
         self.stack17 = QtWidgets.QMainWindow()
         self.stack18 = QtWidgets.QMainWindow()
         self.stack19 = QtWidgets.QMainWindow()
+        self.stack20 = QtWidgets.QMainWindow()
 
         self.telaInicial = TelaInicial()
         self.telaInicial.setupUi(self.stack0)
@@ -182,6 +184,9 @@ class Ui_Main(QtWidgets.QWidget):
         self.telareserva = TelaReserva()
         self.telareserva.setupUi(self.stack19)
 
+        self.telaverreserva = TelaVerReservas()
+        self.telaverreserva.setupUi(self.stack20)
+
         self.QtStack.addWidget(self.stack0)
         self.QtStack.addWidget(self.stack1)
         self.QtStack.addWidget(self.stack2)
@@ -202,6 +207,7 @@ class Ui_Main(QtWidgets.QWidget):
         self.QtStack.addWidget(self.stack17)
         self.QtStack.addWidget(self.stack18)
         self.QtStack.addWidget(self.stack19)
+        self.QtStack.addWidget(self.stack20)
 
 
 class Main(QMainWindow, Ui_Main):
@@ -292,6 +298,8 @@ class Main(QMainWindow, Ui_Main):
         #self.telachatmot.layM = QVBoxLayout()
 
         self.telareserva.pushButton.clicked.connect(self.voltar_da_reserva)
+
+        self.telaverreserva.layverreservas = QVBoxLayout()
 
     def rolar_para_fim(self):
         QTimer.singleShot(0, lambda: self.telachat.scrollArea.verticalScrollBar().setValue(self.telachat.scrollArea.verticalScrollBar().maximum()))
@@ -719,7 +727,7 @@ class Main(QMainWindow, Ui_Main):
                 Modelo = (carros[i].split("'")[1].split("'")[0]).split('/')[2]
                 Cor = (carros[i].split("'")[1].split("'")[0]).split('/')[3]
                 acentos = (carros[i].split("'")[1].split("'")[0]).split('/')[5]
-                self.telaPrincipalMotorista.label.setText(f"Placa do carro: {Placa}\nMarca: {Marca}\nModelo: {Modelo}\nCor: {Cor}\nQuantidade de acentos ocupados: {int(acentos) - 14}")
+                self.telaPrincipalMotorista.label.setText(f"Placa do carro: {Placa}\nMarca: {Marca}\nModelo: {Modelo}\nCor: {Cor}\nQuantidade de acentos ocupados: {14 - int(acentos)}")
                 self.telaPrincipalMotorista.layCarros.addWidget(self.telaPrincipalMotorista.label)
                 self.inspecionar_van(self.telaPrincipalMotorista.layCarros, (carros[i].split("'")[1].split("'")[0]).split('/')[0])
                 self.telaPrincipalMotorista.label2 = QLabel()
@@ -734,11 +742,45 @@ class Main(QMainWindow, Ui_Main):
     def inspecionar_van(self, layout, placa):
         inspecionar_van = QPushButton('Inspecionar Van', self)
 
-        #inspecionar_van.clicked.connect(lambda: self.ver_van(placa))
+        inspecionar_van.clicked.connect(lambda: self.ver_van(placa))
 
         layout.addWidget(inspecionar_van)
 
         layout.setAlignment(Qt.AlignTop)
+
+    def ver_van(self, placa):
+        self.QtStack.setCurrentIndex(20)
+        self.limpar_layout(self.telaverreserva.layverreservas)
+        reservas = self.carro.buscar_reservas_placa(placa)
+
+        if reservas is None:
+            reservas = 0
+            tam = 0
+        else:
+            tam = (len(reservas))
+        
+        if reservas != 0:
+            for i in range(tam):
+                self.telaverreserva.label = QLabel()
+                acentos = (reservas[i].split("'")[1].split("'")[0]).split('/')[1]
+                obs_destino = (reservas[i].split("'")[1].split("'")[0]).split('/')[2]
+                obs_origem = (reservas[i].split("'")[1].split("'")[0]).split('/')[3]
+                destino = (reservas[i].split("'")[1].split("'")[0]).split('/')[4]
+                origem = (reservas[i].split("'")[1].split("'")[0]).split('/')[5]
+                cpf_cliente = (reservas[i].split("'")[1].split("'")[0]).split('/')[6]
+                nome = self.cad.busca_cpf_cliente(cpf_cliente)
+                print(nome[1])
+                print(acentos)
+                self.telaverreserva.label.setText(f'Acentos reservados: {acentos}\nref. origem: {obs_origem}\nref. destino{obs_destino}\norigem: {origem}\ndestino: {destino}\nNome Cliente: {nome[1]}\n--------------------------------------------------------------------------------------------')
+                self.telaverreserva.layverreservas.addWidget(self.telaverreserva.label)
+                # self.telaverreserva.label2 = QLabel()
+                # self.telaverreserva.label2.setText("--------------------------------------------------------------------------------------------")
+                # self.telaverreserva.layverreservas.addWidget(self.telaverreserva.label2)
+                self.telaverreserva.label.setAlignment(Qt.AlignTop)
+                #self.telaverreserva.label2.setAlignment(Qt.AlignTop)
+                self.telaverreserva.scrollAreaWidgetContents.setLayout(self.telaverreserva.layverreservas)
+        else:
+            QMessageBox.information(None, 'Carro', 'Sem reservas')
 
     def procurarRota(self):
         rota_origem = self.telaPrincipal.procurar.text()

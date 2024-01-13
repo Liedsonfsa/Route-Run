@@ -2,7 +2,7 @@ from PyQt5.QtCore import QDate, QDateTime, QTime
 import socket
 from cadastro import Cadastro
 from pessoa import Pessoa, Motorista
-from cadastro_carro import CadCarro, Carro
+from cadastro_carro import CadCarro, Carro, Reservas
 from cadastro_rota import Rota, CadRota, Cidade
 
 import threading
@@ -100,6 +100,8 @@ class ClientThread(threading.Thread):
             saida = self._servidor.busca_carro_cpf(codigo)
         elif (codigo[0] == 'confirmar_reserva'):
             saida = self._servidor.confirmar_reserva(codigo)
+        elif (codigo[0] == 'buscar_reservas_placa'):
+            saida = self._servidor.buscar_reservas_placa(codigo)
 
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
@@ -188,6 +190,8 @@ class Servidor():
             codigo_lista[0] = 'busca_carro_cpf'
         elif (codigo_lista[0] == '27'):
             codigo_lista[0] = 'confirmar_reserva'
+        elif (codigo_lista[0] == '28'):
+            codigo_lista[0] = 'buscar_reservas_placa'
 
         return codigo_lista
 
@@ -420,9 +424,20 @@ class Servidor():
         return '0'
     
     def confirmar_reserva(self, codigo):
-        ####
-        if self._CadCarro.Confirmar_reserva(codigo[1], int(codigo[2]), codigo[3], codigo[4], codigo[5], codigo[6], codigo[7]):
+        reserva = Reservas(codigo[1], int(codigo[2]), codigo[3], codigo[4], codigo[5], codigo[6], codigo[7])
+        if self._CadCarro.Confirmar_reserva(reserva):
             return '1'
+        return '0'
+    
+    def buscar_reservas_placa(self, codigo):
+        reservas = self._CadCarro.buscar_reservas_placa(codigo[1])
+        if (reservas):
+            tam = len(reservas)
+            Retorno = []
+            for i in range(tam):
+                res = f'{reservas[i].placa}/{reservas[i].acentos}/{reservas[i].obs_destino}/{reservas[i].obs_origem}/{reservas[i].destino}/{reservas[i].origem }/{reservas[i].cpf_cliente}'
+                Retorno.append(res)
+            return f'1-{Retorno}'
         return '0'
 
     def ligar_servidor(self):

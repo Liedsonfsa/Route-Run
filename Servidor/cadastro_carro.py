@@ -2,6 +2,76 @@ import abc
 import mysql.connector
 
 
+class Reservas(abc.ABC):
+
+    __slots__ = ['_placa', '_acentos', '_obs_destino', '_obs_origem', '_destino', '_origem', '_cpf_cliente']
+
+    def __init__(self, placa, acentos, obs_destino, obs_origem, destino, origem, cpf_cliente):
+        self._placa = placa
+        self._acentos = acentos
+        self._obs_destino = obs_destino
+        self._obs_origem = obs_origem
+        self._destino = destino
+        self._origem = origem
+        self._cpf_cliente = cpf_cliente
+    
+    @property
+    def placa(self):
+        return self._placa
+
+    @placa.setter
+    def placa(self, placa):
+        self._placa = placa
+    
+    @property
+    def acentos(self):
+        return self._acentos
+
+    @acentos.setter
+    def acentos(self, acentos):
+        self._acentos = acentos
+
+    @property
+    def obs_destino(self):
+        return self._obs_destino
+
+    @obs_destino.setter
+    def obs_destino(self, obs_destino):
+        self._obs_destino = obs_destino
+
+    @property
+    def obs_origem(self):
+        return self._obs_origem
+
+    @obs_origem.setter
+    def obs_origem(self, obs_origem):
+        self._obs_origem = obs_origem
+
+    @property
+    def destino(self):
+        return self._destino
+
+    @destino.setter
+    def destino(self, destino):
+        self._destino = destino
+    
+    @property
+    def origem(self):
+        return self._origem
+
+    @origem.setter
+    def origem(self, origem):
+        self._origem = origem
+    
+    @property
+    def cpf_cliente(self):
+        return self._cpf_cliente
+
+    @cpf_cliente.setter
+    def cpf_cliente(self, cpf_cliente):
+        self._cpf_cliente = cpf_cliente
+
+
 class Carro(abc.ABC):
 
     __slots__ = ['_placa', '_marca', '_modelo', '_cor', '_cpf', '_acentos']
@@ -107,12 +177,12 @@ class CadCarro:
                 carros.append(car)
             return carros
         
-    def Confirmar_reserva(self, placa, quant_reservas, obs_destino, obs_origem, destino, origem, cpf_cliente):
-        existe = self.buscar_reserva(cpf_cliente)
+    def Confirmar_reserva(self, reserva):
+        existe = self.buscar_reserva(reserva.cpf_cliente)
         if (existe == None):
-            self._cursor.execute('INSERT INTO reservas(placa, acentos, obs_destino, obs_origem, destino, origem, cpf_cliente) VALUES(%s,%s,%s,%s,%s,%s,%s)', (placa, quant_reservas, obs_destino, obs_origem, destino, origem, cpf_cliente))
+            self._cursor.execute('INSERT INTO reservas(placa, acentos, obs_destino, obs_origem, destino, origem, cpf_cliente) VALUES(%s,%s,%s,%s,%s,%s,%s)', (reserva.placa, reserva.acentos, reserva.obs_destino, reserva.obs_origem, reserva.destino, reserva.origem, reserva.cpf_cliente))
             self._conexao.commit()
-            self._cursor.execute('UPDATE carros SET acentos = acentos - %s WHERE placa = %s', (quant_reservas, placa))
+            self._cursor.execute('UPDATE carros SET acentos = acentos - %s WHERE placa = %s', (reserva.acentos, reserva.placa))
             self._conexao.commit()
             return True
         else:
@@ -124,4 +194,17 @@ class CadCarro:
         if (verificar == None):
             return None
         else:
-            return True
+            reserva = Reservas(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6])
+            return reserva
+        
+    def buscar_reservas_placa(self, placa):
+        self._cursor.execute('SELECT * from reservas WHERE placa = %s',(placa,))
+        verificar = self._cursor.fetchall()
+        if (verificar == None):
+            return None
+        else:
+            reservas = []
+            for r in verificar:
+                reserva = Reservas(r[0], r[1], r[2], r[3], r[4], r[5], r[6])
+                reservas.append(reserva)
+            return reservas

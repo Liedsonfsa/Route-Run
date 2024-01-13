@@ -370,3 +370,15 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return True
         return None
+    
+    def buscar_reservas_placa(self, placa):
+        codigo = '28/'+placa
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('-')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        return None
