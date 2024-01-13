@@ -1,5 +1,6 @@
 import mysql.connector
 from pessoa import Pessoa, Motorista
+from conversa import Conversa
 
 
 class Cadastro:
@@ -22,7 +23,7 @@ class Cadastro:
         self._mysql = """CREATE TABLE IF NOT EXISTS conversas(id VARCHAR(255) PRIMARY KEY);"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
-        self._mysql = """CREATE TABLE IF NOT EXISTS mensagens(id VARCHAR(255), msg text NOT NULL, cpf_remetente VARCHAR(11), cpf_destinatario VARCHAR(11), sinal integer, foreign key(id) references conversas(id));"""
+        self._mysql = """CREATE TABLE IF NOT EXISTS mensagens(id VARCHAR(255), msg text NOT NULL, cpf_remetente VARCHAR(11), cpf_destinatario VARCHAR(11), sinal integer, sinal_mot integer, foreign key(id) references conversas(id));"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
 
@@ -131,27 +132,6 @@ class Cadastro:
         else:
             pessoa = Pessoa(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6])
             return pessoa
-
-    # def conectados(self, ip, porta, cpf):
-    #     existe = self.busca_conexao(cpf)
-        
-    #     if (existe == None):
-    #         self._cursor.execute('INSERT INTO clientes_conectados(ip, porta, cpf) VALUES(%s,%s,%s)', (ip, porta, cpf))
-    #         self._conexao.commit()
-    #         return True
-    #     else:
-    #         self._cursor.execute('UPDATE clientes_conectados SET ip = %s, porta = %s, cpf = %s', (ip, porta, cpf))
-    #         self._conexao.commit()
-    #         return True
-        
-    # def busca_conexao(self, cpf):
-    #     self._cursor.execute('SELECT * from clientes_conectados WHERE cpf = %s',(cpf,))
-    #     verificar = self._cursor.fetchone()
-    #     if (verificar == None):
-    #         return None
-    #     else:
-    #         #motorista = Motorista(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7])
-    #         return verificar
         
     def obter_conversa_id(self, cpf_remetente, cpf_destinatario):
     # Concatena os CPFs e ordena para garantir consistência
@@ -169,11 +149,18 @@ class Cadastro:
 
         return conversa_id
 
-    def GuardarMSG(self, msg, cpf_remetente, cpf_destinatario, sinal):
+    def GuardarMSGMot(self, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot):
         conversa_id = self.obter_conversa_id(cpf_remetente, cpf_destinatario)
 
         # Insere a mensagem na tabela de mensagens usando o ID da conversa
-        self._cursor.execute('INSERT INTO mensagens(id, msg, cpf_remetente, cpf_destinatario, sinal) VALUES(%s,%s,%s,%s,%s)', (conversa_id, msg, cpf_remetente, cpf_destinatario, sinal))
+        self._cursor.execute('INSERT INTO mensagens(id, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot) VALUES(%s,%s,%s,%s,%s,%s)', (conversa_id, msg, cpf_destinatario, cpf_remetente, sinal, sinal_mot))
+        self._conexao.commit()
+
+    def GuardarMSG(self, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot):
+        conversa_id = self.obter_conversa_id(cpf_remetente, cpf_destinatario)
+
+        # Insere a mensagem na tabela de mensagens usando o ID da conversa
+        self._cursor.execute('INSERT INTO mensagens(id, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot) VALUES(%s,%s,%s,%s,%s,%s)', (conversa_id, msg, cpf_remetente, cpf_destinatario, sinal, sinal_mot))
         self._conexao.commit()
 
     def retirar_msg(self, cpf_remetente, cpf_destinatario):
@@ -187,12 +174,13 @@ class Cadastro:
             return None
         else:
             mensagens = []
-            print(verificar)
+            #print(verificar)
             for msg in verificar:
                 #cidade_origem = Cidade(resultado[0], resultado[1], resultado[2])
                 if msg[4] == 0:
-                    mensagens.append(msg[1])
-                    print(conversa_id)
+                    conversa = Conversa(msg[1], msg[2])
+                    mensagens.append(conversa)
+                    #print(conversa_id)
                     self._cursor.execute('UPDATE mensagens SET sinal = 1 WHERE id = %s AND sinal = 0', (conversa_id, ))
                     self._conexao.commit()
             return mensagens
@@ -213,3 +201,62 @@ class Cadastro:
             return True
         else:
             return False
+        
+    def zerar_mensagens_mot(self, cpf):
+        print(cpf)
+        self._cursor.execute('SELECT * FROM mensagens WHERE id LIKE %s', (f'%{cpf}',))
+        mensagens_a_zerar = self._cursor.fetchall()
+
+        print("Mensagens a zerar:", mensagens_a_zerar)
+
+        if mensagens_a_zerar:
+            # Zerar as mensagens, definindo o campo 'sinal' como 0
+            print("Mensagens a zerar:", mensagens_a_zerar)
+            self._cursor.execute('UPDATE mensagens SET sinal_mot = 0 WHERE id LIKE %s', (f'%{cpf}',))
+            self._conexao.commit()
+            return True
+        else:
+            return False
+        
+    def exibir_chats(self, cpf):
+        self._cursor.execute('SELECT * FROM conversas WHERE id LIKE %s', (f'{cpf}%',))
+        verificar = self._cursor.fetchall()
+        if (verificar == []):
+            return None
+        else:
+            conversas = [x[0] for x in verificar]
+            #print(conversas)
+            return conversas
+        
+    def exibir_chats_mot(self, cpf):
+        self._cursor.execute('SELECT * FROM conversas WHERE id LIKE %s', (f'%{cpf}',))
+        verificar = self._cursor.fetchall()
+        if (verificar == []):
+            return None
+        else:
+            conversas = [x[0] for x in verificar]
+            #print(conversas)
+            return conversas
+    
+    def retirar_msg_mot(self, cpf_remetente, cpf_destinatario):
+        #c1, c2 = sorted([cpf_remetente, cpf_destinatario])
+        conversa_id = f"{cpf_remetente}_{cpf_destinatario}"
+
+        self._cursor.execute('SELECT * from mensagens WHERE id = %s AND sinal_mot = 0', (conversa_id,))
+        verificar = self._cursor.fetchall()
+
+        if (verificar == []):
+            return None
+        else:
+            mensagens = []
+            #print(verificar)
+            for msg in verificar:
+
+                #cidade_origem = Cidade(resultado[0], resultado[1], resultado[2])
+                if msg[5] == 0:
+                    conversa = Conversa(msg[1], msg[2])
+                    mensagens.append(conversa)
+                    #print(conversa_id)
+                    self._cursor.execute('UPDATE mensagens SET sinal_mot = 1 WHERE id = %s AND sinal_mot = 0', (conversa_id, ))
+                    self._conexao.commit()
+            return mensagens

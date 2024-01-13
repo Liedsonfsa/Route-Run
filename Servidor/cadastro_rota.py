@@ -162,6 +162,15 @@ class CadRota:
         else:
             return None
 
+    def buscar_cidade(self, city):
+        self._cursor.execute('SELECT * from cidades WHERE id = %s AND cidade = %s AND uf_cidade = %s', (city.id, city.cidade, city.uf_cidade,))
+        verificar = self._cursor.fetchone()
+        if (verificar == None):
+            return None
+        else:
+            city = Cidade(verificar[0], verificar[1], verificar[2])
+            return city
+
     def verificar_cidade(self, id):
         self._cursor.execute('SELECT * from rotas WHERE id = %s', (id,))
         verificar = self._cursor.fetchone()

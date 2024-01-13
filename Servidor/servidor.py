@@ -2,7 +2,7 @@ from PyQt5.QtCore import QDate, QDateTime, QTime
 import socket
 from cadastro import Cadastro
 from pessoa import Pessoa, Motorista
-from cadastro_carro import CadCarro, Carro
+from cadastro_carro import CadCarro, Carro, Reservas
 from cadastro_rota import Rota, CadRota, Cidade
 
 import threading
@@ -86,6 +86,22 @@ class ClientThread(threading.Thread):
             saida = self._servidor.RetirarMSG(codigo)
         elif (codigo[0] == 'zerar_mensagens'):
             saida = self._servidor.zerar_mensagens(codigo)
+        elif (codigo[0] == 'exibir_chats'):
+            saida = self._servidor.exibir_chats(codigo)
+        elif (codigo[0] == 'exibir_chats_mot'):
+            saida = self._servidor.exibir_chats_mot(codigo)
+        elif (codigo[0] == 'zerar_mensagens_mot'):
+            saida = self._servidor.zerar_mensagens_mot(codigo)
+        elif (codigo[0] == 'guardarmensagem_mot'):
+            saida = self._servidor.Guardar_msg_mot(codigo)
+        elif (codigo[0] == 'retirarMsgMot'):
+            saida = self._servidor.RetirarMSGMot(codigo)
+        elif (codigo[0] == 'busca_carro_cpf'):
+            saida = self._servidor.busca_carro_cpf(codigo)
+        elif (codigo[0] == 'confirmar_reserva'):
+            saida = self._servidor.confirmar_reserva(codigo)
+        elif (codigo[0] == 'buscar_reservas_placa'):
+            saida = self._servidor.buscar_reservas_placa(codigo)
 
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
@@ -160,6 +176,22 @@ class Servidor():
             codigo_lista[0] = 'retirarMsg'
         elif (codigo_lista[0] == '20'):
             codigo_lista[0] = 'zerar_mensagens'
+        elif (codigo_lista[0] == '21'):
+            codigo_lista[0] = 'exibir_chats'
+        elif (codigo_lista[0] == '22'):
+            codigo_lista[0] = 'exibir_chats_mot'
+        elif (codigo_lista[0] == '23'):
+            codigo_lista[0] = 'zerar_mensagens_mot'
+        elif (codigo_lista[0] == '24'):
+            codigo_lista[0] = 'guardarmensagem_mot'
+        elif (codigo_lista[0] == '25'):
+            codigo_lista[0] = 'retirarMsgMot'
+        elif (codigo_lista[0] == '26'):
+            codigo_lista[0] = 'busca_carro_cpf'
+        elif (codigo_lista[0] == '27'):
+            codigo_lista[0] = 'confirmar_reserva'
+        elif (codigo_lista[0] == '28'):
+            codigo_lista[0] = 'buscar_reservas_placa'
 
         return codigo_lista
 
@@ -226,7 +258,7 @@ class Servidor():
         return '0'
 
     def cadastrarC(self, codigo):
-        carro = Carro(codigo[1], codigo[2], codigo[3], codigo[4])
+        carro = Carro(codigo[1], codigo[2], codigo[3], codigo[4], codigo[5], codigo[6])
 
         if (self._CadCarro.cadastro_carro(carro)):
             return '1'
@@ -235,7 +267,7 @@ class Servidor():
     def buscar_carro(self, codigo):
         carro = self._CadCarro.busca_carro(codigo[1])
         if (carro):
-            return f'1/{carro.placa}/{carro.tipo}/{carro.modelo}/{carro.cpf}'
+            return f'1/{carro.placa}/{carro.marca}/{carro.modelo}/{carro.cor}/{carro.cpf}/{carro.acentos}'
         return '0'
 
     def cont(self):
@@ -321,23 +353,91 @@ class Servidor():
         return '0'
     
     def Guardar_msg(self, codigo):
-        carro = self._CadCarro.busca_carro(codigo[3])
-        if self._cadastro.GuardarMSG(codigo[1], codigo[2], carro.cpf, int(codigo[4])):
+        #carro = self._CadCarro.busca_carro(codigo[3])
+        if self._cadastro.GuardarMSG(codigo[1], codigo[2], codigo[3], int(codigo[4]), int(codigo[5])):
             return '1'
         return '0'
     
     def RetirarMSG(self, codigo):
-        carro = self._CadCarro.busca_carro(codigo[2])
-        mensagens = self._cadastro.retirar_msg(codigo[1], carro.cpf)
-        print('-------------------------------------')
-        print(mensagens)
-        if mensagens != None and carro != None:
-            return f'1-{mensagens}'
+        #carro = self._CadCarro.busca_carro(codigo[2])
+        mensagens = self._cadastro.retirar_msg(codigo[1], codigo[2])
+        # print('-------------------------------------')
+        # print(mensagens)
+        if mensagens:
+            tam = len(mensagens)
+            Retorno = []
+            for i in range(tam):
+                Buscar = f'{mensagens[i].msg}/{mensagens[i].remetente}'
+                Retorno.append(Buscar)
+            return f'1-{Retorno}'
         return '0'
     
     def zerar_mensagens(self, codigo):
         if self._cadastro.zerar_mensagens(codigo[1]):
             return '1'
+        return '0'
+    
+    def exibir_chats(self, codigo):
+        conversas = self._cadastro.exibir_chats(codigo[1])
+        if conversas:
+            return f'1/{conversas}'
+        return '0'
+    
+    def exibir_chats_mot(self, codigo):
+        conversas = self._cadastro.exibir_chats_mot(codigo[1])
+        if conversas:
+            return f'1/{conversas}'
+        return '0'
+    
+    def zerar_mensagens_mot(self, codigo):
+        if self._cadastro.zerar_mensagens_mot(codigo[1]):
+            return '1'
+        return '0'
+    
+    def Guardar_msg_mot(self, codigo):
+        if self._cadastro.GuardarMSGMot(codigo[1], codigo[2], codigo[3], int(codigo[4]), int(codigo[5])):
+            return '1'
+        return '0'
+    
+    def RetirarMSGMot(self, codigo):
+        mensagens = self._cadastro.retirar_msg_mot(codigo[1], codigo[2])
+        # print('-------------------------------------')
+        # print(mensagens)
+        if mensagens:
+            tam = len(mensagens)
+            Retorno = []
+            for i in range(tam):
+                Buscar = f'{mensagens[i].msg}/{mensagens[i].remetente}'
+                Retorno.append(Buscar)
+            return f'1-{Retorno}'
+        return '0'
+    
+    def busca_carro_cpf(self, codigo):
+        carro = self._CadCarro.busca_carro_cpf(codigo[1])
+        if (carro):
+            tam = len(carro)
+            Retorno = []
+            for i in range(tam):
+                car = f'{carro[i].placa}/{carro[i].marca}/{carro[i].modelo}/{carro[i].cor}/{carro[i].cpf}/{carro[i].acentos}'
+                Retorno.append(car)
+            return f'1-{Retorno}'
+        return '0'
+    
+    def confirmar_reserva(self, codigo):
+        reserva = Reservas(codigo[1], int(codigo[2]), codigo[3], codigo[4], codigo[5], codigo[6], codigo[7])
+        if self._CadCarro.Confirmar_reserva(reserva):
+            return '1'
+        return '0'
+    
+    def buscar_reservas_placa(self, codigo):
+        reservas = self._CadCarro.buscar_reservas_placa(codigo[1])
+        if (reservas):
+            tam = len(reservas)
+            Retorno = []
+            for i in range(tam):
+                res = f'{reservas[i].placa}/{reservas[i].acentos}/{reservas[i].obs_destino}/{reservas[i].obs_origem}/{reservas[i].destino}/{reservas[i].origem }/{reservas[i].cpf_cliente}'
+                Retorno.append(res)
+            return f'1-{Retorno}'
         return '0'
 
     def ligar_servidor(self):

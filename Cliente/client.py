@@ -10,7 +10,7 @@ class plataforma_cliente():
 
     def conecxao_servidor(self, codigo):
 
-        ip = 'localhost'
+        ip = '26.31.122.7'
         port = 8000
         addr = ((ip, port))
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -117,8 +117,8 @@ class plataforma_cliente():
             return True
         return None
 
-    def cadastrar_carro(self, placa, tipo, modelo, cpf):
-        codigo = '7/'+placa+'/'+tipo+'/'+modelo+'/'+cpf
+    def cadastrar_carro(self, placa, marca, modelo, cor, cpf, acentos):
+        codigo = '7/'+placa+'/'+marca+'/'+modelo+'/'+cor+'/'+cpf+'/'+str(acentos)
         try:
             saida = self.conecxao_servidor(codigo)
         except:
@@ -249,8 +249,8 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return True
         return None
-    def guardar_msg(self, msg, remetente, destinatario, sinal):
-        codigo = '18/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)
+    def guardar_msg(self, msg, remetente, destinatario, sinal, sinal_mot):
+        codigo = '18/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)+'/'+str(sinal_mot)
         try:
             saida = self.conecxao_servidor(codigo)
         except:
@@ -285,27 +285,100 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return True
         return None
-    # def enviar_receber(self, msg, placa, cpf_cliente):
-    #     codigo = '18/'+msg+'/'+placa+'/'+cpf_cliente
-    #     # try:
-    #     #     saida = self.conecxao_servidor(codigo)
-    #     # except:
-    #     #     return False
-    #     # print(codigo)
-    #     # saida_lst = saida.split('/')
-    #     # if (saida_lst[0] == '1'):
-    #     #     return True
-    #     # return None
-    #     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #     try:
-    #         ip_local = socket.gethostbyname(socket.gethostname())
-    #         print(f'IP Local: {ip_local}')
-    #         client.connect((ip_local, 8000))
-    #     except:
-    #         return print('\nNão foi possívvel se conectar ao servidor!\n')
+    
+    def exibir_chats(self, cpf):
+        codigo = '21/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        return None
+    
+    def exibir_chats_mot(self, cpf):
+        codigo = '22/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        return None
 
-    #     thread1 = threading.Thread(target=self.receiveMessages, args=[client])
-    #     thread2 = threading.Thread(target=self.sendMessages, args=[client, codigo])
+    def zerar_mensagens_mot(self, cpf):
+        codigo = '23/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
+    
+    def guardar_msg_mot(self, msg, remetente, destinatario, sinal, sinal_mot):
+        codigo = '24/'+msg+'/'+remetente+'/'+destinatario+'/'+str(sinal)+'/'+str(sinal_mot)
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
+    
+    def retirar_msg_mot(self, remetente, destinatario):
+        codigo = '25/'+remetente+'/'+destinatario
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('-')
+        if (saida_lst[0] == '1'):
+            print(saida_lst[1].split(','))
+            return saida_lst[1].split(',')
+        return None
 
-    #     thread1.start()
-    #     thread2.start()
+    def busca_carro_cpf(self, cpf):
+        codigo = '26/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('-')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        return None
+
+    def confirmar_reserva(self, placa, quant_reservas, obs_destino, obs_origem, destino, origem, cpf_cliente):
+        codigo = '27/'+placa+'/'+str(quant_reservas)+'/'+obs_destino+'/'+obs_origem+'/'+destino+'/'+origem+'/'+cpf_cliente
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
+    
+    def buscar_reservas_placa(self, placa):
+        codigo = '28/'+placa
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('-')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        return None
