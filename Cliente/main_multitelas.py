@@ -27,6 +27,7 @@ from telas.Tela_Guardar_chats import GuardarChats
 from telas.Tela_Guardar_chats_mot import GuardarChatsMot
 from telas.Tela_chat_mot import TelaChatMot
 from client import plataforma_cliente
+from telas.Tela_reserva import TelaReserva
 
 
 class ChatUpdater:
@@ -119,6 +120,7 @@ class Ui_Main(QtWidgets.QWidget):
         self.stack16 = QtWidgets.QMainWindow()
         self.stack17 = QtWidgets.QMainWindow()
         self.stack18 = QtWidgets.QMainWindow()
+        self.stack19 = QtWidgets.QMainWindow()
 
         self.telaInicial = TelaInicial()
         self.telaInicial.setupUi(self.stack0)
@@ -177,6 +179,9 @@ class Ui_Main(QtWidgets.QWidget):
         self.telachatmot = TelaChatMot()
         self.telachatmot.setupUi(self.stack18)
 
+        self.telareserva = TelaReserva()
+        self.telareserva.setupUi(self.stack19)
+
         self.QtStack.addWidget(self.stack0)
         self.QtStack.addWidget(self.stack1)
         self.QtStack.addWidget(self.stack2)
@@ -196,6 +201,7 @@ class Ui_Main(QtWidgets.QWidget):
         self.QtStack.addWidget(self.stack16)
         self.QtStack.addWidget(self.stack17)
         self.QtStack.addWidget(self.stack18)
+        self.QtStack.addWidget(self.stack19)
 
 
 class Main(QMainWindow, Ui_Main):
@@ -249,6 +255,7 @@ class Main(QMainWindow, Ui_Main):
         self.telaPrincipalMotorista.b_cad_rota.clicked.connect(self.abrirCadastroRota)
         self.telaPrincipalMotorista.b_perfil.clicked.connect(self.abrirperfil)
         self.telaPrincipalMotorista.b_cad_carro.clicked.connect(self.abrirCadastroCarro)
+        self.telaPrincipalMotorista.layCarros = QVBoxLayout()
         #
         self.telaPrincipalMotorista.b_chat.clicked.connect(self.abrir_chats_mot)
 
@@ -277,16 +284,18 @@ class Main(QMainWindow, Ui_Main):
         self.telacitys.btn_cadastrar.clicked.connect(self.add_cidades)
         self.telacitys.btn_confirmar.clicked.connect(self.abrirTelaMotorista)
 
-        self.telachat.voltar.clicked.connect(self.voltar_principal_perfil_cliente)
+        self.telachat.voltar.clicked.connect(self.voltar_do_chat)
         #self.telachat.enviar.clicked.connect(self.enviar_mensagem)
         #self.telachat.layC = QVBoxLayout()
 
-        self.telachatmot.voltar.clicked.connect(self.voltar_principal)
+        self.telachatmot.voltar.clicked.connect(self.voltar_do_chat_mot)
         #self.telachatmot.layM = QVBoxLayout()
+
+        self.telareserva.pushButton.clicked.connect(self.voltar_da_reserva)
 
     def rolar_para_fim(self):
         QTimer.singleShot(0, lambda: self.telachat.scrollArea.verticalScrollBar().setValue(self.telachat.scrollArea.verticalScrollBar().maximum()))
-    
+
     def rolar_para_fim_mot(self):
         QTimer.singleShot(0, lambda: self.telachatmot.scrollArea.verticalScrollBar().setValue(self.telachatmot.scrollArea.verticalScrollBar().maximum()))
 
@@ -325,17 +334,19 @@ class Main(QMainWindow, Ui_Main):
         self.QtStack.setCurrentIndex(5)
         self.limpar_layout(self.telachatmot.layM)
         self.limpar_layout(self.telaguardarchatsmot.laychatmot)
-        email = self.telaInicial.lineEditMail.text()
-        c = self.cad.buscar_email_mot(email)
-        self.cad.zerar_mensagens_mot(c[3])##
-        self.motorista_chat_updater = ChatUpdater(self.chat_thread_mot)
-        self.motorista_chat_updater.stop_update()
-        self.telachatmot.enviar.clicked.disconnect()
+        # email = self.telaInicial.lineEditMail.text()
+        # c = self.cad.buscar_email_mot(email)
+        # self.cad.zerar_mensagens_mot(c[3])##
+        # self.motorista_chat_updater = ChatUpdater(self.chat_thread_mot)
+        # self.motorista_chat_updater.stop_update()
+        # self.telachatmot.enviar.clicked.disconnect()
 
     def voltar_principal_cadCarro(self):
         self.telacadastrocarro.placa_line.setText('')
         self.telacadastrocarro.modelo_line.setText('')
-        self.telacadastrocarro.tipos_box.setCurrentText('')
+        self.telacadastrocarro.marca_line.setText('')
+        self.telacadastrocarro.cor_line.setText('')
+        self.telacadastrocarro.line_acentos.setText('')
         self.QtStack.setCurrentIndex(5)
 
     def voltar_principal_perfil_cliente(self):
@@ -345,12 +356,49 @@ class Main(QMainWindow, Ui_Main):
         self.limpar_layout(self.telaPrincipal.lay)
         self.limpar_layout(self.telachat.layC)
         self.limpar_layout(self.telaguardarchats.layChat)
+        # email = self.telaInicial.lineEditMail.text()
+        # c = self.cad.buscar_email_cliente(email)
+        # self.cad.zerar_mensagens(c[3])
+        # self.chat_updater = ChatUpdater(self.chat_thread)
+        # self.chat_updater.stop_update()
+        # self.telachat.enviar.clicked.disconnect()
+
+    def voltar_do_chat(self):
+        self.telaPrincipal.procurar.setText('')
+        self.telaPrincipal.lineEdit.setText('')
+        self.limpar_layout(self.telaPrincipal.lay)
+        self.limpar_layout(self.telachat.layC)
+        self.limpar_layout(self.telaguardarchats.layChat)
+        self.abrir_chats()
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_cliente(email)
         self.cad.zerar_mensagens(c[3])
         self.chat_updater = ChatUpdater(self.chat_thread)
         self.chat_updater.stop_update()
         self.telachat.enviar.clicked.disconnect()
+    ###
+    def voltar_da_reserva(self):
+        self.telaPrincipal.procurar.setText('')
+        self.telaPrincipal.lineEdit.setText('')
+        self.telareserva.comboBox.setCurrentIndex(0)
+        self.telareserva.ref_destino.setText('')
+        self.telareserva.ref_origem.setText('')
+        self.telareserva.line_destino.setText('')
+        self.telareserva.line_origem.setText('')
+        self.limpar_layout(self.telaPrincipal.lay)
+        self.telareserva.pushButton_2.clicked.disconnect()
+        self.QtStack.setCurrentIndex(2)
+
+    def voltar_do_chat_mot(self):
+        self.limpar_layout(self.telachatmot.layM)
+        self.limpar_layout(self.telaguardarchatsmot.laychatmot)
+        self.abrir_chats_mot()
+        email = self.telaInicial.lineEditMail.text()
+        c = self.cad.buscar_email_mot(email)
+        self.cad.zerar_mensagens_mot(c[3])##
+        self.motorista_chat_updater = ChatUpdater(self.chat_thread_mot)
+        self.motorista_chat_updater.stop_update()
+        self.telachatmot.enviar.clicked.disconnect()
 
     def abrir_perfil_cliente(self):
         self.QtStack.setCurrentIndex(11)
@@ -413,6 +461,7 @@ class Main(QMainWindow, Ui_Main):
 
     def abrirTelaMotorista(self):
         self.QtStack.setCurrentIndex(5)
+        self.mostrar_carros()
 
     def abrirCadastro(self):
         self.telaCadastro.lineEditNome.setText('')
@@ -648,6 +697,49 @@ class Main(QMainWindow, Ui_Main):
             else:
                 QMessageBox.information(None, 'Rota', 'Placa de carro n cadastrada')
     #ok?
+
+    def mostrar_carros(self):
+        self.limpar_layout(self.telaPrincipalMotorista.layCarros)
+        email = self.telaInicial.lineEditMail.text()
+        cpf = self.cad.buscar_email_mot(email)
+        carros = self.carro.busca_carro_cpf(cpf[3])
+
+        if carros is None:
+            carros = 0
+            tam = 0
+        else:
+            tam = (len(carros))
+
+        if carros != 0:
+            for i in range(tam):
+                #print((carros[i].split("'")[1].split("'")[0]).split('/')[0])
+                self.telaPrincipalMotorista.label = QLabel()
+                Placa = (carros[i].split("'")[1].split("'")[0]).split('/')[0]
+                Marca = (carros[i].split("'")[1].split("'")[0]).split('/')[1]
+                Modelo = (carros[i].split("'")[1].split("'")[0]).split('/')[2]
+                Cor = (carros[i].split("'")[1].split("'")[0]).split('/')[3]
+                acentos = (carros[i].split("'")[1].split("'")[0]).split('/')[5]
+                self.telaPrincipalMotorista.label.setText(f"Placa do carro: {Placa}\nMarca: {Marca}\nModelo: {Modelo}\nCor: {Cor}\nQuantidade de acentos ocupados: {int(acentos) - 14}")
+                self.telaPrincipalMotorista.layCarros.addWidget(self.telaPrincipalMotorista.label)
+                self.inspecionar_van(self.telaPrincipalMotorista.layCarros, (carros[i].split("'")[1].split("'")[0]).split('/')[0])
+                self.telaPrincipalMotorista.label2 = QLabel()
+                self.telaPrincipalMotorista.label2.setText("--------------------------------------------------------------------------------------------")
+                self.telaPrincipalMotorista.layCarros.addWidget(self.telaPrincipalMotorista.label2)
+                self.telaPrincipalMotorista.label.setAlignment(Qt.AlignTop)
+                self.telaPrincipalMotorista.label2.setAlignment(Qt.AlignTop)
+                self.telaPrincipalMotorista.scrollAreaWidgetContents_3.setLayout(self.telaPrincipalMotorista.layCarros)
+        else:
+            QMessageBox.information(None, 'Carro', 'Sem carros cadastrados.')
+
+    def inspecionar_van(self, layout, placa):
+        inspecionar_van = QPushButton('Inspecionar Van', self)
+
+        #inspecionar_van.clicked.connect(lambda: self.ver_van(placa))
+
+        layout.addWidget(inspecionar_van)
+
+        layout.setAlignment(Qt.AlignTop)
+
     def procurarRota(self):
         rota_origem = self.telaPrincipal.procurar.text()
         rota_destino = self.telaPrincipal.lineEdit.text()
@@ -662,17 +754,17 @@ class Main(QMainWindow, Ui_Main):
             else:
                 tam = (len(origem))
 
-            if origem != None and self.rot.get_busca(rota_destino):
+            if origem != 0 and self.rot.get_busca(rota_destino):
                 ctt = 0
                 for i in range(tam):
                     if self.rot.verificar_cidade_id(rota_destino, (origem[i].split("'")[1].split("'")[0]).split('/')[0], (origem[i].split("'")[1].split("'")[0]).split('/')[2]):
                         rota_encontrada = self.rot.verificar_cidade((origem[i].split("'")[1].split("'")[0]).split('/')[0])
                         ctt = 1
-                        self.telaPrincipal.label = QLabel()
-                        self.telaPrincipal.label.setText(f"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor da passagem: {rota_encontrada[7]}")
-                        self.telaPrincipal.lay.addWidget(self.telaPrincipal.label)
                         carro = self.carro.busca_carro(rota_encontrada[8])
-                        self.chat_reserva(self.telaPrincipal.lay, carro[4])
+                        self.telaPrincipal.label = QLabel()
+                        self.telaPrincipal.label.setText(f"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor máximo da passagem (Pode variar de acordo com a cidade): {rota_encontrada[7]}\nQuantidade de vagas: {carro[6]}")
+                        self.telaPrincipal.lay.addWidget(self.telaPrincipal.label)
+                        self.chat_reserva(self.telaPrincipal.lay, carro[5], rota_encontrada[8])
                         self.numero_cpf_atual_mot = rota_encontrada[8]
                         self.telaPrincipal.label2 = QLabel()
                         self.telaPrincipal.label2.setText("----------------------------------------------------------------------------------------------------------------")
@@ -685,14 +777,14 @@ class Main(QMainWindow, Ui_Main):
             else:
                 QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
 
-    def chat_reserva(self, layout, cpf_mot):
+    def chat_reserva(self, layout, cpf_mot, placa):
         botao_chat = QPushButton('chat', self)
         botao_reserva = QPushButton('reserva', self)
     
         # Conectar os botões a métodos específicos
         
-        botao_chat.clicked.connect(lambda: self.chat(placa))
-        botao_reserva.clicked.connect(lambda: self.chat(placa))
+        botao_chat.clicked.connect(lambda: self.chat(cpf_mot))
+        botao_reserva.clicked.connect(lambda: self.reserva(placa))
 
         # Adicionar os botões ao layout
         layout.addWidget(botao_chat)
@@ -723,9 +815,38 @@ class Main(QMainWindow, Ui_Main):
 
         self.telachatmot.enviar.clicked.connect(lambda _, cpf_cliente=cpf_cliente: self.enviar_mensagem_mot(cpf_cliente))
         
-    def reserva(self):
+    def reserva(self, placa):
         # Lógica para negar a rota
-        QMessageBox.information(None, 'Ação', 'Reserva')
+        self.QtStack.setCurrentIndex(19)
+        origem = self.telaPrincipal.procurar.text()
+        destino = self.telaPrincipal.lineEdit.text()
+        # quant_reservas = self.telareserva.comboBox.currentText()
+        self.telareserva.line_origem.setText(origem)
+        self.telareserva.line_destino.setText(destino)
+        self.telareserva.pushButton_2.clicked.connect(lambda _, placa=placa: self.confirmar_reserva(placa))
+
+    def confirmar_reserva(self, placa):
+        obs_origem = self.telareserva.ref_origem.text()
+        obs_destino = self.telareserva.ref_destino.text()
+        quant_reservas = self.telareserva.comboBox.currentText()
+        origem = self.telaPrincipal.procurar.text()
+        destino = self.telaPrincipal.lineEdit.text()
+        email = self.telaInicial.lineEditMail.text()
+        cpf = self.cad.buscar_email_cliente(email)
+        carro = self.carro.busca_carro(placa)
+        if int(carro[6]) - int(quant_reservas) >= 0:
+            if self.carro.confirmar_reserva(placa, quant_reservas, obs_destino, obs_origem, destino, origem, cpf[3]):
+                self.telareserva.comboBox.setCurrentIndex(0)
+                self.telareserva.ref_destino.setText('')
+                self.telareserva.ref_origem.setText('')
+                self.telareserva.line_destino.setText('')
+                self.telareserva.line_origem.setText('')
+                self.voltar_da_reserva()
+                QMessageBox.information(None, 'Erro', 'Reserva concluida com sucesso')
+            else:
+                QMessageBox.information(None, 'Erro', 'Erro na confirmação da reserva')
+        else:
+            QMessageBox.information(None, 'Erro', 'Vagas insuficientes')
 
     def limpar_layout(self, layout):
         while layout.count():
@@ -790,7 +911,7 @@ class Main(QMainWindow, Ui_Main):
             label.setAlignment(Qt.AlignLeft)
         else:
             label.setAlignment(Qt.AlignRight)
-        #self.telachat.layC.setAlignment(Qt.AlignBottom)
+        self.telachat.layC.setAlignment(Qt.AlignBottom)
         #self.telachat.scrollAreaWidgetContents.setLayout(self.telachat.layC)
 
     def alimentar_chat_mot(self, cpf_cliente, cpf_motorista):
@@ -838,19 +959,25 @@ class Main(QMainWindow, Ui_Main):
     def cadCarro(self):
         placa = self.telacadastrocarro.placa_line.text()
         modelo = self.telacadastrocarro.modelo_line.text()
-        tipo = self.telacadastrocarro.tipos_box.currentText()
+        # tipo = self.telacadastrocarro.tipos_box.currentText()
+        cor = self.telacadastrocarro.cor_line.text()
+        marca = self.telacadastrocarro.marca_line.text()
+        acentos = self.telacadastrocarro.line_acentos.text()
         email = self.telaInicial.lineEditMail.text()
         cpf = self.cad.buscar_email_mot(email)[3]
-        if placa == '' or modelo == '' or tipo == '' or cpf == '':
+        if placa == '' or modelo == '' or marca == '' or cpf == '' or cor == '' or acentos == '':
             QMessageBox.information(None, 'Carro', 'Todos os espaços devem ser preenchidos!')
         else:
             if not (self.carro.busca_carro(placa)):
-                self.carro.cadastrar_carro(placa, tipo, modelo, cpf)
+                self.carro.cadastrar_carro(placa, marca, modelo, cor, cpf, acentos)
                 self.telacadastrocarro.placa_line.setText('')
                 self.telacadastrocarro.modelo_line.setText('')
-                self.telacadastrocarro.tipos_box.setCurrentText('')
+                #self.telacadastrocarro.tipos_box.setCurrentText('')
+                self.telacadastrocarro.marca_line.setText('')
+                self.telacadastrocarro.cor_line.setText('')
+                self.telacadastrocarro.line_acentos.setText('')
                 QMessageBox.information(None, 'Carro', 'Cadastro realizado com sucesso.')
-                self.QtStack.setCurrentIndex(5)
+                self.abrirTelaMotorista()
             else:
                 QMessageBox.information(None, 'Rota', 'O carro já existe.')
 

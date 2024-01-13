@@ -96,6 +96,10 @@ class ClientThread(threading.Thread):
             saida = self._servidor.Guardar_msg_mot(codigo)
         elif (codigo[0] == 'retirarMsgMot'):
             saida = self._servidor.RetirarMSGMot(codigo)
+        elif (codigo[0] == 'busca_carro_cpf'):
+            saida = self._servidor.busca_carro_cpf(codigo)
+        elif (codigo[0] == 'confirmar_reserva'):
+            saida = self._servidor.confirmar_reserva(codigo)
 
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
@@ -180,6 +184,10 @@ class Servidor():
             codigo_lista[0] = 'guardarmensagem_mot'
         elif (codigo_lista[0] == '25'):
             codigo_lista[0] = 'retirarMsgMot'
+        elif (codigo_lista[0] == '26'):
+            codigo_lista[0] = 'busca_carro_cpf'
+        elif (codigo_lista[0] == '27'):
+            codigo_lista[0] = 'confirmar_reserva'
 
         return codigo_lista
 
@@ -246,7 +254,7 @@ class Servidor():
         return '0'
 
     def cadastrarC(self, codigo):
-        carro = Carro(codigo[1], codigo[2], codigo[3], codigo[4])
+        carro = Carro(codigo[1], codigo[2], codigo[3], codigo[4], codigo[5], codigo[6])
 
         if (self._CadCarro.cadastro_carro(carro)):
             return '1'
@@ -255,7 +263,7 @@ class Servidor():
     def buscar_carro(self, codigo):
         carro = self._CadCarro.busca_carro(codigo[1])
         if (carro):
-            return f'1/{carro.placa}/{carro.tipo}/{carro.modelo}/{carro.cpf}'
+            return f'1/{carro.placa}/{carro.marca}/{carro.modelo}/{carro.cor}/{carro.cpf}/{carro.acentos}'
         return '0'
 
     def cont(self):
@@ -349,8 +357,8 @@ class Servidor():
     def RetirarMSG(self, codigo):
         #carro = self._CadCarro.busca_carro(codigo[2])
         mensagens = self._cadastro.retirar_msg(codigo[1], codigo[2])
-        print('-------------------------------------')
-        print(mensagens)
+        # print('-------------------------------------')
+        # print(mensagens)
         if mensagens:
             tam = len(mensagens)
             Retorno = []
@@ -389,8 +397,8 @@ class Servidor():
     
     def RetirarMSGMot(self, codigo):
         mensagens = self._cadastro.retirar_msg_mot(codigo[1], codigo[2])
-        print('-------------------------------------')
-        print(mensagens)
+        # print('-------------------------------------')
+        # print(mensagens)
         if mensagens:
             tam = len(mensagens)
             Retorno = []
@@ -400,6 +408,23 @@ class Servidor():
             return f'1-{Retorno}'
         return '0'
     
+    def busca_carro_cpf(self, codigo):
+        carro = self._CadCarro.busca_carro_cpf(codigo[1])
+        if (carro):
+            tam = len(carro)
+            Retorno = []
+            for i in range(tam):
+                car = f'{carro[i].placa}/{carro[i].marca}/{carro[i].modelo}/{carro[i].cor}/{carro[i].cpf}/{carro[i].acentos}'
+                Retorno.append(car)
+            return f'1-{Retorno}'
+        return '0'
+    
+    def confirmar_reserva(self, codigo):
+        ####
+        if self._CadCarro.Confirmar_reserva(codigo[1], int(codigo[2]), codigo[3], codigo[4], codigo[5], codigo[6], codigo[7]):
+            return '1'
+        return '0'
+
     def ligar_servidor(self):
         host = ''
         port = 8000

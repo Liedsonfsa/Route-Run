@@ -117,8 +117,8 @@ class plataforma_cliente():
             return True
         return None
 
-    def cadastrar_carro(self, placa, tipo, modelo, cpf):
-        codigo = '7/'+placa+'/'+tipo+'/'+modelo+'/'+cpf
+    def cadastrar_carro(self, placa, marca, modelo, cor, cpf, acentos):
+        codigo = '7/'+placa+'/'+marca+'/'+modelo+'/'+cor+'/'+cpf+'/'+str(acentos)
         try:
             saida = self.conecxao_servidor(codigo)
         except:
@@ -345,4 +345,28 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             print(saida_lst[1].split(','))
             return saida_lst[1].split(',')
+        return None
+
+    def busca_carro_cpf(self, cpf):
+        codigo = '26/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('-')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        return None
+
+    def confirmar_reserva(self, placa, quant_reservas, obs_destino, obs_origem, destino, origem, cpf_cliente):
+        codigo = '27/'+placa+'/'+str(quant_reservas)+'/'+obs_destino+'/'+obs_origem+'/'+destino+'/'+origem+'/'+cpf_cliente
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        if (saida_lst[0] == '1'):
+            return True
         return None
