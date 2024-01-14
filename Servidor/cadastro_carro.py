@@ -74,15 +74,16 @@ class Reservas(abc.ABC):
 
 class Carro(abc.ABC):
 
-    __slots__ = ['_placa', '_marca', '_modelo', '_cor', '_cpf', '_acentos']
+    __slots__ = ['_placa', '_marca', '_modelo', '_cor', '_cpf', '_acentos', '_acentos_total']
 
-    def __init__(self, placa, marca, modelo, cor, cpf, acentos):
+    def __init__(self, placa, marca, modelo, cor, cpf, acentos, acentos_total):
         self._placa = placa
         self._marca = marca
         self._modelo = modelo
         self._cor = cor
         self._cpf = cpf
         self._acentos = acentos
+        self._acentos_total = acentos_total
 
     @property
     def placa(self):
@@ -131,6 +132,14 @@ class Carro(abc.ABC):
     @acentos.setter
     def acentos(self, acentos):
         self._acentos = acentos
+    
+    @property
+    def acentos_total(self):
+        return self._acentos_total
+
+    @acentos_total.setter
+    def acentos_total(self, acentos_total):
+        self._acentos_total = acentos_total
 
 
 class CadCarro:
@@ -140,17 +149,17 @@ class CadCarro:
     def __init__(self):
         self._conexao = mysql.connector.connect(host = 'localhost', db ='route_run', user='root', passwd = '@Marcos2004*')
         self._cursor = self._conexao.cursor()
-        self._mysql = """CREATE TABLE IF NOT EXISTS carros(placa VARCHAR(11) PRIMARY KEY, marca text NOT NULL, modelo text NOT NULL, cor text NOT NULL, cpf VARCHAR(11), acentos integer, foreign key(cpf) references motoristas(cpf));"""
+        self._mysql = """CREATE TABLE IF NOT EXISTS carros(placa VARCHAR(11) PRIMARY KEY, marca text NOT NULL, modelo text NOT NULL, cor text NOT NULL, cpf VARCHAR(11), acentos integer, acentos_total integer, foreign key(cpf) references motoristas(cpf));"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
-        self._mysql = """CREATE TABLE IF NOT EXISTS reservas(placa VARCHAR(11) PRIMARY KEY, acentos integer, obs_destino text NOT NULL, obs_origem text NOT NULL, destino text NOT NULL, origem text NOT NULL, cpf_cliente VARCHAR(11));"""
+        self._mysql = """CREATE TABLE IF NOT EXISTS reservas(placa VARCHAR(11), acentos integer, obs_destino text NOT NULL, obs_origem text NOT NULL, destino text NOT NULL, origem text NOT NULL, cpf_cliente VARCHAR(11));"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
         
     def cadastro_carro(self, carro):
         existe = self.busca_carro(carro.placa)
         if (existe == None):
-            self._cursor.execute('INSERT INTO carros(placa, marca, modelo, cor, cpf, acentos) VALUES(%s,%s,%s,%s,%s,%s)', (carro.placa, carro.marca, carro.modelo, carro.cor, carro.cpf, int(carro.acentos)))
+            self._cursor.execute('INSERT INTO carros(placa, marca, modelo, cor, cpf, acentos, acentos_total) VALUES(%s,%s,%s,%s,%s,%s,%s)', (carro.placa, carro.marca, carro.modelo, carro.cor, carro.cpf, int(carro.acentos), int(carro.acentos_total)))
             self._conexao.commit()
             return True
         else:
@@ -162,7 +171,7 @@ class CadCarro:
         if (verificar == None):
             return None
         else:
-            carro = Carro(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5])
+            carro = Carro(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6])
             return carro
     
     def busca_carro_cpf(self, cpf):
@@ -173,7 +182,7 @@ class CadCarro:
         else:
             carros = []
             for c in verificar:
-                car = Carro(c[0], c[1], c[2], c[3], c[4], c[5])
+                car = Carro(c[0], c[1], c[2], c[3], c[4], c[5], c[6])
                 carros.append(car)
             return carros
         
@@ -182,20 +191,26 @@ class CadCarro:
         if (existe == None):
             self._cursor.execute('INSERT INTO reservas(placa, acentos, obs_destino, obs_origem, destino, origem, cpf_cliente) VALUES(%s,%s,%s,%s,%s,%s,%s)', (reserva.placa, reserva.acentos, reserva.obs_destino, reserva.obs_origem, reserva.destino, reserva.origem, reserva.cpf_cliente))
             self._conexao.commit()
+            self._cursor.fetchall()
             self._cursor.execute('UPDATE carros SET acentos = acentos - %s WHERE placa = %s', (reserva.acentos, reserva.placa))
             self._conexao.commit()
+            self._cursor.fetchall()
             return True
         else:
             return False
         
     def buscar_reserva(self, cpf_cliente):
         self._cursor.execute('SELECT * from reservas WHERE cpf_cliente = %s',(cpf_cliente,))
-        verificar = self._cursor.fetchone()
-        if (verificar == None):
+        verificar = self._cursor.fetchall()
+        if (verificar == []):
+            print('------------------..')
             return None
         else:
-            reserva = Reservas(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6])
-            return reserva
+            reservas = []
+            for r in verificar:
+                reserva = Reservas(r[0], r[1], r[2], r[3], r[4], r[5], r[6])
+                reservas.append(reserva)
+            return reservas
         
     def buscar_reservas_placa(self, placa):
         self._cursor.execute('SELECT * from reservas WHERE placa = %s',(placa,))
@@ -208,3 +223,21 @@ class CadCarro:
                 reserva = Reservas(r[0], r[1], r[2], r[3], r[4], r[5], r[6])
                 reservas.append(reserva)
             return reservas
+        
+    def finalizar_dia(self, placa, acentosADD):
+        self._cursor.execute('UPDATE carros SET acentos = acentos + %s WHERE placa = %s', (acentosADD, placa))
+        self._conexao.commit()
+        self._cursor.fetchall()
+        self._cursor.execute('DELETE from reservas WHERE placa = %s', (placa,))
+        self._cursor.fetchall()
+        self._conexao.commit()
+        return True
+
+    def cancelar_reserva(self, placa, cpf, acentos):
+        self._cursor.execute('UPDATE carros SET acentos = acentos + %s WHERE placa = %s', (acentos, placa))
+        self._conexao.commit()
+        self._cursor.fetchall()
+        self._cursor.execute('DELETE from reservas WHERE placa = %s AND cpf_cliente = %s', (placa, cpf))
+        self._conexao.commit()
+        self._cursor.fetchall()
+        return True

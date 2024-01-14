@@ -53,34 +53,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="b_relatorio">
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string>Relatório</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>../Icons/feather/trending-up.svg</normaloff>../Icons/feather/trending-up.svg</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="b_pagamento">
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="text">
-          <string>Formas de pagamento</string>
-         </property>
-         <property name="icon">
-          <iconset>
-           <normaloff>../Icons/feather/smartphone.svg</normaloff>../Icons/feather/smartphone.svg</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="b_chat">
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
@@ -211,7 +183,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>510</width>
+            <width>534</width>
             <height>494</height>
            </rect>
           </property>

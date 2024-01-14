@@ -108,12 +108,12 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QPushButton" name="b_pagamento">
+        <widget class="QPushButton" name="btn_reservas">
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="text">
-          <string>Formas de pagamento</string>
+          <string>Reservas</string>
          </property>
          <property name="icon">
           <iconset>
@@ -207,7 +207,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>629</width>
+            <width>674</width>
             <height>562</height>
            </rect>
           </property>

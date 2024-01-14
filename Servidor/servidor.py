@@ -102,6 +102,16 @@ class ClientThread(threading.Thread):
             saida = self._servidor.confirmar_reserva(codigo)
         elif (codigo[0] == 'buscar_reservas_placa'):
             saida = self._servidor.buscar_reservas_placa(codigo)
+        elif (codigo[0] == 'finalizar_dia'):
+            saida = self._servidor.finalizar_dia(codigo)
+        elif (codigo[0] == 'buscar_reservas_cpf'):
+            saida = self._servidor.buscar_reservas_cpf(codigo)
+        elif (codigo[0] == 'cancelar_reserva'):
+            saida = self._servidor.cancelar_reserva(codigo)
+        elif (codigo[0] == 'buscar_histo'):
+            saida = self._servidor.buscar_histo(codigo)
+        elif (codigo[0] == 'add_histo'):
+            saida = self._servidor.add_histo(codigo)
 
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
@@ -192,6 +202,16 @@ class Servidor():
             codigo_lista[0] = 'confirmar_reserva'
         elif (codigo_lista[0] == '28'):
             codigo_lista[0] = 'buscar_reservas_placa'
+        elif (codigo_lista[0] == '29'):
+            codigo_lista[0] = 'finalizar_dia'
+        elif (codigo_lista[0] == '30'):
+            codigo_lista[0] = 'buscar_reservas_cpf'
+        elif (codigo_lista[0] == '31'):
+            codigo_lista[0] = 'cancelar_reserva'
+        elif (codigo_lista[0] == '32'):
+            codigo_lista[0] = 'buscar_histo'
+        elif (codigo_lista[0] == '33'):
+            codigo_lista[0] = 'add_histo'          
 
         return codigo_lista
 
@@ -258,7 +278,7 @@ class Servidor():
         return '0'
 
     def cadastrarC(self, codigo):
-        carro = Carro(codigo[1], codigo[2], codigo[3], codigo[4], codigo[5], codigo[6])
+        carro = Carro(codigo[1], codigo[2], codigo[3], codigo[4], codigo[5], codigo[6], codigo[7])
 
         if (self._CadCarro.cadastro_carro(carro)):
             return '1'
@@ -267,7 +287,7 @@ class Servidor():
     def buscar_carro(self, codigo):
         carro = self._CadCarro.busca_carro(codigo[1])
         if (carro):
-            return f'1/{carro.placa}/{carro.marca}/{carro.modelo}/{carro.cor}/{carro.cpf}/{carro.acentos}'
+            return f'1/{carro.placa}/{carro.marca}/{carro.modelo}/{carro.cor}/{carro.cpf}/{carro.acentos}/{carro.acentos_total}'
         return '0'
 
     def cont(self):
@@ -418,7 +438,7 @@ class Servidor():
             tam = len(carro)
             Retorno = []
             for i in range(tam):
-                car = f'{carro[i].placa}/{carro[i].marca}/{carro[i].modelo}/{carro[i].cor}/{carro[i].cpf}/{carro[i].acentos}'
+                car = f'{carro[i].placa}/{carro[i].marca}/{carro[i].modelo}/{carro[i].cor}/{carro[i].cpf}/{carro[i].acentos}/{carro[i].acentos_total}'
                 Retorno.append(car)
             return f'1-{Retorno}'
         return '0'
@@ -435,9 +455,48 @@ class Servidor():
             tam = len(reservas)
             Retorno = []
             for i in range(tam):
+                res = f'{reservas[i].placa}/{reservas[i].acentos}/{reservas[i].obs_destino}/{reservas[i].obs_origem}/{reservas[i].destino}/{reservas[i].origem}/{reservas[i].cpf_cliente}'
+                Retorno.append(res)
+            return f'1-{Retorno}'
+        return '0'
+
+    def finalizar_dia(self, codigo):
+        if self._CadCarro.finalizar_dia(codigo[1], int(codigo[2])):
+            return '1'
+        return '0'
+    
+    def add_histo(self, codigo):
+        print(codigo[1])
+        print(codigo[2])
+        if self._rot.add_historico(codigo[1], int(codigo[2])):
+            return '1'
+        return '0'
+    
+    def buscar_reservas_cpf(self, codigo):
+        reservas = self._CadCarro.buscar_reserva(codigo[1])
+        if (reservas):
+            tam = len(reservas)
+            Retorno = []
+            for i in range(tam):
                 res = f'{reservas[i].placa}/{reservas[i].acentos}/{reservas[i].obs_destino}/{reservas[i].obs_origem}/{reservas[i].destino}/{reservas[i].origem }/{reservas[i].cpf_cliente}'
                 Retorno.append(res)
             return f'1-{Retorno}'
+        return '0'
+
+    def cancelar_reserva(self, codigo):
+        if self._CadCarro.cancelar_reserva(codigo[1], codigo[2], codigo[3]):
+            return '1'
+        return '0'
+    
+    def buscar_histo(self, codigo):
+        historico = self._rot.buscar_histo(codigo[1])
+        if (historico):
+            tam = len(historico)
+            Retorno = []
+            for i in range(tam):
+                res = f'{historico[i].data}/{historico[i].placa}/{historico[i].origem}/{historico[i].destino}/{historico[i].quantidade_de_acentos}'
+                Retorno.append(res)
+            return f'1~{Retorno}'
         return '0'
 
     def ligar_servidor(self):
