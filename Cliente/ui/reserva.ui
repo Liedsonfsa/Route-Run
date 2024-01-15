@@ -18,14 +18,11 @@
     <item row="2" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Referências sobre o ponto de origem:</string>
+       <widget class="QLineEdit" name="ref_origem">
+        <property name="placeholderText">
+         <string>Referência origem</string>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="ref_origem"/>
       </item>
      </layout>
     </item>
@@ -34,10 +31,12 @@
       <property name="font">
        <font>
         <pointsize>20</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
-       <string>Reservar acento</string>
+       <string>Reservar assento</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -65,14 +64,11 @@
     <item row="4" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Referências sobre o ponto de destino:</string>
+       <widget class="QLineEdit" name="ref_destino">
+        <property name="placeholderText">
+         <string>Referência destino</string>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="ref_destino"/>
       </item>
      </layout>
     </item>
@@ -130,7 +126,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Quantidade de acentos:</string>
+         <string>Quantidade de assentos:</string>
         </property>
        </widget>
       </item>

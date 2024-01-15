@@ -43,7 +43,7 @@
     <item row="1" column="0">
      <widget class="QLabel" name="label_4">
       <property name="text">
-       <string>                           </string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -52,6 +52,8 @@
       <property name="font">
        <font>
         <pointsize>20</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
@@ -72,7 +74,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>546</width>
+         <width>750</width>
          <height>441</height>
         </rect>
        </property>
@@ -82,7 +84,7 @@
     <item row="1" column="2">
      <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>                           </string>
+       <string/>
       </property>
      </widget>
     </item>

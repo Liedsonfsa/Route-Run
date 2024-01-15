@@ -10,7 +10,7 @@ class plataforma_cliente():
 
     def conecxao_servidor(self, codigo):
 
-        ip = '26.31.122.7'
+        ip = '10.180.46.216'
         port = 8000
         addr = ((ip, port))
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

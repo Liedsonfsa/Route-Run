@@ -380,7 +380,7 @@ class Main(QMainWindow, Ui_Main):
         self.telacadastrocarro.modelo_line.setText('')
         self.telacadastrocarro.marca_line.setText('')
         self.telacadastrocarro.cor_line.setText('')
-        self.telacadastrocarro.line_acentos.setText('')
+        self.telacadastrocarro.comboBox.setCurrentIndex(0)
         self.QtStack.setCurrentIndex(5)
 
     def voltar_principal_perfil_cliente(self):
@@ -1121,7 +1121,7 @@ class Main(QMainWindow, Ui_Main):
         # tipo = self.telacadastrocarro.tipos_box.currentText()
         cor = self.telacadastrocarro.cor_line.text()
         marca = self.telacadastrocarro.marca_line.text()
-        acentos = self.telacadastrocarro.line_acentos.text()
+        acentos = self.telacadastrocarro.comboBox.currentText()
         email = self.telaInicial.lineEditMail.text()
         cpf = self.cad.buscar_email_mot(email)[3]
         if placa == '' or modelo == '' or marca == '' or cpf == '' or cor == '' or acentos == '':
@@ -1134,7 +1134,7 @@ class Main(QMainWindow, Ui_Main):
                 #self.telacadastrocarro.tipos_box.setCurrentText('')
                 self.telacadastrocarro.marca_line.setText('')
                 self.telacadastrocarro.cor_line.setText('')
-                self.telacadastrocarro.line_acentos.setText('')
+                self.telacadastrocarro.comboBox.setCurrentIndex(0)
                 QMessageBox.information(None, 'Carro', 'Cadastro realizado com sucesso.')
                 self.abrirTelaMotorista()
             else:

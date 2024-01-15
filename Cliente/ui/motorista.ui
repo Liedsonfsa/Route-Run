@@ -20,10 +20,12 @@
       <property name="font">
        <font>
         <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
-       <string>Cadastro do motorista</string>
+       <string>Cadastro da CNH</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -33,14 +35,11 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Número da CNH:</string>
+       <widget class="QLineEdit" name="lineEditCNH">
+        <property name="placeholderText">
+         <string>Informe o número da CNH</string>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEditCNH"/>
       </item>
      </layout>
     </item>

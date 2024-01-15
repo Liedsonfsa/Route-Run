@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'motorista.ui'
+# Form implementation generated from reading ui file 'ui\motorista.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -22,15 +22,14 @@ class TelaMotorista(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(15)
+        font.setBold(True)
+        font.setWeight(75)
         self.label.setFont(font)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setObjectName("label_2")
-        self.horizontalLayout.addWidget(self.label_2)
         self.lineEditCNH = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEditCNH.setObjectName("lineEditCNH")
         self.horizontalLayout.addWidget(self.lineEditCNH)
@@ -80,8 +79,8 @@ class TelaMotorista(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Cadastro do motorista"))
-        self.label_2.setText(_translate("MainWindow", "Número da CNH:"))
+        self.label.setText(_translate("MainWindow", "Cadastro da CNH"))
+        self.lineEditCNH.setPlaceholderText(_translate("MainWindow", "Informe o número da CNH"))
         self.Btn_voltar.setText(_translate("MainWindow", "Voltar"))
         self.btn_finalizar.setText(_translate("MainWindow", "Finalizar"))
 
@@ -90,7 +89,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    ui = TelaMotorista()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

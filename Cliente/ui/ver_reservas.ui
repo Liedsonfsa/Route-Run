@@ -25,7 +25,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>610</width>
+         <width>750</width>
          <height>441</height>
         </rect>
        </property>
@@ -68,10 +68,12 @@
       <property name="font">
        <font>
         <pointsize>20</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
-       <string>Reservas</string>
+       <string>Reservas do dia</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -81,14 +83,14 @@
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>                   </string>
+       <string/>
       </property>
      </widget>
     </item>
     <item row="1" column="2">
      <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>                   </string>
+       <string/>
       </property>
      </widget>
     </item>

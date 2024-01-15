@@ -23,13 +23,24 @@
       <height>311</height>
      </rect>
     </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="label">
        <property name="font">
         <font>
          <pointsize>20</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
         <string>Autentificação de conta</string>
@@ -44,14 +55,14 @@
        <item>
         <widget class="QLineEdit" name="lineEdit">
          <property name="placeholderText">
-          <string>Insera seu endereço de email...</string>
+          <string>Insera seu endereço de email</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="enviar">
          <property name="text">
-          <string>enviar</string>
+          <string>Enviar</string>
          </property>
         </widget>
        </item>
@@ -62,8 +73,8 @@
    <widget class="QPushButton" name="voltar">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>480</y>
+      <x>30</x>
+      <y>530</y>
       <width>93</width>
       <height>28</height>
      </rect>
@@ -72,16 +83,6 @@
      <string>Voltar</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>26</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

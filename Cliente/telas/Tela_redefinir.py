@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'redefinir_senha.ui'
+# Form implementation generated from reading ui file 'ui\redefinir_senha.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -22,33 +22,26 @@ class Redefinir(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
         self.label.setFont(font)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.label_8 = QtWidgets.QLabel(self.centralwidget)
-        self.label_8.setObjectName("label_8")
-        self.horizontalLayout_5.addWidget(self.label_8)
         self.lineEditEmail = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEditEmail.setObjectName("lineEditEmail")
         self.horizontalLayout_5.addWidget(self.lineEditEmail)
         self.verticalLayout.addLayout(self.horizontalLayout_5)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setObjectName("label_2")
-        self.horizontalLayout_3.addWidget(self.label_2)
         self.lineEditnsenha = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEditnsenha.setObjectName("lineEditnsenha")
         self.horizontalLayout_3.addWidget(self.lineEditnsenha)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setObjectName("label_3")
-        self.horizontalLayout_4.addWidget(self.label_3)
         self.lineEditcnsenha = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEditcnsenha.setObjectName("lineEditcnsenha")
         self.horizontalLayout_4.addWidget(self.lineEditcnsenha)
@@ -99,9 +92,9 @@ class Redefinir(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Redefinir senha"))
-        self.label_8.setText(_translate("MainWindow", "e-mail:"))
-        self.label_2.setText(_translate("MainWindow", "Nova senha:"))
-        self.label_3.setText(_translate("MainWindow", "Confirmar nova senha:"))
+        self.lineEditEmail.setPlaceholderText(_translate("MainWindow", "E-mail"))
+        self.lineEditnsenha.setPlaceholderText(_translate("MainWindow", "Nova senha"))
+        self.lineEditcnsenha.setPlaceholderText(_translate("MainWindow", "Confirme a senha"))
         self.btn_voltar.setText(_translate("MainWindow", "Voltar"))
         self.btn_confirmar.setText(_translate("MainWindow", "Confirmar"))
 

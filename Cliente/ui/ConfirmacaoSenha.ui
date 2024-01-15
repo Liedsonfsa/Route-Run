@@ -20,6 +20,8 @@
       <property name="font">
        <font>
         <pointsize>15</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
@@ -35,12 +37,16 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Senha:</string>
+         <string/>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEditSenha"/>
+       <widget class="QLineEdit" name="lineEditSenha">
+        <property name="placeholderText">
+         <string>Senha</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'autentificacao2.ui'
+# Form implementation generated from reading ui file 'ui\autentificacao2.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -19,6 +19,7 @@ class TelaAutentificacao2(object):
         self.centralwidget.setObjectName("centralwidget")
         self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.layoutWidget.setGeometry(QtCore.QRect(152, 83, 551, 311))
+        self.layoutWidget.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -26,7 +27,11 @@ class TelaAutentificacao2(object):
         self.label = QtWidgets.QLabel(self.layoutWidget)
         font = QtGui.QFont()
         font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
         self.label.setFont(font)
+        self.label.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
@@ -40,13 +45,9 @@ class TelaAutentificacao2(object):
         self.horizontalLayout.addWidget(self.enviar)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.voltar = QtWidgets.QPushButton(self.centralwidget)
-        self.voltar.setGeometry(QtCore.QRect(60, 480, 93, 28))
+        self.voltar.setGeometry(QtCore.QRect(30, 530, 93, 28))
         self.voltar.setObjectName("voltar")
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -58,8 +59,8 @@ class TelaAutentificacao2(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Autentificação de conta"))
-        self.lineEdit.setPlaceholderText(_translate("MainWindow", "Insera seu endereço de email..."))
-        self.enviar.setText(_translate("MainWindow", "enviar"))
+        self.lineEdit.setPlaceholderText(_translate("MainWindow", "Insera seu endereço de email"))
+        self.enviar.setText(_translate("MainWindow", "Enviar"))
         self.voltar.setText(_translate("MainWindow", "Voltar"))
 
 

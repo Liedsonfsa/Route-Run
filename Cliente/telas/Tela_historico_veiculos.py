@@ -34,11 +34,14 @@ class TelaHistoricoVeiculos(object):
         self.horizontalLayout.addWidget(self.label_3)
         self.gridLayout.addLayout(self.horizontalLayout, 2, 1, 1, 1)
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setText("")
         self.label_4.setObjectName("label_4")
         self.gridLayout.addWidget(self.label_4, 1, 0, 1, 1)
         self.label = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
         self.label.setFont(font)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
@@ -47,11 +50,12 @@ class TelaHistoricoVeiculos(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 546, 441))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 750, 441))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
         self.gridLayout.addWidget(self.scrollArea, 1, 1, 1, 1)
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setText("")
         self.label_5.setObjectName("label_5")
         self.gridLayout.addWidget(self.label_5, 1, 2, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -70,9 +74,7 @@ class TelaHistoricoVeiculos(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton.setText(_translate("MainWindow", "Voltar"))
-        self.label_4.setText(_translate("MainWindow", "                           "))
         self.label.setText(_translate("MainWindow", "Histórico de Veículo"))
-        self.label_5.setText(_translate("MainWindow", "                           "))
 
 
 if __name__ == "__main__":
