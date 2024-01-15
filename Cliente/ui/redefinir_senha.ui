@@ -20,6 +20,8 @@
       <property name="font">
        <font>
         <pointsize>20</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
@@ -33,42 +35,33 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>e-mail:</string>
+       <widget class="QLineEdit" name="lineEditEmail">
+        <property name="placeholderText">
+         <string>E-mail</string>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEditEmail"/>
       </item>
      </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Nova senha:</string>
+       <widget class="QLineEdit" name="lineEditnsenha">
+        <property name="placeholderText">
+         <string>Nova senha</string>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEditnsenha"/>
       </item>
      </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Confirmar nova senha:</string>
+       <widget class="QLineEdit" name="lineEditcnsenha">
+        <property name="placeholderText">
+         <string>Confirme a senha</string>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEditcnsenha"/>
       </item>
      </layout>
     </item>

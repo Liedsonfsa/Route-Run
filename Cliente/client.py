@@ -10,7 +10,7 @@ class plataforma_cliente():
 
     def conecxao_servidor(self, codigo):
 
-        ip = '26.31.122.7'
+        ip = '10.180.46.216'
         port = 8000
         addr = ((ip, port))
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -118,7 +118,7 @@ class plataforma_cliente():
         return None
 
     def cadastrar_carro(self, placa, marca, modelo, cor, cpf, acentos):
-        codigo = '7/'+placa+'/'+marca+'/'+modelo+'/'+cor+'/'+cpf+'/'+str(acentos)
+        codigo = '7/'+placa+'/'+marca+'/'+modelo+'/'+cor+'/'+cpf+'/'+str(acentos)+'/'+str(acentos)
         try:
             saida = self.conecxao_servidor(codigo)
         except:
@@ -381,4 +381,68 @@ class plataforma_cliente():
         saida_lst = saida.split('-')
         if (saida_lst[0] == '1'):
             return saida_lst[1].split(',')
+        return None
+    
+    def finalizar_dia(self, placa, acentosADD):
+        codigo = '29/'+placa+'/'+str(acentosADD)
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        print(saida_lst[0])
+        print('-------')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
+
+    def buscar_reservas_cpf(self, cpf):
+        codigo = '30/'+cpf
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('-')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+
+    def cancelar_reserva(self, placa, cpf, acentos):
+        codigo = '31/'+placa+'/'+cpf+'/'+acentos
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        print(saida_lst[0])
+        print('-------')
+        if (saida_lst[0] == '1'):
+            return True
+        return None
+    
+    def buscar_histo(self, placa):
+        codigo = '32/'+placa
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('~')
+        if (saida_lst[0] == '1'):
+            return saida_lst[1].split(',')
+        
+    def add_histo(self, placa, acentosADD):
+        codigo = '33/'+placa+'/'+str(acentosADD)
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        print(codigo)
+        saida_lst = saida.split('/')
+        print(saida_lst[0])
+        print('-------')
+        if (saida_lst[0] == '1'):
+            return True
         return None

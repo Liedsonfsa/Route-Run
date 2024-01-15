@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'autentificacao.ui'
+# Form implementation generated from reading ui file 'ui\autentificacao.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -18,7 +18,7 @@ class TelaAutentificacao(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.layoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.layoutWidget.setGeometry(QtCore.QRect(201, 41, 351, 291))
+        self.layoutWidget.setGeometry(QtCore.QRect(150, 70, 521, 291))
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -26,6 +26,8 @@ class TelaAutentificacao(object):
         self.label = QtWidgets.QLabel(self.layoutWidget)
         font = QtGui.QFont()
         font.setPointSize(20)
+        font.setBold(True)
+        font.setWeight(75)
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
@@ -35,17 +37,14 @@ class TelaAutentificacao(object):
         self.lineEdit.setObjectName("lineEdit")
         self.horizontalLayout.addWidget(self.lineEdit)
         self.confirmar = QtWidgets.QPushButton(self.layoutWidget)
+        self.confirmar.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.confirmar.setObjectName("confirmar")
         self.horizontalLayout.addWidget(self.confirmar)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.voltar = QtWidgets.QPushButton(self.centralwidget)
-        self.voltar.setGeometry(QtCore.QRect(70, 480, 93, 28))
+        self.voltar.setGeometry(QtCore.QRect(30, 530, 93, 28))
         self.voltar.setObjectName("voltar")
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -56,7 +55,8 @@ class TelaAutentificacao(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Autentificação de conta"))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\">Autentificação de conta</p></body></html>"))
+        self.lineEdit.setPlaceholderText(_translate("MainWindow", "Insira o código de autentificação"))
         self.confirmar.setText(_translate("MainWindow", "Confirmar"))
         self.voltar.setText(_translate("MainWindow", "Voltar"))
 

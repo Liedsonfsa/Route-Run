@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'cidades.ui'
+# Form implementation generated from reading ui file 'ui\cidades.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -22,6 +22,8 @@ class TelaCidades(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(15)
+        font.setBold(True)
+        font.setWeight(75)
         self.label.setFont(font)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
@@ -74,7 +76,7 @@ class TelaCidades(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Cidades entre destinos"))
+        self.label.setText(_translate("MainWindow", "Cidades entre destino"))
         self.label_3.setText(_translate("MainWindow", "UF:"))
         self.label_4.setText(_translate("MainWindow", "Cidade:"))
         self.btn_cadastrar.setText(_translate("MainWindow", "cadastrar"))

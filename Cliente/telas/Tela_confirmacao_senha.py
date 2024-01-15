@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ConfirmacaoSenha.ui'
+# Form implementation generated from reading ui file 'ui\ConfirmacaoSenha.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -22,6 +22,8 @@ class CSenha(object):
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setPointSize(15)
+        font.setBold(True)
+        font.setWeight(75)
         self.label_2.setFont(font)
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
@@ -29,6 +31,7 @@ class CSenha(object):
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setText("")
         self.label.setObjectName("label")
         self.horizontalLayout.addWidget(self.label)
         self.lineEditSenha = QtWidgets.QLineEdit(self.centralwidget)
@@ -62,7 +65,7 @@ class CSenha(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label_2.setText(_translate("MainWindow", "Confirmação de senha"))
-        self.label.setText(_translate("MainWindow", "Senha:"))
+        self.lineEditSenha.setPlaceholderText(_translate("MainWindow", "Senha"))
         self.btn_voltar.setText(_translate("MainWindow", "Voltat"))
         self.btn_confirmar.setText(_translate("MainWindow", "Confirmar"))
 

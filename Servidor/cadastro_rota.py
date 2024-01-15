@@ -1,5 +1,58 @@
 import abc
 import mysql.connector
+from datetime import datetime
+
+
+class Historico(abc.ABC):
+
+    __slots__ = ['_data', '_placa', '_origem', '_destino', '_quantidade_de_acentos']
+
+    def __init__(self, data, placa, origem, destino, quantidade_de_acentos):
+        self._data = data
+        self._placa = placa
+        self._origem = origem
+        self._destino = destino
+        self._quantidade_de_acentos = quantidade_de_acentos
+
+    @property
+    def data(self):
+        return self._data
+    
+    @data.setter
+    def data(self, data):
+        self._data = data
+
+    @property
+    def placa(self):
+        return self._placa
+    
+    @placa.setter
+    def placa(self, placa):
+        self._placa = placa
+    
+    @property
+    def origem(self):
+        return self._origem
+    
+    @origem.setter
+    def origem(self, origem):
+        self._origem = origem 
+
+    @property
+    def destino(self):
+        return self._destino
+    
+    @destino.setter
+    def destino(self, destino):
+        self._destino = destino
+    
+    @property
+    def quantidade_de_acentos(self):
+        return self._quantidade_de_acentos
+    
+    @quantidade_de_acentos.setter
+    def quantidade_de_acentos(self, quantidade_de_acentos):
+        self._quantidade_de_acentos = quantidade_de_acentos 
 
 
 class Rota(abc.ABC):
@@ -130,11 +183,14 @@ class CadRota:
     
     def __init__(self):
         self._conexao = mysql.connector.connect(host = 'localhost', db ='route_run', user='root', passwd = '@Marcos2004*')
-        self._cursor = self._conexao.cursor()
+        self._cursor = self._conexao.cursor(buffered=True)
         self._mysql = """CREATE TABLE IF NOT EXISTS rotas(id integer PRIMARY KEY, uf_origem text NOT NULL, cidade_origem text NOT NULL, uf_destino text NOT NULL, cidade_destino text NOT NULL, horario time NOT NULL, valor text NOT NULL, placa text NOT NULL, horario_volta time NOT NULL);"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
         self._mysql = """CREATE TABLE IF NOT EXISTS cidades(id integer, cidade text NOT NULL, uf_cidade text NOT NULL, foreign key(id) references rotas(id));"""
+        self._cursor.execute(self._mysql)
+        self._conexao.commit()
+        self._mysql = """CREATE TABLE IF NOT EXISTS historico_mot(data datetime NOT NULL, placa text NOT NULL, origem text NOT NULL, destino text NOT NULL, quantidade_de_acentos integer);"""
         self._cursor.execute(self._mysql)
         self._conexao.commit()
         
@@ -201,3 +257,41 @@ class CadRota:
         else:
             city = Cidade(verificar[0], verificar[1], verificar[2])
             return city
+
+    def add_historico(self, placa, acentosADD):
+        origem, destino = self.buscar_origem_destino(placa)
+        print(origem)
+        print(destino)
+        if origem != None and destino != None:
+            data_atual = datetime.now()
+            #data_formatada = data_atual.strftime("%Y-%m-%d %H:%M:%S")
+            #print(data_formatada)
+            self._cursor.execute('INSERT INTO historico_mot(data, placa, origem, destino, quantidade_de_acentos) VALUES(%s,%s,%s,%s,%s)', (data_atual, placa, origem, destino, acentosADD))
+            self._conexao.commit()
+            #self._cursor.fetchall()
+            return True
+        else:
+            return False
+
+    def buscar_origem_destino(self, placa):
+        self._cursor.execute('SELECT * from rotas WHERE placa = %s', (placa,))
+        verificar = self._cursor.fetchone()
+        if (verificar == None):
+            return None, None
+        else:
+            #city = Rota(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7], verificar[8])
+            return verificar[2], verificar[4]
+    
+    def buscar_histo(self, placa):
+        self._cursor.execute('SELECT * from historico_mot WHERE placa = %s', (placa,))
+        verificar = self._cursor.fetchall()
+
+        if (verificar == []):
+            return None
+        else:
+            historicos = []
+            for resultado in verificar:
+                #print(resultado)
+                histo = Historico(resultado[0], resultado[1], resultado[2], resultado[3], resultado[4])
+                historicos.append(histo)
+            return historicos
