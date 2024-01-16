@@ -647,17 +647,17 @@ class Main(QMainWindow, Ui_Main):
                 destino = (reservas[i].split("'")[1].split("'")[0]).split('/')[4]
                 origem = (reservas[i].split("'")[1].split("'")[0]).split('/')[5]
                 cpf = (reservas[i].split("'")[1].split("'")[0]).split('/')[6]
-                self.telaverreservacliente.label.setText(f'Placa: {placa}\nacentos reservados: {acentos}\nOrigem: {origem}\nDestino: {destino}\nRef. origem: {obs_origem}\nRef. destino{obs_destino}')
+                self.telaverreservacliente.label.setText(f'Placa: {placa}\nassentos reservados: {acentos}\nOrigem: {origem}\nDestino: {destino}\nRef. origem: {obs_origem}\nRef. destino{obs_destino}')
                 self.telaverreservacliente.layverreservasclientes.addWidget(self.telaverreservacliente.label)
                 self.add_cancelar(self.telaverreservacliente.layverreservasclientes, placa, cpf, acentos)
                 self.telaverreservacliente.label2 = QLabel()
-                self.telaverreservacliente.label2.setText("------------------------------------------------------------------------------------------")
+                self.telaverreservacliente.label2.setText("-------------------------------------------------------------------------------------------------------------------------------------------------")
                 self.telaverreservacliente.layverreservasclientes.addWidget(self.telaverreservacliente.label2)
                 self.telaverreservacliente.label.setAlignment(Qt.AlignTop)
                 self.telaverreservacliente.label2.setAlignment(Qt.AlignTop)
                 self.telaverreservacliente.scrollAreaWidgetContents.setLayout(self.telaverreservacliente.layverreservasclientes)
         else:
-            QMessageBox.information(None, 'chats', 'Sem reservas')
+            QMessageBox.information(None, 'Reservas', 'Sem reservas')
 
     def add_cancelar(self, layout, placa, cpf, acentos):
         """
@@ -680,7 +680,7 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'Carro', 'Reserva Cancelada')
             self.voltar_principal_perfil_cliente()
         else:
-            QMessageBox.information(None, 'Carro', 'Erro ao cancelar reserva')
+            QMessageBox.information(None, 'Cancelar', 'Erro ao cancelar reserva')
 
     def montar_chats(self):
         """
@@ -789,7 +789,7 @@ class Main(QMainWindow, Ui_Main):
                     self.telaRedefinir.lineEditnsenha.setText('')
                     self.telaRedefinir.lineEditcnsenha.setText('')
             else:
-                QMessageBox.information(None, 'Cadastro', 'Senhas diferentes!')
+                QMessageBox.information(None, 'Redefinir', 'Senhas diferentes!')
 
     def email(self):
         """
@@ -858,7 +858,7 @@ class Main(QMainWindow, Ui_Main):
                 self.telaAut2.lineEdit.setText('')
                 self.QtStack.setCurrentIndex(7)
             else:
-                QMessageBox.information(None, 'Login', 'email não cadastrado na base de dados')
+                QMessageBox.information(None, 'Email', 'email não cadastrado na base de dados')
 
     def autentificacao(self):
         """
@@ -867,13 +867,13 @@ class Main(QMainWindow, Ui_Main):
         num = int(self.telaAut.lineEdit.text())
 
         if num == '':
-            QMessageBox.information(None, 'Login', 'Todos os espaços devem ser preenchidos!')
+            QMessageBox.information(None, 'Redefinição', 'Todos os espaços devem ser preenchidos!')
         else:
             if (self.cad.buscar_cod(num) != None):
                 self.telaAut.lineEdit.setText('')
                 self.QtStack.setCurrentIndex(4)
             else:
-                QMessageBox.information(None, 'Login', 'O codigo inserido não corresponde ao enviado no email')
+                QMessageBox.information(None, 'Redefinição', 'O codigo inserido não corresponde ao enviado no email')
 
     def abrirMain(self):
         """
@@ -962,7 +962,7 @@ class Main(QMainWindow, Ui_Main):
 
         placa = self.telaRota.line_placa.text()
         if uf_origem == '' or uf_destino == '' or cidade_origem == '' or cidade_destino == '' or valor == '' or placa == '':
-            QMessageBox.information(None, 'rota', 'Todos os espaços devem ser preenchidos!')
+            QMessageBox.information(None, 'Rota', 'Todos os espaços devem ser preenchidos!')
         else:
             id = self.rot.contar()  
             if (id == None):
@@ -1001,7 +1001,7 @@ class Main(QMainWindow, Ui_Main):
                     self.telaRota.line_valor.setText('')
                     self.QtStack.setCurrentIndex(14)
             else:
-                QMessageBox.information(None, 'Rota', 'Placa de carro n cadastrada')
+                QMessageBox.information(None, 'Rota', 'Placa de carro não cadastrada')
     #ok?
 
     def mostrar_carros(self):
@@ -1031,7 +1031,7 @@ class Main(QMainWindow, Ui_Main):
                 Cor = (carros[i].split("'")[1].split("'")[0]).split('/')[3]
                 acentos = (carros[i].split("'")[1].split("'")[0]).split('/')[5]
                 acentos_total = (carros[i].split("'")[1].split("'")[0]).split('/')[6]
-                self.telaPrincipalMotorista.label.setText(f"Placa do carro: {Placa}\nMarca: {Marca}\nModelo: {Modelo}\nCor: {Cor}\nQuantidade de acentos ocupados: {int(acentos_total) - int(acentos)}")
+                self.telaPrincipalMotorista.label.setText(f"Placa do carro: {Placa}\nMarca: {Marca}\nModelo: {Modelo}\nCor: {Cor}\nQuantidade de assentos ocupados: {int(acentos_total) - int(acentos)}")
                 self.telaPrincipalMotorista.layCarros.addWidget(self.telaPrincipalMotorista.label)
                 self.inspecionar_van(self.telaPrincipalMotorista.layCarros, (carros[i].split("'")[1].split("'")[0]).split('/')[0])
                 self.telaPrincipalMotorista.label2 = QLabel()
@@ -1049,8 +1049,8 @@ class Main(QMainWindow, Ui_Main):
 
         Adiciona botões "Inspecionar Van" e "Histórico Van" ao layout fornecido para permitir ações adicionais sobre a van.
         """
-        inspecionar_van = QPushButton('Inspecionar Van', self)
-        historico_van = QPushButton('Historico Van', self)
+        inspecionar_van = QPushButton('Inspecionar Veículo', self)
+        historico_van = QPushButton('Historico Veículo', self)
 
         inspecionar_van.clicked.connect(lambda: self.ver_van(placa))
         historico_van.clicked.connect(lambda: self.historico_da_van(placa))
@@ -1078,7 +1078,7 @@ class Main(QMainWindow, Ui_Main):
                 origem = (historico[i].split("'")[1].split("'")[0]).split('/')[2]
                 destino = (historico[i].split("'")[1].split("'")[0]).split('/')[3]
                 quantidade_de_acentos = (historico[i].split("'")[1].split("'")[0]).split('/')[4]
-                self.telahistovei.label.setText(f'Data: {data}\nplaca: {placa_1}\norigem: {origem}\ndestino: {destino}\nQuantidades de acentos: {quantidade_de_acentos}\n---------------------------------------------------------------')
+                self.telahistovei.label.setText(f'Data: {data}\nplaca: {placa_1}\norigem: {origem}\ndestino: {destino}\nQuantidades de assentos: {quantidade_de_acentos}\n---------------------------------------------------------------')
                 self.telahistovei.layhistovei.addWidget(self.telahistovei.label)
                 self.telahistovei.label.setAlignment(Qt.AlignTop)
                 #self.telahistovei.label2.setAlignment(Qt.AlignTop)
@@ -1110,7 +1110,7 @@ class Main(QMainWindow, Ui_Main):
                 origem = (reservas[i].split("'")[1].split("'")[0]).split('/')[5]
                 cpf_cliente = (reservas[i].split("'")[1].split("'")[0]).split('/')[6]
                 nome = self.cad.busca_cpf_cliente(cpf_cliente)
-                self.telaverreserva.label.setText(f'Acentos reservados: {acentos}\nref. origem: {obs_origem}\nref. destino{obs_destino}\norigem: {origem}\ndestino: {destino}\nNome Cliente: {nome[1]}\n--------------------------------------------------------------------------------------------')
+                self.telaverreserva.label.setText(f'Assentos reservados: {acentos}\nref. origem: {obs_origem}\nref. destino{obs_destino}\norigem: {origem}\ndestino: {destino}\nNome Cliente: {nome[1]}\n--------------------------------------------------------------------------------------------')
                 self.telaverreserva.layverreservas.addWidget(self.telaverreserva.label)
                 # self.telaverreserva.label2 = QLabel()
                 # self.telaverreserva.label2.setText("--------------------------------------------------------------------------------------------")
@@ -1121,7 +1121,7 @@ class Main(QMainWindow, Ui_Main):
                 cont += int(acentos)
             # self.telaverreserva.pushButton_2.clicked.connect(lambda _, placa=placa, cont=cont: self.finalizar_dia(placa, cont))
         else:
-            QMessageBox.information(None, 'Carro', 'Sem reservas')
+            QMessageBox.information(None, 'Reserva', 'Sem reservas')
         self.telaverreserva.pushButton_2.clicked.connect(lambda _, placa=placa, cont=cont: self.finalizar_dia(placa, cont))
 
     def finalizar_dia(self, placa, cont):
@@ -1131,10 +1131,10 @@ class Main(QMainWindow, Ui_Main):
         Finaliza o dia para o carro com a placa fornecida, adicionando o histórico e resetando as reservas do dia.
         """
         if self.rot.add_histo(placa, cont) and self.carro.finalizar_dia(placa, cont):
-            QMessageBox.information(None, 'Carro', 'Dia finalizado e reservas do dia resetadas')
+            QMessageBox.information(None, 'Reservas', 'Dia finalizado e reservas do dia resetadas')
             self.voltar_de_ver_reservas()
         else:
-            QMessageBox.information(None, 'Carro', 'Erro ao finalizar o dia')
+            QMessageBox.information(None, 'Reservas', 'Erro ao finalizar o dia')
 
     def procurarRota(self):
         """
@@ -1262,7 +1262,7 @@ class Main(QMainWindow, Ui_Main):
                 self.telareserva.line_destino.setText('')
                 self.telareserva.line_origem.setText('')
                 self.voltar_da_reserva()
-                QMessageBox.information(None, 'Erro', 'Reserva concluida com sucesso')
+                QMessageBox.information(None, 'Reserva', 'Reserva concluida com sucesso')
             else:
                 QMessageBox.information(None, 'Erro', 'Erro na confirmação da reserva')
         else:
@@ -1440,7 +1440,7 @@ class Main(QMainWindow, Ui_Main):
                 QMessageBox.information(None, 'Carro', 'Cadastro realizado com sucesso.')
                 self.abrirTelaMotorista()
             else:
-                QMessageBox.information(None, 'Rota', 'O carro já existe.')
+                QMessageBox.information(None, 'Erro', 'O carro já existe.')
 
     def perfil_cliente(self):
         """
