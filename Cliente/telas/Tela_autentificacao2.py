@@ -58,7 +58,7 @@ class TelaAutentificacao2(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "Autentificação de conta"))
+        self.label.setText(_translate("MainWindow", "Redefinição de senha"))
         self.lineEdit.setPlaceholderText(_translate("MainWindow", "Insera seu endereço de email"))
         self.enviar.setText(_translate("MainWindow", "Enviar"))
         self.voltar.setText(_translate("MainWindow", "Voltar"))

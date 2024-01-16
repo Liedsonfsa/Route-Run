@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="imagens">
+    <file>rr6.png</file>
+    <file>a (2).png</file>
+    <file>designRR.svg</file>
+    <file>rr.svg</file>
+  </qresource>
+</RCC>

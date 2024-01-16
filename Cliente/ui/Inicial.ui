@@ -41,7 +41,10 @@
        <number>0</number>
       </property>
       <property name="text">
-       <string>Route Run</string>
+       <string/>
+      </property>
+      <property name="pixmap">
+       <pixmap resource="../Icons/feather/imagens.qrc">:/imagens/rr6.png</pixmap>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -136,6 +139,8 @@
   <tabstop>pushButtonCadastrar</tabstop>
   <tabstop>pushButtonRedefinir</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../Icons/feather/imagens.qrc"/>
+ </resources>
  <connections/>
 </ui>

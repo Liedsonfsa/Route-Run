@@ -43,7 +43,7 @@
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
-        <string>Autentificação de conta</string>
+        <string>Redefinição de senha</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

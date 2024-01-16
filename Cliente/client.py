@@ -10,7 +10,7 @@ class plataforma_cliente():
 
     def conecxao_servidor(self, codigo):
 
-        ip = '10.180.46.216'
+        ip = '26.31.122.7'
         port = 8000
         addr = ((ip, port))
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -185,7 +185,7 @@ class plataforma_cliente():
         except:
             return False
         print(codigo)
-        saida_lst = saida.split('-')
+        saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
             return saida_lst[1].split(',')
         return None
@@ -268,7 +268,7 @@ class plataforma_cliente():
         except:
             return False
         print(codigo)
-        saida_lst = saida.split('-')
+        saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
             print(saida_lst[1].split(','))
             return saida_lst[1].split(',')
@@ -341,7 +341,7 @@ class plataforma_cliente():
         except:
             return False
         print(codigo)
-        saida_lst = saida.split('-')
+        saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
             print(saida_lst[1].split(','))
             return saida_lst[1].split(',')
@@ -354,7 +354,7 @@ class plataforma_cliente():
         except:
             return False
         print(codigo)
-        saida_lst = saida.split('-')
+        saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
             return saida_lst[1].split(',')
         return None
@@ -378,7 +378,7 @@ class plataforma_cliente():
         except:
             return False
         print(codigo)
-        saida_lst = saida.split('-')
+        saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
             return saida_lst[1].split(',')
         return None
@@ -404,7 +404,7 @@ class plataforma_cliente():
         except:
             return False
         print(codigo)
-        saida_lst = saida.split('-')
+        saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
             return saida_lst[1].split(',')
 
@@ -429,7 +429,7 @@ class plataforma_cliente():
         except:
             return False
         print(codigo)
-        saida_lst = saida.split('~')
+        saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
             return saida_lst[1].split(',')
         

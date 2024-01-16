@@ -3,10 +3,80 @@ import mysql.connector
 
 
 class Reservas(abc.ABC):
+    """
+    Classe abstrata Reservas responsável por armazenar informações sobre as reservas de viagens.
 
+    ...
+
+    Attributes
+    ----------
+    placa : str
+        Placa do veículo associado à reserva
+    acentos : int
+        Número de assentos reservados
+    obs_destino : str
+        Observações sobre o destino da viagem
+    obs_origem : str
+        Observações sobre a origem da viagem
+    destino : str
+        Local de destino da viagem
+    origem : str
+        Local de origem da viagem
+    cpf_cliente : str
+        CPF do cliente responsável pela reserva
+
+    Methods
+    -------
+    placa()
+        Método que retorna o valor da placa
+    placa(placa)
+        Método que modifica o valor da placa
+    acentos()
+        Método que retorna o número de assentos
+    acentos(acentos)
+        Método que modifica o número de assentos
+    obs_destino()
+        Método que retorna as observações sobre o destino
+    obs_destino(obs_destino)
+        Método que modifica as observações sobre o destino
+    obs_origem()
+        Método que retorna as observações sobre a origem
+    obs_origem(obs_origem)
+        Método que modifica as observações sobre a origem
+    destino()
+        Método que retorna o local de destino
+    destino(destino)
+        Método que modifica o local de destino
+    origem()
+        Método que retorna o local de origem
+    origem(origem)
+        Método que modifica o local de origem
+    cpf_cliente()
+        Método que retorna o CPF do cliente
+    cpf_cliente(cpf_cliente)
+        Método que modifica o CPF do cliente
+    """
     __slots__ = ['_placa', '_acentos', '_obs_destino', '_obs_origem', '_destino', '_origem', '_cpf_cliente']
 
     def __init__(self, placa, acentos, obs_destino, obs_origem, destino, origem, cpf_cliente):
+        """
+        Parameters
+        ----------
+        placa : str
+            Placa do veículo associado à reserva
+        acentos : int
+            Número de assentos reservados
+        obs_destino : str
+            Observações sobre o destino da viagem
+        obs_origem : str
+            Observações sobre a origem da viagem
+        destino : str
+            Local de destino da viagem
+        origem : str
+            Local de origem da viagem
+        cpf_cliente : str
+            CPF do cliente responsável pela reserva
+        """
         self._placa = placa
         self._acentos = acentos
         self._obs_destino = obs_destino
@@ -17,58 +87,184 @@ class Reservas(abc.ABC):
     
     @property
     def placa(self):
+        '''Retorna a placa associada à reserva.
+
+        ...
+
+        Returns
+        -------
+        str
+            Placa do veículo associado à reserva
+        '''
         return self._placa
 
     @placa.setter
     def placa(self, placa):
+        '''Modifica a placa associada à reserva.
+
+        ...
+
+        Parameters
+        ----------
+        placa : str
+            Nova placa do veículo associado à reserva
+        '''
         self._placa = placa
     
     @property
     def acentos(self):
+        '''Retorna o número de assentos reservados.
+
+        ...
+
+        Returns
+        -------
+        int
+            Número de assentos reservados
+        '''
         return self._acentos
 
     @acentos.setter
     def acentos(self, acentos):
+        '''Modifica o número de assentos reservados.
+
+        ...
+
+        Parameters
+        ----------
+        acentos : int
+            Novo número de assentos reservados
+        '''
         self._acentos = acentos
 
     @property
     def obs_destino(self):
+        '''Retorna as observações sobre o destino da viagem.
+
+        ...
+
+        Returns
+        -------
+        str
+            Observações sobre o destino da viagem
+        '''
         return self._obs_destino
 
     @obs_destino.setter
     def obs_destino(self, obs_destino):
+        '''Modifica as observações sobre o destino da viagem.
+
+        ...
+
+        Parameters
+        ----------
+        obs_destino : str
+            Novas observações sobre o destino da viagem
+        '''
         self._obs_destino = obs_destino
 
     @property
     def obs_origem(self):
+        '''Retorna as observações sobre a origem da viagem.
+
+        ...
+
+        Returns
+        -------
+        str
+            Observações sobre a origem da viagem
+        '''
         return self._obs_origem
 
     @obs_origem.setter
     def obs_origem(self, obs_origem):
+        '''Modifica as observações sobre a origem da viagem.
+
+        ...
+
+        Parameters
+        ----------
+        obs_origem : str
+            Novas observações sobre a origem da viagem
+        '''
         self._obs_origem = obs_origem
 
     @property
     def destino(self):
+        '''Retorna o local de destino da viagem.
+
+        ...
+
+        Returns
+        -------
+        str
+            Local de destino da viagem
+        '''
         return self._destino
 
     @destino.setter
     def destino(self, destino):
+        '''Modifica o local de destino da viagem.
+
+        ...
+
+        Parameters
+        ----------
+        destino : str
+            Novo local de destino da viagem
+        '''
         self._destino = destino
     
     @property
     def origem(self):
+        '''Retorna o local de origem da viagem.
+
+        ...
+
+        Returns
+        -------
+        str
+            Local de origem da viagem
+        '''
         return self._origem
 
     @origem.setter
     def origem(self, origem):
+        '''Modifica o local de origem da viagem.
+
+        ...
+
+        Parameters
+        ----------
+        origem : str
+            Novo local de origem da viagem
+        '''
         self._origem = origem
     
     @property
     def cpf_cliente(self):
+        '''Retorna o CPF do cliente responsável pela reserva.
+
+        ...
+
+        Returns
+        -------
+        str
+            CPF do cliente responsável pela reserva
+        '''
         return self._cpf_cliente
 
     @cpf_cliente.setter
     def cpf_cliente(self, cpf_cliente):
+        '''Modifica o CPF do cliente responsável pela reserva.
+
+        ...
+
+        Parameters
+        ----------
+        cpf_cliente : str
+            Novo CPF do cliente responsável pela reserva
+        '''
         self._cpf_cliente = cpf_cliente
 
 
@@ -143,10 +339,45 @@ class Carro(abc.ABC):
 
 
 class CadCarro:
+    """
+    Classe CadCarro responsável por gerenciar o cadastro de carros no banco de dados.
 
+    ...
+
+    Attributes
+    ----------
+    _conexao : mysql.connector.connection_cext.CMySQLConnection
+        Conexão ao banco de dados
+    _cursor : mysql.connector.cursor_cext.CMySQLCursor
+        Cursor para execução de comandos SQL
+    _mysql : str
+        Comando SQL para criação das tabelas no banco de dados
+
+    Methods
+    -------
+    cadastro_carro(carro)
+        Cadastra um novo carro no banco de dados
+    busca_carro(placa)
+        Busca um carro no banco de dados pela placa
+    busca_carro_cpf(cpf)
+        Busca carros associados a um motorista pelo CPF
+    Confirmar_reserva(reserva)
+        Confirma uma reserva, atualiza o banco de dados e retorna True se bem-sucedido
+    buscar_reserva(cpf_cliente)
+        Busca reservas associadas a um cliente pelo CPF
+    buscar_reservas_placa(placa)
+        Busca reservas associadas a um veículo pela placa
+    finalizar_dia(placa, acentosADD)
+        Finaliza o dia, atualiza o banco de dados e retorna True se bem-sucedido
+    cancelar_reserva(placa, cpf, acentos)
+        Cancela uma reserva, atualiza o banco de dados e retorna True se bem-sucedido
+    """
     __slots__ = ['_conexao', '_cursor', '_mysql']
 
     def __init__(self):
+        """
+        Inicializa a conexão com o banco de dados e cria as tabelas se não existirem.
+        """
         self._conexao = mysql.connector.connect(host = 'localhost', db ='route_run', user='root', passwd = '@Marcos2004*')
         self._cursor = self._conexao.cursor()
         self._mysql = """CREATE TABLE IF NOT EXISTS carros(placa VARCHAR(11) PRIMARY KEY, marca text NOT NULL, modelo text NOT NULL, cor text NOT NULL, cpf VARCHAR(11), acentos integer, acentos_total integer, foreign key(cpf) references motoristas(cpf));"""
@@ -157,6 +388,19 @@ class CadCarro:
         self._conexao.commit()
         
     def cadastro_carro(self, carro):
+        """
+        Cadastra um novo carro no banco de dados.
+
+        Parameters
+        ----------
+        carro : Carro
+            Objeto da classe Carro contendo as informações do veículo
+
+        Returns
+        -------
+        bool
+            True se o cadastro foi bem-sucedido, False se o veículo já existe no banco de dados
+        """
         existe = self.busca_carro(carro.placa)
         if (existe == None):
             self._cursor.execute('INSERT INTO carros(placa, marca, modelo, cor, cpf, acentos, acentos_total) VALUES(%s,%s,%s,%s,%s,%s,%s)', (carro.placa, carro.marca, carro.modelo, carro.cor, carro.cpf, int(carro.acentos), int(carro.acentos_total)))
@@ -166,6 +410,19 @@ class CadCarro:
             return False
 
     def busca_carro(self, placa):
+        """
+        Busca um carro no banco de dados pela placa.
+
+        Parameters
+        ----------
+        placa : str
+            Placa do veículo a ser buscado
+
+        Returns
+        -------
+        Carro or None
+            Objeto da classe Carro se o veículo for encontrado, None se não for encontrado
+        """
         self._cursor.execute('SELECT * from carros WHERE placa = %s',(placa,))
         verificar = self._cursor.fetchone()
         if (verificar == None):
@@ -175,6 +432,19 @@ class CadCarro:
             return carro
     
     def busca_carro_cpf(self, cpf):
+        """
+        Busca carros associados a um motorista pelo CPF.
+
+        Parameters
+        ----------
+        cpf : str
+            CPF do motorista
+
+        Returns
+        -------
+        list[Carro]
+            Lista de objetos da classe Carro associados ao motorista
+        """
         self._cursor.execute('SELECT * from carros WHERE cpf = %s',(cpf,))
         verificar = self._cursor.fetchall()
         if (verificar == None):
@@ -187,6 +457,19 @@ class CadCarro:
             return carros
         
     def Confirmar_reserva(self, reserva):
+        """
+        Confirma uma reserva, atualiza o banco de dados e retorna True se bem-sucedido.
+
+        Parameters
+        ----------
+        reserva : Reservas
+            Objeto da classe Reservas contendo as informações da reserva
+
+        Returns
+        -------
+        bool
+            True se a reserva foi confirmada com sucesso, False se já existe uma reserva associada ao cliente
+        """
         existe = self.buscar_reserva(reserva.cpf_cliente)
         if (existe == None):
             self._cursor.execute('INSERT INTO reservas(placa, acentos, obs_destino, obs_origem, destino, origem, cpf_cliente) VALUES(%s,%s,%s,%s,%s,%s,%s)', (reserva.placa, reserva.acentos, reserva.obs_destino, reserva.obs_origem, reserva.destino, reserva.origem, reserva.cpf_cliente))
@@ -200,6 +483,19 @@ class CadCarro:
             return False
         
     def buscar_reserva(self, cpf_cliente):
+        """
+        Busca reservas associadas a um cliente pelo CPF.
+
+        Parameters
+        ----------
+        cpf_cliente : str
+            CPF do cliente
+
+        Returns
+        -------
+        list[Reservas] or None
+            Lista de objetos da classe Reservas associados ao cliente, None se não houver reservas
+        """
         self._cursor.execute('SELECT * from reservas WHERE cpf_cliente = %s',(cpf_cliente,))
         verificar = self._cursor.fetchall()
         if (verificar == []):
@@ -213,6 +509,19 @@ class CadCarro:
             return reservas
         
     def buscar_reservas_placa(self, placa):
+        """
+        Busca reservas associadas a um veículo pela placa.
+
+        Parameters
+        ----------
+        placa : str
+            Placa do veículo
+
+        Returns
+        -------
+        list[Reservas] or None
+            Lista de objetos da classe Reservas associados ao veículo, None se não houver reservas
+        """
         self._cursor.execute('SELECT * from reservas WHERE placa = %s',(placa,))
         verificar = self._cursor.fetchall()
         if (verificar == None):
@@ -225,6 +534,21 @@ class CadCarro:
             return reservas
         
     def finalizar_dia(self, placa, acentosADD):
+        """
+        Finaliza o dia, atualiza o banco de dados e retorna True se bem-sucedido.
+
+        Parameters
+        ----------
+        placa : str
+            Placa do veículo
+        acentosADD : int
+            Número de assentos a serem adicionados ao veículo
+
+        Returns
+        -------
+        bool
+            True se o dia foi finalizado com sucesso, False se houve algum erro
+        """
         self._cursor.execute('UPDATE carros SET acentos = acentos + %s WHERE placa = %s', (acentosADD, placa))
         self._conexao.commit()
         self._cursor.fetchall()
@@ -234,6 +558,23 @@ class CadCarro:
         return True
 
     def cancelar_reserva(self, placa, cpf, acentos):
+        """
+        Cancela uma reserva, atualiza o banco de dados e retorna True se bem-sucedido.
+
+        Parameters
+        ----------
+        placa : str
+            Placa do veículo associado à reserva
+        cpf : str
+            CPF do cliente associado à reserva
+        acentos : int
+            Número de assentos reservados a serem devolvidos ao veículo
+
+        Returns
+        -------
+        bool
+            True se a reserva foi cancelada com sucesso, False se houve algum erro
+        """
         self._cursor.execute('UPDATE carros SET acentos = acentos + %s WHERE placa = %s', (acentos, placa))
         self._conexao.commit()
         self._cursor.fetchall()
