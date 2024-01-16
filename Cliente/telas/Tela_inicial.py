@@ -28,6 +28,8 @@ class TelaInicial(object):
         font.setWeight(75)
         self.label_3.setFont(font)
         self.label_3.setMidLineWidth(0)
+        self.label_3.setText("")
+        self.label_3.setPixmap(QtGui.QPixmap("ui\\../Icons/feather/rr6.png"))
         self.label_3.setAlignment(QtCore.Qt.AlignCenter)
         self.label_3.setObjectName("label_3")
         self.verticalLayout.addWidget(self.label_3)
@@ -75,13 +77,13 @@ class TelaInicial(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_3.setText(_translate("MainWindow", "Route Run"))
         self.lineEditMail.setPlaceholderText(_translate("MainWindow", "E-mail"))
         self.lineEditSenha.setPlaceholderText(_translate("MainWindow", "Senha"))
         self.pushButtonSair.setText(_translate("MainWindow", "Sair"))
         self.pushButtonEntrar.setText(_translate("MainWindow", "Entrar"))
         self.pushButtonCadastrar.setText(_translate("MainWindow", "Cadastrar"))
         self.pushButtonRedefinir.setText(_translate("MainWindow", "Redefinir senha"))
+#import imagens_rc
 
 
 if __name__ == "__main__":

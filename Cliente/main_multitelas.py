@@ -657,6 +657,8 @@ class Main(QMainWindow, Ui_Main):
                 self.cad.guardar_num(cod)
                 self.telaAut2.lineEdit.setText('')
                 self.QtStack.setCurrentIndex(7)
+            else:
+                QMessageBox.information(None, 'Login', 'email não cadastrado na base de dados')
 
     def autentificacao(self):
         num = int(self.telaAut.lineEdit.text())
@@ -798,6 +800,7 @@ class Main(QMainWindow, Ui_Main):
             tam = (len(carros))
 
         if carros != 0:
+            print(carros)
             for i in range(tam):
                 #print((carros[i].split("'")[1].split("'")[0]).split('/')[0])
                 self.telaPrincipalMotorista.label = QLabel()
@@ -835,8 +838,8 @@ class Main(QMainWindow, Ui_Main):
         self.limpar_layout(self.telahistovei.layhistovei)
         self.QtStack.setCurrentIndex(22)
         historico = self.rot.buscar_histo(placa)
-        print(historico)
-        print((historico[0].split("'")[1].split("'")[0]).split('/')[0])
+        # print(historico)
+        # print((historico[0].split("'")[1].split("'")[0]).split('/')[0])
         if historico:
             tam = len(historico)
             for i in range(tam):
@@ -1397,4 +1400,23 @@ class Main(QMainWindow, Ui_Main):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     show_main = Main()
+    style_sheet = """
+        QMainWindow {
+            background-color: #CCE6ED; /* 3498db */
+        }
+
+        QLabel {
+            color: #133842;
+        }
+
+        QPushButton {
+            background-color: #3498db;
+            color: #ffffff;
+            border: 1px solid #2980b9;
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+
+    """
+    app.setStyleSheet(style_sheet)
     sys.exit(app.exec_())
