@@ -269,10 +269,80 @@ class Reservas(abc.ABC):
 
 
 class Carro(abc.ABC):
+    """
+    Classe abstrata Carro responsável por armazenar informações sobre os veículos disponíveis.
 
+    ...
+
+    Attributes
+    ----------
+    placa : str
+        Placa do veículo
+    marca : str
+        Marca do veículo
+    modelo : str
+        Modelo do veículo
+    cor : str
+        Cor do veículo
+    cpf : str
+        CPF do motorista associado ao veículo
+    acentos : int
+        Número de assentos disponíveis no veículo
+    acentos_total : int
+        Número total de assentos no veículo
+
+    Methods
+    -------
+    placa()
+        Método que retorna a placa do veículo
+    placa(placa)
+        Método que modifica a placa do veículo
+    marca()
+        Método que retorna a marca do veículo
+    marca(marca)
+        Método que modifica a marca do veículo
+    modelo()
+        Método que retorna o modelo do veículo
+    modelo(modelo)
+        Método que modifica o modelo do veículo
+    cor()
+        Método que retorna a cor do veículo
+    cor(cor)
+        Método que modifica a cor do veículo
+    cpf()
+        Método que retorna o CPF do motorista
+    cpf(cpf)
+        Método que modifica o CPF do motorista
+    acentos()
+        Método que retorna o número de assentos disponíveis
+    acentos(acentos)
+        Método que modifica o número de assentos disponíveis
+    acentos_total()
+        Método que retorna o número total de assentos no veículo
+    acentos_total(acentos_total)
+        Método que modifica o número total de assentos no veículo
+    """
     __slots__ = ['_placa', '_marca', '_modelo', '_cor', '_cpf', '_acentos', '_acentos_total']
 
     def __init__(self, placa, marca, modelo, cor, cpf, acentos, acentos_total):
+        """
+        Parameters
+        ----------
+        placa : str
+            Placa do veículo
+        marca : str
+            Marca do veículo
+        modelo : str
+            Modelo do veículo
+        cor : str
+            Cor do veículo
+        cpf : str
+            CPF do motorista associado ao veículo
+        acentos : int
+            Número de assentos disponíveis no veículo
+        acentos_total : int
+            Número total de assentos no veículo
+        """
         self._placa = placa
         self._marca = marca
         self._modelo = modelo
@@ -283,58 +353,184 @@ class Carro(abc.ABC):
 
     @property
     def placa(self):
+        '''Retorna a placa do veículo.
+
+        ...
+
+        Returns
+        -------
+        str
+            Placa do veículo
+        '''
         return self._placa
 
     @placa.setter
     def placa(self, placa):
+        '''Modifica a placa do veículo.
+
+        ...
+
+        Parameters
+        ----------
+        placa : str
+            Nova placa do veículo
+        '''
         self._placa = placa
 
     @property
     def marca(self):
+        '''Retorna a marca do veículo.
+
+        ...
+
+        Returns
+        -------
+        str
+            Marca do veículo
+        '''
         return self._marca
 
     @marca.setter
     def marca(self, marca):
+        '''Modifica a marca do veículo.
+
+        ...
+
+        Parameters
+        ----------
+        marca : str
+            Nova marca do veículo
+        '''
         self._marca = marca
 
     @property
     def modelo(self):
+        '''Retorna o modelo do veículo.
+
+        ...
+
+        Returns
+        -------
+        str
+            Modelo do veículo
+        '''
         return self._modelo
 
     @modelo.setter
     def modelo(self, modelo):
+        '''Modifica o modelo do veículo.
+
+        ...
+
+        Parameters
+        ----------
+        modelo : str
+            Novo modelo do veículo
+        '''
         self._modelo = modelo
 
     @property
     def cor(self):
+        '''Retorna a cor do veículo.
+
+        ...
+
+        Returns
+        -------
+        str
+            Cor do veículo
+        '''
         return self._cor
 
     @cor.setter
     def cor(self, cor):
+        '''Modifica a cor do veículo.
+
+        ...
+
+        Parameters
+        ----------
+        cor : str
+            Nova cor do veículo
+        '''
         self._cor = cor
 
     @property
     def cpf(self):
+        '''Retorna o CPF do motorista associado ao veículo.
+
+        ...
+
+        Returns
+        -------
+        str
+            CPF do motorista associado ao veículo
+        '''
         return self._cpf
 
     @cpf.setter
     def cpf(self, cpf):
+        '''Modifica o CPF do motorista associado ao veículo.
+
+        ...
+
+        Parameters
+        ----------
+        cpf : str
+            Novo CPF do motorista associado ao veículo
+        '''
         self._cpf = cpf
 
     @property
     def acentos(self):
+        '''Retorna o número de assentos disponíveis no veículo.
+
+        ...
+
+        Returns
+        -------
+        int
+            Número de assentos disponíveis no veículo
+        '''
         return self._acentos
 
     @acentos.setter
     def acentos(self, acentos):
+        '''Modifica o número de assentos disponíveis no veículo.
+
+        ...
+
+        Parameters
+        ----------
+        acentos : int
+            Novo número de assentos disponíveis no veículo
+        '''
         self._acentos = acentos
     
     @property
     def acentos_total(self):
+        '''Retorna o número total de assentos no veículo.
+
+        ...
+
+        Returns
+        -------
+        int
+            Número total de assentos no veículo
+        '''
         return self._acentos_total
 
     @acentos_total.setter
     def acentos_total(self, acentos_total):
+        '''Modifica o número total de assentos no veículo.
+
+        ...
+
+        Parameters
+        ----------
+        acentos_total : int
+            Novo número total de assentos no veículo
+        '''
         self._acentos_total = acentos_total
 
 

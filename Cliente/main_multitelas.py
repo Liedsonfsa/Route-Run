@@ -34,6 +34,25 @@ from telas.Tela_historico_veiculos import TelaHistoricoVeiculos
 
 
 class ChatUpdater:
+    """
+    Classe para atualizar o chat de um cliente.
+
+    Attributes
+    ----------
+    chat_thread : ChatThread
+        Thread para manipular a lógica de atualização do chat.
+    timer : QTimer
+        Temporizador para controlar a frequência de atualização.
+
+    Methods
+    -------
+    __init__(self, chat_thread, update_interval=500)
+        Inicializa a classe com uma thread de chat e um intervalo de atualização.
+    update_chat(self)
+        Inicia a thread para atualizar o chat.
+    stop_update(self)
+        Para a atualização periódica do chat.
+    """
     def __init__(self, chat_thread, update_interval=500):  # Atualização a cada meio segundos
         self.chat_thread = chat_thread
         self.timer = QTimer()
@@ -48,6 +67,25 @@ class ChatUpdater:
 
 
 class MotoristaChatUpdater:
+    """
+    Classe para atualizar o chat de um motorista.
+
+    Attributes
+    ----------
+    motorista_chat_thread : MotoristaChatThread
+        Thread para manipular a lógica de atualização do chat do motorista.
+    timer : QTimer
+        Temporizador para controlar a frequência de atualização.
+
+    Methods
+    -------
+    __init__(self, motorista_chat_thread, update_interval=500)
+        Inicializa a classe com uma thread de chat do motorista e um intervalo de atualização.
+    update_motorista_chat(self)
+        Inicia a thread para atualizar o chat do motorista.
+    stop_update(self)
+        Para a atualização periódica do chat do motorista.
+    """
     def __init__(self, motorista_chat_thread, update_interval=500):  # Atualização a cada meio segundos
         self.motorista_chat_thread = motorista_chat_thread
         self.timer = QTimer()
@@ -62,6 +100,21 @@ class MotoristaChatUpdater:
 
 
 class ChatThread(QThread):
+    """
+    Thread para manipular a lógica de atualização do chat de um cliente.
+
+    Attributes
+    ----------
+    message_received : pyqtSignal
+        Sinal emitido quando uma mensagem é recebida.
+
+    Methods
+    -------
+    __init__(self, cpf, cpf_mot)
+        Inicializa a thread com os CPFs do cliente e do motorista.
+    run(self)
+        Executa a lógica da thread para obter e emitir mensagens recebidas.
+    """
     message_received = pyqtSignal(str, str, str)
 
     def __init__(self, cpf, cpf_mot):
@@ -80,6 +133,21 @@ class ChatThread(QThread):
 
 
 class MotoristaChatThread(QThread):
+    """
+    Thread para manipular a lógica de atualização do chat de um motorista.
+
+    Attributes
+    ----------
+    message_received : pyqtSignal
+        Sinal emitido quando uma mensagem é recebida.
+
+    Methods
+    -------
+    __init__(self, cpf_cliente, cpf_motorista)
+        Inicializa a thread com os CPFs do cliente e do motorista.
+    run(self)
+        Executa a lógica da thread para obter e emitir mensagens recebidas.
+    """
     message_received = pyqtSignal(str, str, str)
 
     def __init__(self, cpf_cliente, cpf_motorista):
@@ -98,6 +166,26 @@ class MotoristaChatThread(QThread):
 
 
 class Ui_Main(QtWidgets.QWidget):
+    """
+    Classe Ui_Main responsável pela configuração da interface gráfica.
+
+    Attributes
+    ----------
+    QtStack : QtWidgets.QStackedLayout
+        Layout empilhado para alternar entre diferentes telas.
+
+    stack0 - stack22 : QtWidgets.QMainWindow
+        Janelas principais para cada tela.
+
+    telaInicial - telaHistoricoVeiculos : QtWidgets.QWidget
+        Instâncias das classes correspondentes às telas.
+
+    Methods
+    -------
+    setupUi(Main)
+        Configura a interface gráfica com as diferentes telas e as adiciona ao layout empilhado.
+    """
+
     def setupUi(self, Main):
         Main.setObjectName('Main')
         Main.resize(640, 480)
