@@ -695,7 +695,6 @@ class CadCarro:
         self._cursor.execute('SELECT * from reservas WHERE cpf_cliente = %s',(cpf_cliente,))
         verificar = self._cursor.fetchall()
         if (verificar == []):
-            print('------------------..')
             return None
         else:
             reservas = []

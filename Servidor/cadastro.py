@@ -463,15 +463,15 @@ class Cadastro:
         bool
             True se as mensagens foram zeradas, False se não houver mensagens a serem zeradas.
         """
-        print(cpf)
+        #print(cpf)
         self._cursor.execute('SELECT * FROM mensagens WHERE id LIKE %s', (f'{cpf}%',))
         mensagens_a_zerar = self._cursor.fetchall()
 
-        print("Mensagens a zerar:", mensagens_a_zerar)
+        #print("Mensagens a zerar:", mensagens_a_zerar)
 
         if mensagens_a_zerar:
             # Zerar as mensagens, definindo o campo 'sinal' como 0
-            print("Mensagens a zerar:", mensagens_a_zerar)
+            #print("Mensagens a zerar:", mensagens_a_zerar)
             self._cursor.execute('UPDATE mensagens SET sinal = 0 WHERE id LIKE %s', (f'{cpf}%',))
             self._conexao.commit()
             return True
@@ -492,15 +492,15 @@ class Cadastro:
         bool
             True se as mensagens foram zeradas, False se não houver mensagens a serem zeradas.
         """
-        print(cpf)
+        #print(cpf)
         self._cursor.execute('SELECT * FROM mensagens WHERE id LIKE %s', (f'%{cpf}',))
         mensagens_a_zerar = self._cursor.fetchall()
 
-        print("Mensagens a zerar:", mensagens_a_zerar)
+        #print("Mensagens a zerar:", mensagens_a_zerar)
 
         if mensagens_a_zerar:
             # Zerar as mensagens, definindo o campo 'sinal' como 0
-            print("Mensagens a zerar:", mensagens_a_zerar)
+            #print("Mensagens a zerar:", mensagens_a_zerar)
             self._cursor.execute('UPDATE mensagens SET sinal_mot = 0 WHERE id LIKE %s', (f'%{cpf}',))
             self._conexao.commit()
             return True

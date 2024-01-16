@@ -311,6 +311,29 @@ class Ui_Main(QtWidgets.QWidget):
 
 
 class Main(QMainWindow, Ui_Main):
+    """
+    Classe principal que gerencia a interface gráfica da aplicação.
+
+    Attributes
+    ----------
+    cad : plataforma_cliente
+        Instância da classe plataforma_cliente para interação com as funcionalidades do sistema.
+    rot : plataforma_cliente
+        Instância da classe plataforma_cliente para manipulação de rotas.
+    carro : plataforma_cliente
+        Instância da classe plataforma_cliente para manipulação de carros.
+    numero_cpf_atual_mot : None
+        Armazena o número de CPF atual do motorista.
+    chat_thread : None
+        Thread para manipular a lógica de atualização do chat.
+    chat_thread_mot : None
+        Thread para manipular a lógica de atualização do chat do motorista.
+
+    Methods
+    -------
+    __init__(self)
+        Inicializa a classe e conecta os sinais aos métodos correspondentes.
+    """
     def __init__(self):
         super(Main, self).__init__(None)
         self.setupUi(self)
@@ -410,27 +433,48 @@ class Main(QMainWindow, Ui_Main):
         self.telahistovei.layhistovei = QVBoxLayout()
 
     def abrir_reservar_cliente(self):
+        """
+        Abre a tela de visualização de reservas do cliente.
+        """
         self.QtStack.setCurrentIndex(21)
         self.ver_reservas_cliente()
 
     def rolar_para_fim(self):
+        """
+        Rola a barra de rolagem para o final na tela de chat do cliente.
+        """
         QTimer.singleShot(0, lambda: self.telachat.scrollArea.verticalScrollBar().setValue(self.telachat.scrollArea.verticalScrollBar().maximum()))
 
     def rolar_para_fim_mot(self):
+        """
+        Rola a barra de rolagem para o final na tela de chat do motorista.
+        """
         QTimer.singleShot(0, lambda: self.telachatmot.scrollArea.verticalScrollBar().setValue(self.telachatmot.scrollArea.verticalScrollBar().maximum()))
 
     def fecharPrograma(self):
+        """
+        Fecha o programa.
+        """
         sys.exit(app.exec_())
 
     def abrir_chats(self):
+        """
+        Abre a tela de visualização de chats do cliente.
+        """
         self.QtStack.setCurrentIndex(16)
         self.montar_chats()
 
     def abrir_chats_mot(self):
+        """
+        Abre a tela de visualização de chats do motorista.
+        """
         self.QtStack.setCurrentIndex(17)
         self.montar_chats_mot()
 
     def voltar(self):
+        """
+        Volta para a tela inicial, limpando campos de login.
+        """
         self.telaInicial.lineEditMail.setText('')
         self.telaInicial.lineEditSenha.setText('')
         self.telaAut2.lineEdit.setText('')
@@ -442,6 +486,9 @@ class Main(QMainWindow, Ui_Main):
         self.QtStack.setCurrentIndex(0)
 
     def voltar_principal(self):
+        """
+        Volta para a tela principal, limpando campos relacionados a rotas e carros do motorista.
+        """
         self.telaRota.line_cidade_destino.setText('')
         self.telaRota.line_cidade_origem.setText('')
         self.telaRota.line_UF_destino.setText('')
@@ -464,6 +511,9 @@ class Main(QMainWindow, Ui_Main):
         # self.telachatmot.enviar.clicked.disconnect()
 
     def voltar_principal_cadCarro(self):
+        """
+        Volta para a tela principal de cadastro de carros, limpando os campos.
+        """
         self.telacadastrocarro.placa_line.setText('')
         self.telacadastrocarro.modelo_line.setText('')
         self.telacadastrocarro.marca_line.setText('')
@@ -472,6 +522,9 @@ class Main(QMainWindow, Ui_Main):
         self.QtStack.setCurrentIndex(5)
 
     def voltar_principal_perfil_cliente(self):
+        """
+        Volta para a tela principal do cliente, limpando campos e layouts associados a perfis e chats.
+        """
         self.telaPrincipal.procurar.setText('')
         self.telaPrincipal.lineEdit.setText('')
         self.QtStack.setCurrentIndex(2)
@@ -487,6 +540,9 @@ class Main(QMainWindow, Ui_Main):
         # self.telachat.enviar.clicked.disconnect()
 
     def voltar_do_chat(self):
+        """
+        Volta para a tela principal do cliente após a visualização de um chat, limpando campos e layouts associados.
+        """
         self.telaPrincipal.procurar.setText('')
         self.telaPrincipal.lineEdit.setText('')
         self.limpar_layout(self.telaPrincipal.lay)
@@ -499,8 +555,11 @@ class Main(QMainWindow, Ui_Main):
         self.chat_updater = ChatUpdater(self.chat_thread)
         self.chat_updater.stop_update()
         self.telachat.enviar.clicked.disconnect()
-    ###
+
     def voltar_da_reserva(self):
+        """
+        Volta para a tela principal do cliente após a visualização de reservas, limpando campos e layouts associados.
+        """
         self.telaPrincipal.procurar.setText('')
         self.telaPrincipal.lineEdit.setText('')
         self.telareserva.comboBox.setCurrentIndex(0)
@@ -513,6 +572,9 @@ class Main(QMainWindow, Ui_Main):
         self.QtStack.setCurrentIndex(2)
 
     def voltar_de_ver_reservas(self):
+        """
+        Volta para a tela principal do motorista após a visualização de reservas, limpando layouts associados.
+        """
         self.telaverreserva.pushButton_2.clicked.disconnect()
         self.limpar_layout(self.telaverreserva.layverreservas)
         self.limpar_layout(self.telaPrincipalMotorista.layCarros)
@@ -520,6 +582,9 @@ class Main(QMainWindow, Ui_Main):
         self.QtStack.setCurrentIndex(5)
 
     def voltar_do_chat_mot(self):
+        """
+        Volta para a tela de visualização de chats do motorista após a visualização de um chat, limpando layouts associados.
+        """
         self.limpar_layout(self.telachatmot.layM)
         self.limpar_layout(self.telaguardarchatsmot.laychatmot)
         self.abrir_chats_mot()
@@ -531,25 +596,43 @@ class Main(QMainWindow, Ui_Main):
         self.telachatmot.enviar.clicked.disconnect()
 
     def abrir_perfil_cliente(self):
+        """
+        Abre a tela de visualização de perfil do cliente.
+        """
         self.QtStack.setCurrentIndex(11)
         self.perfil_cliente()
 
     def abrirCadastroRota(self):
+        """
+        Abre a tela de cadastro de rotas.
+        """
         self.QtStack.setCurrentIndex(6)
 
     def abrirCadastroCarro(self):
+        """
+        Abre a tela de cadastro de carros.
+        """
         self.QtStack.setCurrentIndex(10)
 
     def abrirCadastroCpf(self):
+        """
+        Abre a tela de cadastro de CPF.
+        """
         self.QtStack.setCurrentIndex(12)
 
     def abrirTelaCliente(self):
+        """
+        Abre a tela principal do cliente, limpando layouts associados.
+        """
         self.QtStack.setCurrentIndex(2)
         self.limpar_layout(self.telaPrincipal.lay)
         self.limpar_layout(self.telaguardarchats.layChat)
         #self.montar_chats(c[3])
 
     def ver_reservas_cliente(self):
+        """
+        Exibe as reservas do cliente na tela de visualização de reservas.
+        """
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_cliente(email)
         reservas = self.carro.buscar_reservas_cpf(c[3])
@@ -577,9 +660,12 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'chats', 'Sem reservas')
 
     def add_cancelar(self, layout, placa, cpf, acentos):
+        """
+        Adiciona um botão para cancelar uma reserva em um layout.
+        """
         botao_c = QPushButton('Cancelar', self)
         
-        botao_c.clicked.connect(lambda: self.cancelar(placa, cpf, acentos))#lambda: self.chat(cpf_mot)
+        botao_c.clicked.connect(lambda: self.cancelar(placa, cpf, acentos))
 
         # Adicionar os botões ao layout
         layout.addWidget(botao_c)
@@ -587,6 +673,9 @@ class Main(QMainWindow, Ui_Main):
         layout.setAlignment(Qt.AlignTop)
 
     def cancelar(self, placa, cpf, acentos):
+        """
+        Cancela uma reserva e exibe mensagem informativa.
+        """
         if self.carro.cancelar_reserva(placa, cpf, acentos):
             QMessageBox.information(None, 'Carro', 'Reserva Cancelada')
             self.voltar_principal_perfil_cliente()
@@ -594,6 +683,9 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'Carro', 'Erro ao cancelar reserva')
 
     def montar_chats(self):
+        """
+        Monta a visualização de chats do cliente.
+        """
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_cliente(email)
         lista = self.cad.exibir_chats(c[3])
@@ -615,6 +707,9 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'chats', 'Sem chats')
 
     def montar_chats_mot(self):
+        """
+        Monta a visualização de chats do motorista.
+        """
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_mot(email)
         lista = self.cad.exibir_chats_mot(c[3])
@@ -635,10 +730,16 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'chats', 'Sem chats')
 
     def abrirTelaMotorista(self):
+        """
+        Abre a tela principal do motorista, exibindo carros disponíveis.
+        """
         self.QtStack.setCurrentIndex(5)
         self.mostrar_carros()
 
     def abrirCadastro(self):
+        """
+        Abre a tela de cadastro, limpando os campos.
+        """
         self.telaCadastro.lineEditNome.setText('')
         self.telaCadastro.lineEditEndereco.setText('')
         self.telaCadastro.lineEdit.setText('')
@@ -654,13 +755,22 @@ class Main(QMainWindow, Ui_Main):
         self.QtStack.setCurrentIndex(1)
 
     def abrirEmail(self):
+        """
+        Abre a tela de visualização de e-mails.
+        """
         self.QtStack.setCurrentIndex(8)
 
     def abrirperfil(self):
+        """
+        Abre a tela do perfil do usuário.
+        """
         self.QtStack.setCurrentIndex(9)
         self.perfil()
 
     def redefinir(self):
+        """
+        Redefine a senha do usuário com base nos dados fornecidos.
+        """
         nsenha = self.telaRedefinir.lineEditnsenha.text()
         cnsenha = self.telaRedefinir.lineEditcnsenha.text()
         email = self.telaRedefinir.lineEditEmail.text()
@@ -682,8 +792,10 @@ class Main(QMainWindow, Ui_Main):
                 QMessageBox.information(None, 'Cadastro', 'Senhas diferentes!')
 
     def email(self):
+        """
+        Envia um código de alteração de senha para o e-mail do usuário.
+        """
         email = self.telaAut2.lineEdit.text()
-        #usuario = self.telaAut2.comboBoxUsuarios.currentText()
         if email == '':
             QMessageBox.information(None, 'Login', 'Todos os espaços devem ser preenchidos!')
         else:
@@ -749,6 +861,9 @@ class Main(QMainWindow, Ui_Main):
                 QMessageBox.information(None, 'Login', 'email não cadastrado na base de dados')
 
     def autentificacao(self):
+        """
+        Autentica o usuário com base no código recebido por e-mail.
+        """
         num = int(self.telaAut.lineEdit.text())
 
         if num == '':
@@ -761,7 +876,9 @@ class Main(QMainWindow, Ui_Main):
                 QMessageBox.information(None, 'Login', 'O codigo inserido não corresponde ao enviado no email')
 
     def abrirMain(self):
-
+        """
+        Autentica o usuário e direciona para a tela principal com base no tipo de cadastro (cliente, motorista ou ambos).
+        """
         email = self.telaInicial.lineEditMail.text()
         senha = self.telaInicial.lineEditSenha.text()
 
@@ -805,6 +922,12 @@ class Main(QMainWindow, Ui_Main):
     ###############################################################################
     #ok?
     def add_cidades(self):
+        """
+        Adiciona uma cidade à rota.
+
+        Obtém os dados da cidade a ser adicionada, verifica se os campos foram preenchidos, 
+        e, em seguida, adiciona a cidade à rota, exibindo uma mensagem de sucesso ou falha.
+        """
         cidade = self.telacitys.lineEditcity.text()
         uf = self.telacitys.lineEdit.text()
         if cidade == '' or uf == '':
@@ -821,8 +944,14 @@ class Main(QMainWindow, Ui_Main):
                 self.telacitys.lineEditcity.setText('')
                 self.telacitys.lineEdit.setText('')
                 QMessageBox.information(None, 'Cidade', 'Cidade já está cadastrada nessa rota')
-    #ok?
+
     def cad_rota(self):
+        """
+        Cadastra uma nova rota.
+
+        Obtém os dados da nova rota, verifica se todos os campos foram preenchidos, 
+        verifica a existência da placa do carro e, em seguida, cadastra a rota.
+        """
         uf_origem = self.telaRota.line_UF_origem.text()
         cidade_origem = self.telaRota.line_cidade_origem.text()
         uf_destino = self.telaRota.line_UF_destino.text()
@@ -876,6 +1005,11 @@ class Main(QMainWindow, Ui_Main):
     #ok?
 
     def mostrar_carros(self):
+        """
+        Mostra os carros cadastrados pelo motorista na tela principal.
+
+        Obtém o e-mail do motorista, busca os carros associados ao CPF e exibe as informações na tela principal.
+        """
         self.limpar_layout(self.telaPrincipalMotorista.layCarros)
         email = self.telaInicial.lineEditMail.text()
         cpf = self.cad.buscar_email_mot(email)
@@ -888,7 +1022,6 @@ class Main(QMainWindow, Ui_Main):
             tam = (len(carros))
 
         if carros != 0:
-            print(carros)
             for i in range(tam):
                 #print((carros[i].split("'")[1].split("'")[0]).split('/')[0])
                 self.telaPrincipalMotorista.label = QLabel()
@@ -911,6 +1044,11 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'Carro', 'Sem carros cadastrados.')
 
     def inspecionar_van(self, layout, placa):
+        """
+        Adiciona botões para inspecionar e visualizar o histórico de uma van ao layout.
+
+        Adiciona botões "Inspecionar Van" e "Histórico Van" ao layout fornecido para permitir ações adicionais sobre a van.
+        """
         inspecionar_van = QPushButton('Inspecionar Van', self)
         historico_van = QPushButton('Historico Van', self)
 
@@ -923,11 +1061,14 @@ class Main(QMainWindow, Ui_Main):
         layout.setAlignment(Qt.AlignTop)
 
     def historico_da_van(self, placa):
+        """
+        Exibe o histórico de uma van.
+
+        Exibe o histórico da van com a placa fornecida na tela "Histórico da Van".
+        """
         self.limpar_layout(self.telahistovei.layhistovei)
         self.QtStack.setCurrentIndex(22)
         historico = self.rot.buscar_histo(placa)
-        # print(historico)
-        # print((historico[0].split("'")[1].split("'")[0]).split('/')[0])
         if historico:
             tam = len(historico)
             for i in range(tam):
@@ -945,8 +1086,10 @@ class Main(QMainWindow, Ui_Main):
         else:
             QMessageBox.information(None, 'Historico', 'Sem historicos')
 
-
     def ver_van(self, placa):
+        """
+        Exibe detalhes sobre uma van específica, incluindo o histórico de rotas e reservas.
+        """
         self.limpar_layout(self.telaverreserva.layverreservas)
         self.QtStack.setCurrentIndex(20)
         reservas = self.carro.buscar_reservas_placa(placa)
@@ -967,8 +1110,6 @@ class Main(QMainWindow, Ui_Main):
                 origem = (reservas[i].split("'")[1].split("'")[0]).split('/')[5]
                 cpf_cliente = (reservas[i].split("'")[1].split("'")[0]).split('/')[6]
                 nome = self.cad.busca_cpf_cliente(cpf_cliente)
-                print(nome[1])
-                print(acentos)
                 self.telaverreserva.label.setText(f'Acentos reservados: {acentos}\nref. origem: {obs_origem}\nref. destino{obs_destino}\norigem: {origem}\ndestino: {destino}\nNome Cliente: {nome[1]}\n--------------------------------------------------------------------------------------------')
                 self.telaverreserva.layverreservas.addWidget(self.telaverreserva.label)
                 # self.telaverreserva.label2 = QLabel()
@@ -984,6 +1125,11 @@ class Main(QMainWindow, Ui_Main):
         self.telaverreserva.pushButton_2.clicked.connect(lambda _, placa=placa, cont=cont: self.finalizar_dia(placa, cont))
 
     def finalizar_dia(self, placa, cont):
+        """
+        Finaliza o dia para um carro específico.
+
+        Finaliza o dia para o carro com a placa fornecida, adicionando o histórico e resetando as reservas do dia.
+        """
         if self.rot.add_histo(placa, cont) and self.carro.finalizar_dia(placa, cont):
             QMessageBox.information(None, 'Carro', 'Dia finalizado e reservas do dia resetadas')
             self.voltar_de_ver_reservas()
@@ -991,6 +1137,11 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'Carro', 'Erro ao finalizar o dia')
 
     def procurarRota(self):
+        """
+        Procura uma rota com base nas cidades de origem e destino.
+
+        Obtém as cidades de origem e destino, verifica se os campos foram preenchidos e exibe informações sobre a rota encontrada.
+        """
         rota_origem = self.telaPrincipal.procurar.text()
         rota_destino = self.telaPrincipal.lineEdit.text()
         self.limpar_layout(self.telaPrincipal.lay)
@@ -1028,34 +1179,44 @@ class Main(QMainWindow, Ui_Main):
                 QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
 
     def chat_reserva(self, layout, cpf_mot, placa):
+        """
+        Adiciona botões para iniciar um chat e fazer uma reserva ao layout.
+
+        Adiciona botões "Chat" e "Reserva" ao layout fornecido para permitir ações adicionais sobre a rota.
+        """
         botao_chat = QPushButton('chat', self)
         botao_reserva = QPushButton('reserva', self)
     
-        # Conectar os botões a métodos específicos
-        
         botao_chat.clicked.connect(lambda: self.chat(cpf_mot))
         botao_reserva.clicked.connect(lambda: self.reserva(placa))
 
-        # Adicionar os botões ao layout
         layout.addWidget(botao_chat)
         layout.addWidget(botao_reserva)
 
         layout.setAlignment(Qt.AlignTop)
 
     def chat(self, cpf_mot):
-        # Lógica para aceitar a rota
+        """
+        Inicia um chat com o motorista.
+
+        Inicia um chat com o motorista associado ao CPF fornecido.
+        """
         cpfC = self.cad.buscar_email_cliente(self.telaInicial.lineEditMail.text())[3]
         self.cad.zerar_mensagens(cpfC)
         self.alimentar_chat(cpfC, cpf_mot)
-        #carro = self.carro.busca_carro(cpf_mot)
+
         mot = self.cad.busca_cpf_mot(cpf_mot)
-        print('chat')
         self.telachat.label.setText(mot[1])
         self.QtStack.setCurrentIndex(15)
 
         self.telachat.enviar.clicked.connect(lambda _, cpf_mot=cpf_mot: self.enviar_mensagem(cpf_mot))
 
     def chat_mot(self, cpf_cliente):
+        """
+        Inicia um chat com o cliente.
+
+        Inicia um chat com o cliente associado ao CPF fornecido.
+        """
         cpfM = self.cad.buscar_email_mot(self.telaInicial.lineEditMail.text())[3]
         self.cad.zerar_mensagens_mot(cpfM)
         self.alimentar_chat_mot(cpf_cliente, cpfM)
@@ -1066,16 +1227,25 @@ class Main(QMainWindow, Ui_Main):
         self.telachatmot.enviar.clicked.connect(lambda _, cpf_cliente=cpf_cliente: self.enviar_mensagem_mot(cpf_cliente))
         
     def reserva(self, placa):
-        # Lógica para negar a rota
+        """
+        Inicia o processo de reserva.
+
+        Inicia o processo de reserva para a rota associada à placa fornecida.
+        """
         self.QtStack.setCurrentIndex(19)
         origem = self.telaPrincipal.procurar.text()
         destino = self.telaPrincipal.lineEdit.text()
-        # quant_reservas = self.telareserva.comboBox.currentText()
+
         self.telareserva.line_origem.setText(origem)
         self.telareserva.line_destino.setText(destino)
         self.telareserva.pushButton_2.clicked.connect(lambda _, placa=placa: self.confirmar_reserva(placa))
 
     def confirmar_reserva(self, placa):
+        """
+        Confirma uma reserva.
+
+        Confirma a reserva para a rota associada à placa fornecida, considerando as informações fornecidas pelo cliente.
+        """
         obs_origem = self.telareserva.ref_origem.text()
         obs_destino = self.telareserva.ref_destino.text()
         quant_reservas = self.telareserva.comboBox.currentText()
@@ -1099,12 +1269,20 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'Erro', 'Vagas insuficientes')
 
     def limpar_layout(self, layout):
+        """
+        Limpa um layout removendo todos os widgets.
+        """
         while layout.count():
             child = layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
 
     def enviar_mensagem_mot(self, cpf_cliente):
+        """
+        Envia uma mensagem de um motorista para um cliente.
+
+        Envia a mensagem digitada pelo motorista para o cliente associado ao CPF fornecido.
+        """
         msg = self.telachatmot.lineEdit.text()
 
         if msg != '':
@@ -1117,9 +1295,13 @@ class Main(QMainWindow, Ui_Main):
                 #self.alimentar_chat(cpf_cliente, cpf)
 
     def enviar_mensagem(self, cpf_mot):
+        """
+        Envia uma mensagem de um cliente para um motorista.
+
+        Envia a mensagem digitada pelo cliente para o motorista associado ao CPF fornecido.
+        """
         msg = self.telachat.lineEdit.text()
         if msg != '':
-            print(cpf_mot)
             # max_chars_per_line = 30
 
             # formatted_msg = ""
@@ -1138,7 +1320,11 @@ class Main(QMainWindow, Ui_Main):
                 QMessageBox.information(None, 'Erro', 'Número da placa não disponível.')
         
     def alimentar_chat(self, cpf, cpf_mot):
-        print('alimentar chat')
+        """
+        Alimenta o chat na interface do cliente.
+
+        Inicia e atualiza o chat entre o cliente e o motorista associado aos CPFs fornecidos.
+        """
         # Limpe o layout antes de adicionar novas mensagens
         ###
         self.limpar_layout(self.telachat.layC)
@@ -1149,6 +1335,11 @@ class Main(QMainWindow, Ui_Main):
         self.chat_thread.start()
 
     def adicionar_mensagem_na_interface(self, mensagem, cpf_mot, cpf):
+        """
+        Adiciona mensagens à interface do chat do cliente.
+
+        Adiciona a mensagem fornecida à interface do chat entre o cliente e o motorista associado aos CPFs fornecidos.
+        """
         label = QLabel()
         max_chars_per_line = 30
         mensagem_formatada = ""
@@ -1165,8 +1356,11 @@ class Main(QMainWindow, Ui_Main):
         #self.telachat.scrollAreaWidgetContents.setLayout(self.telachat.layC)
 
     def alimentar_chat_mot(self, cpf_cliente, cpf_motorista):
-        print('alimentar chat mot')
-        # Limpe o layout antes de adicionar novas mensagens
+        """
+        Alimenta o chat na interface do motorista.
+
+        Inicia e atualiza o chat entre o cliente e o motorista associado aos CPFs fornecidos.
+        """
         self.limpar_layout(self.telachatmot.layM)
 
         self.chat_thread_mot = MotoristaChatThread(cpf_cliente, cpf_motorista)
@@ -1175,6 +1369,11 @@ class Main(QMainWindow, Ui_Main):
         self.chat_thread_mot.start()
 
     def adicionar_mensagem_na_interface_mot(self, mensagem, cpf_cliente, cpf):
+        """
+        Adiciona mensagens à interface do chat do motorista.
+
+        Adiciona a mensagem fornecida à interface do chat entre o cliente e o motorista associado aos CPFs fornecidos.
+        """
         label = QLabel()
         max_chars_per_line = 30
         mensagem_formatada = ""
@@ -1191,6 +1390,12 @@ class Main(QMainWindow, Ui_Main):
         #self.telachatmot.scrollAreaWidgetContents.setLayout(self.telachatmot.layM)
 
     def perfil(self):
+        """
+        Exibe informações de perfil do usuário (motorista).
+
+        Obtém as informações do motorista associado ao CPF do usuário logado e exibe essas informações
+        nos campos correspondentes na tela de perfil do motorista.
+        """
         cpf = self.telaInicial.lineEditMail.text()
         m = self.cad.buscar_email_mot(cpf)
         if (m != None):
@@ -1205,8 +1410,14 @@ class Main(QMainWindow, Ui_Main):
             self.telaperfil.nascimento.setDate(qdate)
         else: 
             QMessageBox.information(None, 'Perfil', 'CPF não existe.')
-    #ok?
+
     def cadCarro(self):
+        """
+        Realiza o cadastro de um carro associado a um motorista.
+
+        Obtém as informações do carro a ser cadastrado a partir dos campos da tela de cadastro de carro
+        e realiza o cadastro do carro associado ao motorista logado.
+        """
         placa = self.telacadastrocarro.placa_line.text()
         modelo = self.telacadastrocarro.modelo_line.text()
         # tipo = self.telacadastrocarro.tipos_box.currentText()
@@ -1231,10 +1442,13 @@ class Main(QMainWindow, Ui_Main):
             else:
                 QMessageBox.information(None, 'Rota', 'O carro já existe.')
 
-    #######################################################################
-    #######################################################################
-    #feito
     def perfil_cliente(self):
+        """
+        Exibe informações de perfil específicas do cliente.
+
+        Obtém as informações do cliente associado ao email do usuário logado e exibe essas informações
+        nos campos correspondentes na tela de perfil do cliente.
+        """
         email = self.telaInicial.lineEditMail.text()
         c = self.cad.buscar_email_cliente(email)
         if (c != None):
@@ -1251,6 +1465,12 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'Perfil', 'CPF não existe.')
 
     def editar_perfil_cliente(self):
+        """
+        Permite a edição de informações do perfil do cliente.
+
+        Habilita a edição dos campos de nome, endereço, e-mail e data de nascimento do cliente.
+        Adiciona um botão "Salvar" para confirmar as alterações.
+        """
         self.telaperfilcliente.line_nome.setReadOnly(False)
         self.telaperfilcliente.line_enderco.setReadOnly(False)
         self.telaperfilcliente.email.setReadOnly(False)
@@ -1262,6 +1482,12 @@ class Main(QMainWindow, Ui_Main):
         self.telaperfilcliente.horizontalLayout_5.addWidget(botao_salvar)
 
     def salvar_perfil_cliente(self):
+        """
+        Salva as alterações feitas no perfil do cliente.
+
+        Coleta as informações editadas nos campos da tela e salva as alterações no perfil do cliente.
+        Exibe novamente a tela de perfil do cliente com os dados atualizados.
+        """
         nome = self.telaperfilcliente.line_nome.text()
         cpf = self.telaperfilcliente.line_cpf.text()
         endereco = self.telaperfilcliente.line_enderco.text()
@@ -1286,6 +1512,12 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'Cadastro', 'Todos os dados devem estar preenchidos!')
 
     def editar_perfil_motorista(self):
+        """
+        Permite a edição de informações do perfil do motorista.
+
+        Habilita a edição dos campos de nome, endereço, e-mail e data de nascimento do motorista.
+        Adiciona um botão "Salvar" para confirmar as alterações.
+        """
         self.telaperfil.line_nome.setReadOnly(False)
         self.telaperfil.line_enderco.setReadOnly(False)
         self.telaperfil.email.setReadOnly(False)
@@ -1297,6 +1529,12 @@ class Main(QMainWindow, Ui_Main):
         self.telaperfil.horizontalLayout_7.addWidget(botao_salvarM)
 
     def salvar_perfil_motorista(self):
+        """
+        Salva as alterações feitas no perfil do motorista.
+
+        Coleta as informações editadas nos campos da tela e salva as alterações no perfil do motorista.
+        Exibe novamente a tela de perfil do motorista com os dados atualizados.
+        """
         nome = self.telaperfil.line_nome.text()
         cpf = self.telaperfil.line_cpf.text()
         endereco = self.telaperfil.line_enderco.text()
@@ -1318,9 +1556,13 @@ class Main(QMainWindow, Ui_Main):
         else:
             QMessageBox.information(None, 'Cadastro', 'Todos os dados devem estar preenchidos!')
 
-    #######################################################################
-    #feito
     def cad_motorista(self):
+        """
+        Realiza o cadastro de um motorista.
+
+        Obtém as informações do motorista a ser cadastrado a partir dos campos da tela de cadastro e realiza
+        o cadastro do motorista.
+        """
         nome = self.telaCadastro.lineEditNome.text()
         endereco = self.telaCadastro.lineEditEndereco.text()
         cpf = self.telacpf.lineEdit_cpf.text()
@@ -1358,8 +1600,14 @@ class Main(QMainWindow, Ui_Main):
                     QMessageBox.information(None, 'Cadastro', f'email já cadastrado no banco de dados')
             else:
                 QMessageBox.information(None, 'Cadastro', f'Cpf já cadastrado no banco de dados')
-    #ok?
+
     def verificar_cpf(self):
+        """
+        Verifica a disponibilidade do CPF para cadastro.
+
+        Verifica se o CPF fornecido está disponível para cadastro como motorista ou cliente,
+        exibindo a tela apropriada com base na disponibilidade.
+        """
         cpf = self.telacpf.lineEdit_cpf.text()
         usuario = self.telacpf.comboBoxUsuario.currentText()
         if not (cpf == '' or usuario == ''):
@@ -1400,6 +1648,12 @@ class Main(QMainWindow, Ui_Main):
             QMessageBox.information(None, 'Cadastro', 'Todos os dados devem estar preenchidos!')
 
     def confirmar_senha(self):
+        """
+        Confirmação de senha e preenchimento automático do formulário.
+
+        Confirma a senha fornecida pelo usuário e preenche automaticamente o formulário
+        com as informações associadas ao CPF e senha.
+        """
         senha = self.telacsenha.lineEditSenha.text()
         cpf = self.telacpf.lineEdit_cpf.text()
         if not (senha == ''):
@@ -1443,8 +1697,14 @@ class Main(QMainWindow, Ui_Main):
                     QMessageBox.information(None, 'Senha', "Senha errada")
         else:
             QMessageBox.information(None, 'Cadastro', 'Todos os dados devem estar preenchidos!')
-    #feito
+
     def cadastrar(self):
+        """
+        Realiza o cadastro do usuário.
+
+        Realiza o cadastro do usuário (motorista ou cliente) com base nas informações
+        preenchidas nos campos da tela de cadastro.
+        """
         nome = self.telaCadastro.lineEditNome.text()
         endereco = self.telaCadastro.lineEditEndereco.text()
         cpf = self.telacpf.lineEdit_cpf.text()

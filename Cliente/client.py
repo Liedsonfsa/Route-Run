@@ -732,7 +732,6 @@ class plataforma_cliente():
         print(codigo)
         saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
-            print(saida_lst[1].split(','))
             return saida_lst[1].split(',')
         return None
     
@@ -893,7 +892,6 @@ class plataforma_cliente():
         print(codigo)
         saida_lst = saida.split('$')
         if (saida_lst[0] == '1'):
-            print(saida_lst[1].split(','))
             return saida_lst[1].split(',')
         return None
 
@@ -1007,8 +1005,6 @@ class plataforma_cliente():
             return False
         print(codigo)
         saida_lst = saida.split('/')
-        print(saida_lst[0])
-        print('-------')
         if (saida_lst[0] == '1'):
             return True
         return None
@@ -1062,8 +1058,6 @@ class plataforma_cliente():
             return False
         print(codigo)
         saida_lst = saida.split('/')
-        print(saida_lst[0])
-        print('-------')
         if (saida_lst[0] == '1'):
             return True
         return None
@@ -1115,8 +1109,6 @@ class plataforma_cliente():
             return False
         print(codigo)
         saida_lst = saida.split('/')
-        print(saida_lst[0])
-        print('-------')
         if (saida_lst[0] == '1'):
             return True
         return None

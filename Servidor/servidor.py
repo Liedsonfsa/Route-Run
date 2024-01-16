@@ -1014,8 +1014,6 @@ class Servidor():
         bool
             retorna um boleano (0, 1)
         '''
-        print(codigo[1])
-        print(codigo[2])
         if self._rot.add_historico(codigo[1], int(codigo[2])):
             return '1'
         return '0'
