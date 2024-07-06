@@ -3,6 +3,7 @@ import socket
 import threading
 import random
 import win32com.client as win32
+import webbrowser
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QDate, QTime, QDateTime, Qt, QThread, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QMessageBox, QMainWindow, QApplication, QDateTimeEdit, QWidget, QHBoxLayout, QPushButton, QTextEdit, QVBoxLayout, QLineEdit, QLabel
@@ -532,6 +533,8 @@ class Main(QMainWindow, Ui_Main):
         self.limpar_layout(self.telachat.layC)
         self.limpar_layout(self.telaguardarchats.layChat)
         self.limpar_layout(self.telaverreservacliente.layverreservasclientes)
+        # self.inicializarTelaPrincipal()
+        
         # email = self.telaInicial.lineEditMail.text()
         # c = self.cad.buscar_email_cliente(email)
         # self.cad.zerar_mensagens(c[3])
@@ -627,6 +630,7 @@ class Main(QMainWindow, Ui_Main):
         self.QtStack.setCurrentIndex(2)
         self.limpar_layout(self.telaPrincipal.lay)
         self.limpar_layout(self.telaguardarchats.layChat)
+        # self.inicializarTelaPrincipal()
         #self.montar_chats(c[3])
 
     def ver_reservas_cliente(self):
@@ -647,9 +651,10 @@ class Main(QMainWindow, Ui_Main):
                 destino = (reservas[i].split("'")[1].split("'")[0]).split('/')[4]
                 origem = (reservas[i].split("'")[1].split("'")[0]).split('/')[5]
                 cpf = (reservas[i].split("'")[1].split("'")[0]).split('/')[6]
-                self.telaverreservacliente.label.setText(f'Placa: {placa}\nassentos reservados: {acentos}\nOrigem: {origem}\nDestino: {destino}\nRef. origem: {obs_origem}\nRef. destino{obs_destino}')
+                self.telaverreservacliente.label.setText(f'Placa: {placa}\nassentos reservados: {acentos}\nOrigem: {origem}\nDestino: {destino}\nRef. origem: {obs_origem}\nRef. destino: {obs_destino}')
                 self.telaverreservacliente.layverreservasclientes.addWidget(self.telaverreservacliente.label)
                 self.add_cancelar(self.telaverreservacliente.layverreservasclientes, placa, cpf, acentos)
+                self.pagar_corrida(self.telaverreservacliente.layverreservasclientes, placa, origem, destino, acentos, cpf)
                 self.telaverreservacliente.label2 = QLabel()
                 self.telaverreservacliente.label2.setText("-------------------------------------------------------------------------------------------------------------------------------------------------")
                 self.telaverreservacliente.layverreservasclientes.addWidget(self.telaverreservacliente.label2)
@@ -659,19 +664,32 @@ class Main(QMainWindow, Ui_Main):
         else:
             QMessageBox.information(None, 'Reservas', 'Sem reservas')
 
-    def add_cancelar(self, layout, placa, cpf, acentos):
+    def add_cancelar(self, layout, placa, cpf, assentos):
         """
         Adiciona um botão para cancelar uma reserva em um layout.
         """
         botao_c = QPushButton('Cancelar', self)
         
-        botao_c.clicked.connect(lambda: self.cancelar(placa, cpf, acentos))
+        botao_c.clicked.connect(lambda: self.cancelar(placa, cpf, assentos))
 
         # Adicionar os botões ao layout
         layout.addWidget(botao_c)
 
         layout.setAlignment(Qt.AlignTop)
 
+    def pagar_corrida(self, layout, placa, origem, destino, assentos, cpf):
+        """
+        Adiciona um botão para cancelar uma reserva em um layout.
+        """
+        botao_c = QPushButton('Pagar Corrida', self)
+        
+        botao_c.clicked.connect(lambda: self.payment(placa, origem, destino, assentos, cpf))
+
+        layout.addWidget(botao_c)
+
+        layout.setAlignment(Qt.AlignTop)
+    
+    
     def cancelar(self, placa, cpf, acentos):
         """
         Cancela uma reserva e exibe mensagem informativa.
@@ -864,11 +882,12 @@ class Main(QMainWindow, Ui_Main):
         """
         Autentica o usuário com base no código recebido por e-mail.
         """
-        num = int(self.telaAut.lineEdit.text())
+        num_bus = self.telaAut.lineEdit.text()
 
-        if num == '':
+        if num_bus == '':
             QMessageBox.information(None, 'Redefinição', 'Todos os espaços devem ser preenchidos!')
         else:
+            num = int(num_bus)
             if (self.cad.buscar_cod(num) != None):
                 self.telaAut.lineEdit.setText('')
                 self.QtStack.setCurrentIndex(4)
@@ -1033,7 +1052,8 @@ class Main(QMainWindow, Ui_Main):
                 acentos_total = (carros[i].split("'")[1].split("'")[0]).split('/')[6]
                 self.telaPrincipalMotorista.label.setText(f"Placa do carro: {Placa}\nMarca: {Marca}\nModelo: {Modelo}\nCor: {Cor}\nQuantidade de assentos ocupados: {int(acentos_total) - int(acentos)}")
                 self.telaPrincipalMotorista.layCarros.addWidget(self.telaPrincipalMotorista.label)
-                self.inspecionar_van(self.telaPrincipalMotorista.layCarros, (carros[i].split("'")[1].split("'")[0]).split('/')[0])
+
+                self.inspecionar_van(self.telaPrincipalMotorista.layCarros, Placa)
                 self.telaPrincipalMotorista.label2 = QLabel()
                 self.telaPrincipalMotorista.label2.setText("--------------------------------------------------------------------------------------------")
                 self.telaPrincipalMotorista.layCarros.addWidget(self.telaPrincipalMotorista.label2)
@@ -1051,15 +1071,29 @@ class Main(QMainWindow, Ui_Main):
         """
         inspecionar_van = QPushButton('Inspecionar Veículo', self)
         historico_van = QPushButton('Historico Veículo', self)
+        deletar_van = QPushButton('Excluir Veículo', self)
 
         inspecionar_van.clicked.connect(lambda: self.ver_van(placa))
         historico_van.clicked.connect(lambda: self.historico_da_van(placa))
+        deletar_van.clicked.connect(lambda: self.deletar_carro(placa))
 
         layout.addWidget(inspecionar_van)
         layout.addWidget(historico_van)
+        layout.addWidget(deletar_van)
 
         layout.setAlignment(Qt.AlignTop)
+    
+    def deletar_carro(self, placa):
+        saida = self.cad.deletarVeiculo(placa)
+        self.mostrar_carros()
+    
+    def payment(self, placa, origem, destino, assentos, cpf):
+        link = self.cad.solicitarPagamento(placa, f'corrida-{origem}-{destino}', assentos, cpf)
 
+        webbrowser.open(link)
+
+    
+    
     def historico_da_van(self, placa):
         """
         Exibe o histórico de uma van.
@@ -1109,8 +1143,13 @@ class Main(QMainWindow, Ui_Main):
                 destino = (reservas[i].split("'")[1].split("'")[0]).split('/')[4]
                 origem = (reservas[i].split("'")[1].split("'")[0]).split('/')[5]
                 cpf_cliente = (reservas[i].split("'")[1].split("'")[0]).split('/')[6]
+                # finalizar_corrida = QPushButton('Finalizar Corrida', self)
+                # self.telaverreserva.addWidget(finalizar_corrida)
+                # inspeci.clicked.connect(lambda: self.ver_van(placa))
                 nome = self.cad.busca_cpf_cliente(cpf_cliente)
-                self.telaverreserva.label.setText(f'Assentos reservados: {acentos}\nref. origem: {obs_origem}\nref. destino{obs_destino}\norigem: {origem}\ndestino: {destino}\nNome Cliente: {nome[1]}\n--------------------------------------------------------------------------------------------')
+                self.telaverreserva.label.setText(f'Assentos reservados: {acentos}\nref. origem: {obs_origem}\nref. destino: {obs_destino}\norigem: {origem}\ndestino: {destino}\nNome Cliente: {nome[1]}\n')
+
+                print('--------------------------------------------------------------------------------------------')
                 self.telaverreserva.layverreservas.addWidget(self.telaverreserva.label)
                 # self.telaverreserva.label2 = QLabel()
                 # self.telaverreserva.label2.setText("--------------------------------------------------------------------------------------------")
@@ -1161,22 +1200,47 @@ class Main(QMainWindow, Ui_Main):
                     if self.rot.verificar_cidade_id(rota_destino, (origem[i].split("'")[1].split("'")[0]).split('/')[0], (origem[i].split("'")[1].split("'")[0]).split('/')[2]):
                         rota_encontrada = self.rot.verificar_cidade((origem[i].split("'")[1].split("'")[0]).split('/')[0])
                         ctt = 1
-                        carro = self.carro.busca_carro(rota_encontrada[8])
-                        self.telaPrincipal.label = QLabel()
-                        self.telaPrincipal.label.setText(f"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor máximo da passagem (Pode variar de acordo com a cidade): {rota_encontrada[7]}\nQuantidade de vagas: {carro[6]}")
-                        self.telaPrincipal.lay.addWidget(self.telaPrincipal.label)
-                        self.chat_reserva(self.telaPrincipal.lay, carro[5], rota_encontrada[8])
-                        self.numero_cpf_atual_mot = rota_encontrada[8]
-                        self.telaPrincipal.label2 = QLabel()
-                        self.telaPrincipal.label2.setText("----------------------------------------------------------------------------------------------------------------")
-                        self.telaPrincipal.lay.addWidget(self.telaPrincipal.label2)
-                        self.telaPrincipal.label.setAlignment(Qt.AlignTop)
-                        self.telaPrincipal.label2.setAlignment(Qt.AlignTop)
-                        self.telaPrincipal.scrollAreaWidgetContents.setLayout(self.telaPrincipal.lay)
+                        if rota_encontrada is not None:
+                            carro = self.carro.busca_carro(rota_encontrada[8])
+                            self.telaPrincipal.label = QLabel()
+                            self.telaPrincipal.label.setText(f"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor máximo da passagem (Pode variar de acordo com a cidade): {rota_encontrada[7]}\nQuantidade de vagas: {carro[6]}")
+                            self.telaPrincipal.lay.addWidget(self.telaPrincipal.label)
+                            self.chat_reserva(self.telaPrincipal.lay, carro[5], rota_encontrada[8])
+                            self.numero_cpf_atual_mot = rota_encontrada[8]
+                            self.telaPrincipal.label2 = QLabel()
+                            self.telaPrincipal.label2.setText("----------------------------------------------------------------------------------------------------------------")
+                            self.telaPrincipal.lay.addWidget(self.telaPrincipal.label2)
+                            self.telaPrincipal.label.setAlignment(Qt.AlignTop)
+                            self.telaPrincipal.label2.setAlignment(Qt.AlignTop)
+                            self.telaPrincipal.scrollAreaWidgetContents.setLayout(self.telaPrincipal.lay)
+                        else:
+                            QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
                 if ctt == 0:
                     QMessageBox.information(None, 'Busca', 'A rota não existe ou não foi encontrada.')
             else:
                 QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
+
+    def inicializarTelaPrincipal():
+        rotas = self.rot.buscarTodasRotas()
+        self.telaPrincipal.label = QLabel()
+
+        for rota in range(rotas):
+            self.telaPrincipal.label.setText(f"Id da rota: {rota[1]}\nCidade origem: {rota[3]} - {rota[2]}\nCidade destino: {rota[5]} - {rota[4]}\nPlaca: {rota[8]}\nHorario de saída: {rota[6]}\nHorario de volta: {rota[9]}\nValor máximo da passagem (Pode variar de acordo com a cidade): {rota[7]}\nQuantidade de vagas: {carro[6]}")
+            self.telaPrincipal.lay.addWidget(self.telaPrincipal.label)
+            self.chat_reserva(self.telaPrincipal.lay, carro[5], rota_encontrada[8])
+            self.numero_cpf_atual_mot = rota_encontrada[8]
+            self.telaPrincipal.label2 = QLabel()
+            self.telaPrincipal.label2.setText("----------------------------------------------------------------------------------------------------------------")
+            self.telaPrincipal.lay.addWidget(self.telaPrincipal.label2)
+            self.telaPrincipal.label.setAlignment(Qt.AlignTop)
+            self.telaPrincipal.label2.setAlignment(Qt.AlignTop)
+            self.telaPrincipal.scrollAreaWidgetContents.setLayout(self.telaPrincipal.lay)
+            pass
+        pass
+
+    def buscar_rota_por_placa(self, placa):
+        
+        pass
 
     def chat_reserva(self, layout, cpf_mot, placa):
         """
@@ -1345,7 +1409,8 @@ class Main(QMainWindow, Ui_Main):
         mensagem_formatada = ""
         for j in range(0, len(mensagem), max_chars_per_line):
             mensagem_formatada += mensagem[j:j + max_chars_per_line] + '\n'
-        label.setText(f"{mensagem_formatada}")
+        msg = mensagem_formatada.replace("`", ",")
+        label.setText(f"{msg}")
         self.telachat.layC.addWidget(label)
         label.setAlignment(Qt.AlignBottom)
         if cpf_mot == cpf:
@@ -1379,7 +1444,8 @@ class Main(QMainWindow, Ui_Main):
         mensagem_formatada = ""
         for j in range(0, len(mensagem), max_chars_per_line):
             mensagem_formatada += mensagem[j:j + max_chars_per_line] + '\n'
-        label.setText(f"{mensagem_formatada}")
+        msg = mensagem_formatada.replace("`", ",")
+        label.setText(f"{msg}")
         self.telachatmot.layM.addWidget(label)
         label.setAlignment(Qt.AlignBottom)
         if cpf_cliente == cpf:
@@ -1743,6 +1809,8 @@ class Main(QMainWindow, Ui_Main):
                 QMessageBox.information(None, 'Cadastro', 'Senhas diferentes!')
         else:
             QMessageBox.information(None, 'Cadastro', 'Todos os dados devem estar preenchidos!')
+    
+    
 
 
 if __name__ == '__main__':

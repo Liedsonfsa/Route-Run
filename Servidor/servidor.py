@@ -4,6 +4,7 @@ from cadastro import Cadastro
 from pessoa import Pessoa, Motorista
 from cadastro_carro import CadCarro, Carro, Reservas
 from cadastro_rota import Rota, CadRota, Cidade
+from api import Payment_API
 
 import threading
 
@@ -80,10 +81,10 @@ class ClientThread(threading.Thread):
         recebe = self.con.recv(1024) #define que os pacotes recebidos são de ate 1024 bytes
         
         print('-solicitacao recebida...')
-
+        print(f'recebe: {recebe}')
         #pre-processamento do codigo
         codigo = self._servidor.pre_processamento(recebe.decode())
-        print(codigo)
+        print(f'codigo: {codigo}')
     
         if (codigo[0] == 'cadastraU'):
             saida = self._servidor.cadastrarU(codigo)
@@ -153,7 +154,14 @@ class ClientThread(threading.Thread):
             saida = self._servidor.buscar_histo(codigo)
         elif (codigo[0] == 'add_histo'):
             saida = self._servidor.add_histo(codigo)
-
+        elif (codigo[0] == 'pagamento'):
+            saida = self._servidor.pagamento(codigo)
+        elif (codigo[0] == 'todas_rotas'):
+            saida = self._servidor.todas_rotas()
+        elif (codigo[0] == "deletar_veiculo"):
+            saida = self._servidor.deletar_van(codigo)
+        
+        # print(saida)
         self.con.send(saida.encode())
         # print('-solicitacao recebida...')
 
@@ -347,7 +355,13 @@ class Servidor():
             codigo_lista[0] = 'buscar_histo'
         elif (codigo_lista[0] == '33'):
             codigo_lista[0] = 'add_histo'          
-
+        elif (codigo_lista[0] == "34"):
+            codigo_lista[0] = "todas_rotas"
+        elif (codigo_lista[0] == "35"):
+            codigo_lista[0] = "pagamento"
+        elif (codigo_lista[0] == "36"):
+            codigo_lista[0] = "deletar_veiculo"
+        
         return codigo_lista
 
     def cadastrarU(self, codigo):
@@ -583,7 +597,7 @@ class Servidor():
     
         # Convertendo para QDate
         qtime1 = QDateTime(data_atual, QTime(int(data_lista1[0]), int(data_lista1[1]), int(data_lista1[2])))
-
+        
         rota = Rota(int(codigo[1]), codigo[2], codigo[3], codigo[4], codigo[5], qtime, codigo[7], codigo[8], qtime1)
 
         if (self._rot.cadastro_rota(rota)):
@@ -779,12 +793,14 @@ class Servidor():
             retorna uma lista com as mensagens não lidas do cliente.
         '''
         mensagens = self._cadastro.retirar_msg(codigo[1], codigo[2])
+        print(mensagens)
         if mensagens:
             tam = len(mensagens)
             Retorno = []
             for i in range(tam):
                 Buscar = f'{mensagens[i].msg}/{mensagens[i].remetente}'
-                Retorno.append(Buscar)
+                busc = Buscar.replace(",", "`")
+                Retorno.append(busc)
             return f'1${Retorno}'
         return '0'
     
@@ -906,7 +922,8 @@ class Servidor():
             Retorno = []
             for i in range(tam):
                 Buscar = f'{mensagens[i].msg}/{mensagens[i].remetente}'
-                Retorno.append(Buscar)
+                busc = Buscar.replace(",", "`")
+                Retorno.append(busc)
             return f'1${Retorno}'
         return '0'
     
@@ -1086,7 +1103,37 @@ class Servidor():
                 Retorno.append(res)
             return f'1${Retorno}'
         return '0'
+    
+    def buscarPrecoCorrida(self, placa, origem, destino):
+        return self._cadastro.buscarPreco(placa, origem, destino)
+    
+    def pagamento(self, lista):
+        end = lista[2].split('-')
+        placa = lista[1]
+        cpf = lista[4]
+        preco = self.buscarPrecoCorrida(placa, end[1], end[2])
+        payment = Payment_API()
+        assentos = float(lista[3])
+        id = self._cadastro.buscarID(lista[1], end[1], end[2])
+        link_payment = payment.EfetuarPagamento(id, lista[2], assentos, preco)
+        self._CadCarro.cancelar_reserva(lista[1], cpf, assentos)
+        if link_payment[0] != '0' :
+            return f'1${link_payment}'
 
+        return '0'
+    
+    def deletar_van(self, placa):
+        print(placa)
+        response = self._cadastro.deletar_veiculo(placa[1])
+
+        return response
+    
+    def todas_rotas(self):
+        rotas = self._cadastro.buscar_todas_rotas()
+        return rotas
+    
+    
+    
     def ligar_servidor(self):
         '''
         Liga o servidor e fica aguardando as conexões

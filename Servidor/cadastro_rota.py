@@ -690,7 +690,7 @@ class CadRota:
         """
         Inicializa a classe e cria tabelas no banco de dados se não existirem.
         """
-        self._conexao = mysql.connector.connect(host = 'localhost', db ='route_run', user='root', passwd = '@Marcos2004*')
+        self._conexao = mysql.connector.connect(host = 'localhost', db ='route_run', user='root', passwd = 'liedsonfsa')
         self._cursor = self._conexao.cursor(buffered=True)
         self._mysql = """CREATE TABLE IF NOT EXISTS rotas(id integer PRIMARY KEY, uf_origem text NOT NULL, cidade_origem text NOT NULL, uf_destino text NOT NULL, cidade_destino text NOT NULL, horario time NOT NULL, valor text NOT NULL, placa text NOT NULL, horario_volta time NOT NULL);"""
         self._cursor.execute(self._mysql)
@@ -907,6 +907,15 @@ class CadRota:
             #city = Rota(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7], verificar[8])
             return verificar[2], verificar[4]
 
+    def buscarTodasAsRotas():
+        self._cursor.execute('SELECT * from rotas')
+        verificar = self._cursor.fetchall()
+        if (verificar == None):
+            return None
+        else:
+            #city = Rota(verificar[0], verificar[1], verificar[2], verificar[3], verificar[4], verificar[5], verificar[6], verificar[7], verificar[8])
+            return verificar
+    
     def buscar_histo(self, placa):
         '''Busca o histórico de viagens associado a uma placa no banco de dados.
 

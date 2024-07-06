@@ -69,7 +69,7 @@ class Cadastro:
         Inicializa a classe Cadastro, estabelecendo a conexão com o banco de dados e criando as tabelas necessárias.
 
         """
-        self._conexao = mysql.connector.connect(host = 'localhost', db ='route_run', user='root', passwd = '@Marcos2004*')
+        self._conexao = mysql.connector.connect(host='localhost', db='route_run', user='root', passwd='liedsonfsa')
         self._cursor = self._conexao.cursor()
         self._mysql = """CREATE TABLE IF NOT EXISTS clientes(nome text NOT NULL, endereco text NOT NULL, cpf VARCHAR(11) PRIMARY KEY, nascimento date NOT NULL, usuario text NOT NULL, senha text NOT NULL, email text NOT NULL);"""
         self._cursor.execute(self._mysql)
@@ -589,3 +589,52 @@ class Cadastro:
                     self._cursor.execute('UPDATE mensagens SET sinal_mot = 1 WHERE id = %s AND sinal_mot = 0', (conversa_id, ))
                     self._conexao.commit()
             return mensagens
+    
+    def buscarPreco(self, placa, origem, destino):
+        self._cursor.execute('SELECT * FROM rotas WHERE placa = %s AND cidade_origem = %s AND cidade_destino = %s', (placa, origem, destino, ))
+        rota = self._cursor.fetchall()
+        l = 0
+        for i in rota[0]:
+            print(i)
+            if l == 6 :
+                res = i
+            l += 1
+        
+        return float(res.replace(',', '.'))
+
+    def buscarID(self, placa, origem, destino):
+        self._cursor.execute('SELECT * FROM rotas WHERE placa = %s AND cidade_origem = %s AND cidade_destino = %s', (placa, origem, destino, ))
+        rota = self._cursor.fetchall()
+        l = 0
+        for i in rota[0]:
+            print(i)
+            if l == 0:
+                res = i
+            l += 1
+        
+        return res
+    
+    def deletar_veiculo(self, placa):
+        self._cursor.execute("SET FOREIGN_KEY_CHECKS=OFF")
+        self._cursor.execute('DELETE FROM reservas WHERE placa = %s', (placa, ))
+
+        self._cursor.execute('DELETE FROM historico_mot WHERE placa = %s', (placa, ))
+
+        self._cursor.execute('DELETE FROM rotas WHERE placa = %s', (placa, ))
+
+        self._cursor.execute('DELETE FROM carros WHERE placa = %s', (placa, ))
+        self._cursor.execute("SET FOREIGN_KEY_CHECKS=ON")
+        
+        self._conexao.commit()
+
+        return '1'
+    
+    def buscar_todas_rotas(self):
+        self._cursor.execute("SELECT * FROM rotas")
+        rotas = self._cursor.fetchall()
+
+        print(rotas)
+        if (rotas == []):
+            return None
+        
+        return rotas

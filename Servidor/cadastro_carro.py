@@ -574,7 +574,7 @@ class CadCarro:
         """
         Inicializa a conexão com o banco de dados e cria as tabelas se não existirem.
         """
-        self._conexao = mysql.connector.connect(host = 'localhost', db ='route_run', user='root', passwd = '@Marcos2004*')
+        self._conexao = mysql.connector.connect(host='localhost', db='route_run', user='root', passwd='liedsonfsa')
         self._cursor = self._conexao.cursor()
         self._mysql = """CREATE TABLE IF NOT EXISTS carros(placa VARCHAR(11) PRIMARY KEY, marca text NOT NULL, modelo text NOT NULL, cor text NOT NULL, cpf VARCHAR(11), acentos integer, acentos_total integer, foreign key(cpf) references motoristas(cpf));"""
         self._cursor.execute(self._mysql)
@@ -619,7 +619,7 @@ class CadCarro:
         Carro or None
             Objeto da classe Carro se o veículo for encontrado, None se não for encontrado
         """
-        self._cursor.execute('SELECT * from carros WHERE placa = %s',(placa,))
+        self._cursor.execute('SELECT * from carros WHERE placa = %s', (placa,))
         verificar = self._cursor.fetchone()
         if (verificar == None):
             return None
@@ -641,7 +641,7 @@ class CadCarro:
         list[Carro]
             Lista de objetos da classe Carro associados ao motorista
         """
-        self._cursor.execute('SELECT * from carros WHERE cpf = %s',(cpf,))
+        self._cursor.execute('SELECT * from carros WHERE cpf = %s', (cpf,))
         verificar = self._cursor.fetchall()
         if (verificar == None):
             return None
@@ -776,4 +776,30 @@ class CadCarro:
         self._cursor.execute('DELETE from reservas WHERE placa = %s AND cpf_cliente = %s', (placa, cpf))
         self._conexao.commit()
         self._cursor.fetchall()
+        return True
+
+    def apagar_reserva(self, placa, cpf, acentos):
+        """
+        Cancela uma reserva, atualiza o banco de dados e retorna True se bem-sucedido.
+
+        Parameters
+        ----------
+        placa : str
+            Placa do veículo associado à reserva
+        cpf : str
+            CPF do cliente associado à reserva
+        acentos : int
+            Número de assentos reservados a serem devolvidos ao veículo
+
+        Returns
+        -------
+        bool
+            True se a reserva foi cancelada com sucesso, False se houve algum erro
+        """
+        self._cursor.execute('UPDATE carros SET acentos = acentos + %s WHERE placa = %s', (acentos, placa))
+        self._cursor.fetchall()
+        self._conexao.commit()
+        self._cursor.execute('DELETE from reservas WHERE placa = %s AND cpf_cliente = %s', (placa, cpf))
+        self._cursor.fetchall()
+        self._conexao.commit()
         return True

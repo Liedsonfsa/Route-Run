@@ -108,7 +108,8 @@ class plataforma_cliente():
         str
             Resposta do servidor.
         """
-        ip = '10.180.46.216'
+        ip = socket.gethostbyname(socket.gethostname())
+        #ip = '10.0.0.62'
         port = 8000
         addr = ((ip, port))
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -946,6 +947,10 @@ class plataforma_cliente():
         bool
             True se a reserva foi confirmada com sucesso, False caso contrário.
         """
+        # obs_destino = obs_destino.replace(" ", "_")
+        # obs_origem = obs_origem.replace(" ", "_")
+        # origem = origem.replace(" ", "_")
+        # destino = destino.replace(" ", "_")
         codigo = '27/'+placa+'/'+str(quant_reservas)+'/'+obs_destino+'/'+obs_origem+'/'+destino+'/'+origem+'/'+cpf_cliente
         try:
             saida = self.conecxao_servidor(codigo)
@@ -1112,3 +1117,40 @@ class plataforma_cliente():
         if (saida_lst[0] == '1'):
             return True
         return None
+    
+    def solicitarPagamento(self, id_rota, title, quantity, cpf):
+        codigo = f'35/{id_rota}/{title}/{quantity}/{cpf}'
+
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+
+        print(codigo)
+        saida_lst = saida.split('$')
+        if (saida_lst[0] == '1'):
+            return str(saida_lst[1])
+        return None
+    
+    def deletarVeiculo(self, placa):
+        codigo = f'36/{placa}'
+        
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return False
+        
+        print(codigo)
+        return True
+    
+    def buscarTodasAsRotas(self):
+        codigo = f'34'
+        
+        try:
+            saida = self.conecxao_servidor(codigo)
+        except:
+            return None
+        
+        print(codigo)
+        return saida
+
