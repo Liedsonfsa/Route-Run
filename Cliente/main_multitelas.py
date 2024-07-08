@@ -1038,7 +1038,7 @@ class Main(QMainWindow, Ui_Main):
 
                 self.inspecionar_van(self.telaPrincipalMotorista.layCarros, Placa)
                 self.telaPrincipalMotorista.label2 = QLabel()
-                self.telaPrincipalMotorista.label2.setText("--------------------------------------------------------------------------------------------")
+                self.telaPrincipalMotorista.label2.setText("----------------------------------------------------------------------------------------------")
                 self.telaPrincipalMotorista.layCarros.addWidget(self.telaPrincipalMotorista.label2)
                 self.telaPrincipalMotorista.label.setAlignment(Qt.AlignTop)
                 self.telaPrincipalMotorista.label2.setAlignment(Qt.AlignTop)
@@ -1095,7 +1095,8 @@ class Main(QMainWindow, Ui_Main):
                 origem = (historico[i].split("'")[1].split("'")[0]).split('/')[2]
                 destino = (historico[i].split("'")[1].split("'")[0]).split('/')[3]
                 quantidade_de_acentos = (historico[i].split("'")[1].split("'")[0]).split('/')[4]
-                self.telahistovei.label.setText(f'Data: {data}\nplaca: {placa_1}\norigem: {origem}\ndestino: {destino}\nQuantidades de assentos: {quantidade_de_acentos}\n---------------------------------------------------------------')
+                lines = 145*'-'
+                self.telahistovei.label.setText(f'Data: {data}\nplaca: {placa_1}\norigem: {origem}\ndestino: {destino}\nQuantidades de assentos: {quantidade_de_acentos}\n{lines}')
                 self.telahistovei.layhistovei.addWidget(self.telahistovei.label)
                 self.telahistovei.label.setAlignment(Qt.AlignTop)
                 #self.telahistovei.label2.setAlignment(Qt.AlignTop)
@@ -1175,7 +1176,9 @@ class Main(QMainWindow, Ui_Main):
                     if self.rot.verificar_cidade_id(rota_destino, (origem[i].split("'")[1].split("'")[0]).split('/')[0], (origem[i].split("'")[1].split("'")[0]).split('/')[2]):
                         rota_encontrada = self.rot.verificar_cidade((origem[i].split("'")[1].split("'")[0]).split('/')[0])
                         ctt = 1
-                        if rota_encontrada is not None:
+                        print(rota_encontrada)
+                        print(rota_encontrada != None)
+                        if rota_encontrada != None:
                             carro = self.carro.busca_carro(rota_encontrada[8])
                             self.telaPrincipal.label = QLabel()
                             self.telaPrincipal.label.setText(f"Id da rota: {rota_encontrada[1]}\nCidade origem: {rota_encontrada[3]} - {rota_encontrada[2]}\nCidade destino: {rota_encontrada[5]} - {rota_encontrada[4]}\nPlaca: {rota_encontrada[8]}\nHorario de saída: {rota_encontrada[6]}\nHorario de volta: {rota_encontrada[9]}\nValor máximo da passagem (Pode variar de acordo com a cidade): {rota_encontrada[7]}\nQuantidade de vagas: {carro[6]}")
@@ -1183,17 +1186,18 @@ class Main(QMainWindow, Ui_Main):
                             self.chat_reserva(self.telaPrincipal.lay, carro[5], rota_encontrada[8])
                             self.numero_cpf_atual_mot = rota_encontrada[8]
                             self.telaPrincipal.label2 = QLabel()
-                            self.telaPrincipal.label2.setText("----------------------------------------------------------------------------------------------------------------")
+                            # self.telaPrincipal.label2.setText("----------------------------------------------------------------------------------------------------------------")
+                            self.telaPrincipal.label2.setText(129*'-')
                             self.telaPrincipal.lay.addWidget(self.telaPrincipal.label2)
                             self.telaPrincipal.label.setAlignment(Qt.AlignTop)
                             self.telaPrincipal.label2.setAlignment(Qt.AlignTop)
                             self.telaPrincipal.scrollAreaWidgetContents.setLayout(self.telaPrincipal.lay)
-                        else:
-                            QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
+                        # else:
+                        #     QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada. 1')
                 if ctt == 0:
-                    QMessageBox.information(None, 'Busca', 'A rota não existe ou não foi encontrada.')
+                    QMessageBox.information(None, 'Busca', 'A rota não existe ou não foi encontrada. 2')
             else:
-                QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada.')
+                QMessageBox.information(None, 'Rota', 'A rota não existe ou não foi encontrada. 3')
 
     def inicializarTelaPrincipal():
         rotas = self.rot.buscarTodasRotas()
