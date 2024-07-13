@@ -1116,7 +1116,7 @@ class Servidor():
         assentos = float(lista[3])
         id = self._cadastro.buscarID(lista[1], end[1], end[2])
         link_payment = payment.EfetuarPagamento(id, lista[2], assentos, preco)
-        self._CadCarro.cancelar_reserva(lista[1], cpf, assentos)
+        self._CadCarro.pagar_reserva(lista[1], cpf, assentos)
         if link_payment[0] != '0' :
             return f'1${link_payment}'
 

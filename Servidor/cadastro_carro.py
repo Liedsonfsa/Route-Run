@@ -803,3 +803,26 @@ class CadCarro:
         self._cursor.fetchall()
         self._conexao.commit()
         return True
+
+    def pagar_reserva(self, placa, cpf, acentos):
+        """
+        Cancela uma reserva, atualiza o banco de dados e retorna True se bem-sucedido.
+
+        Parameters
+        ----------
+        placa : str
+            Placa do veículo associado à reserva
+        cpf : str
+        CPF do cliente associado à reserva
+        acentos : int
+            Número de assentos reservados a serem devolvidos ao veículo
+
+        Returns
+        -------
+        bool
+            True se a reserva foi cancelada com sucesso, False se houve algum erro
+        """
+        self._cursor.execute('DELETE from reservas WHERE placa = %s AND cpf_cliente = %s', (placa, cpf))
+        self._cursor.fetchall()
+        self._conexao.commit()
+        return True
